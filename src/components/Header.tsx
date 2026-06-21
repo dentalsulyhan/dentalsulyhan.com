@@ -146,7 +146,9 @@ export default function Header({ data, currentLocale }: HeaderProps) {
             </div>
             <div className="flex mt-[50px] gap-[100px] justify-between max-[767px]:justify-center max-[767px]:flex-wrap">
               <nav className="flex-[25%]">
-                <h2 className="font-['AvenirNextLTPro'] text-[14px] text-left text-[#909da2] uppercase font-medium mb-5">Menu</h2>
+                <h2 className="font-['AvenirNextLTPro'] text-[14px] text-left text-[#909da2] uppercase font-medium mb-5">
+                  {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
+                </h2>
                 <ul className="list-none p-0 m-0 flex flex-col items-start gap-[10px]">
                   {menuItems.map((item, i) => {
                     const isAnchor = item.link?.startsWith('#')
@@ -225,8 +227,8 @@ export default function Header({ data, currentLocale }: HeaderProps) {
                   <li key={loc}>
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[12px] font-['AvenirNextLTPro'] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
-                        isActive ? 'text-[#22282b] font-bold opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
+                      className={`text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
+                        isActive ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
                       }`}
                     >
                       {langNames[loc]}
