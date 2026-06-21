@@ -124,7 +124,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
         {/* LEFT: Hamburger Menu trigger and Sidebar Drawer */}
         <div className="flex">
           <button
-            className="uppercase font-normal cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
+            className="font-['AvenirNextLTPro'] text-[14px] uppercase font-normal tracking-[0.08em] cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
             onClick={() => setIsMenuOpen(true)}
           >
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
@@ -176,7 +176,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
                   <li key={loc}>
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
+                      className={`font-['AvenirNextLTPro'] text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
                         currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
@@ -227,7 +227,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
                   <li key={loc}>
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
+                      className={`font-['AvenirNextLTPro'] text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
                         isActive ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
                       }`}
                     >
