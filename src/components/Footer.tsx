@@ -68,20 +68,20 @@ export default function Footer({ data, headerLogo, currentLocale }: FooterProps)
     : (fallbackMenus[currentLocale] || fallbackMenus.es)
 
   return (
-    <footer className="footer">
-      <div className="footer_menu">
-        <div className="footer__container">
-          <Link href={`/${currentLocale}`} className="custom-logo-link">
-            <img src={logoUrl} alt={logoAlt} className="custom-logo" />
+    <footer className="bg-[#f4ede7] flex flex-col w-full">
+      <div className="w-full py-[40px] px-0 max-[991px]:py-[20px] max-[991px]:px-[30px] border-t border-[#3c5557]">
+        <div className="max-w-[1200px] mx-auto flex justify-between items-center max-[1230px]:mx-[30px] max-[1230px]:w-auto max-[991px]:flex-col max-[991px]:gap-[30px]">
+          <Link href={`/${currentLocale}`} className="h-[50px] w-auto flex items-center justify-center">
+            <img src={logoUrl} alt={logoAlt} className="h-[50px] w-auto object-contain" />
           </Link>
           <nav>
-            <ul className="footer-menu__list">
+            <ul className="flex flex-wrap gap-[20px] m-[10px] justify-end max-[991px]:justify-center max-[991px]:flex-col max-[991px]:gap-[10px] max-[991px]:text-center list-none p-0">
               {menuItems.map((item, i) => {
                 const isAnchor = item.link?.startsWith('#')
                 const linkHref = isAnchor ? item.link : `/${currentLocale}${item.link}`
                 return (
                   <li key={i}>
-                    <Link href={linkHref} className="footer-menu__link">
+                    <Link href={linkHref} className="text-[15px] no-underline text-[#22282b] hover:opacity-80 transition-opacity">
                       {item.label}
                     </Link>
                   </li>
@@ -89,14 +89,14 @@ export default function Footer({ data, headerLogo, currentLocale }: FooterProps)
               })}
             </ul>
           </nav>
-          <p className="copyright">
+          <p className="text-[#909da2] text-[14px] text-center w-full hidden max-[991px]:block">
             {data.copyright || `©2024-${currentYear} All right reserved`}
           </p>
         </div>
       </div>
-      <div className="footer_section">
-        <div className="footer__container">
-          <p className="copyright">
+      <div className="w-full py-[40px] px-0 max-[991px]:py-[20px] max-[991px]:px-[30px] border-t border-[#3c5557] flex justify-center max-[991px]:hidden">
+        <div className="max-w-[1200px] mx-auto flex justify-center items-center max-[1230px]:mx-[30px] max-[1230px]:w-auto">
+          <p className="text-[#909da2] text-[14px] text-center w-full max-[991px]:hidden">
             {data.copyright || `©2024-${currentYear} All right reserved`}
           </p>
         </div>

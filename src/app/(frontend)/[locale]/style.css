@@ -362,65 +362,20 @@ strong{
 	height: 50px;
 }
 
-.footer {
-  background-color: var(--second-bg-color);
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.footer_menu .copyright {
-  display: none;
-}
-
-.footer_menu,
-.footer_section {
-  display: flex;
-  justify-content: space-between;
-  padding: 40px calc((100vw - 1200px) / 2);
-  border-top: 1px var(--main-button-bg-color) solid;
-
-  align-items: center;
-}
-
 .footer_button-contact {
-  font-size: 18px !important;
+  font-size: 18px;
   text-decoration: none;
   padding: 12px 40px;
-  background-color: transparent !important;
+  background-color: transparent;
   color: var(--main-button-bg-color);
   border-radius: 10px;
   border: 1px var(--main-button-bg-color) solid;
-  transition: 0.3s !important;
+  transition: 0.3s;
 }
 
 .footer_button-contact:hover {
   color: var(--main-bg-color);
-  background-color: var(--main-button-bg-color) !important;
-}
-
-.footer-menu__list,
-.footer__social {
-  margin: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: end;
-}
-
-.footer-menu__link {
-  font-size: 15px !important;
-  text-decoration: none;
-  color: var(--main-text-color);
-}
-
-.copyright {
-  color: var(--second-text-color);
-  font-size: 14px;
-}
-
-.footer_section {
-  justify-content: center;
+  background-color: var(--main-button-bg-color);
 }
 
 .contact_us {

@@ -1,5 +1,4 @@
 import './null.css'
-import './header.css'
 import './style.css'
 import './adaptive.css'
 import './globals.css'

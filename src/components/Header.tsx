@@ -112,40 +112,50 @@ export default function Header({ data, currentLocale }: HeaderProps) {
   const telegram = contacts.telegram || 'https://t.me/+34665399280'
 
   return (
-    <header className={`header ${isScrolled ? 'header--fixed' : ''}`}>
-      <div className="header__container">
+    <header
+      className={`fixed top-0 left-0 w-full z-[1000] border-b transition-all duration-500 ${
+        isScrolled
+          ? 'bg-[#fafafa]/95 shadow-[0_4px_20px_rgba(34,40,43,0.05)] border-[#22282b]/[0.08]'
+          : 'bg-transparent border-transparent shadow-none'
+      }`}
+    >
+      <div className="max-w-[1200px] mx-auto grid grid-cols-[1fr_auto_1fr] items-center py-4 max-[1230px]:mx-[30px] max-[1230px]:w-auto">
         
         {/* LEFT: Hamburger Menu trigger and Sidebar Drawer */}
-        <div className="header__menu menu">
-          <button 
-            className="menu__icon" 
+        <div className="flex">
+          <button
+            className="uppercase font-normal cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
             onClick={() => setIsMenuOpen(true)}
           >
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
           </button>
 
           {/* Mobile slide-out drawer (menuBody) */}
-          <div className={`menu__body ${isMenuOpen ? '_active' : ''}`}>
-            <div className="menu_header">
-              <button 
-                className="menu__close-button"
+          <div
+            className={`fixed top-0 left-0 h-full w-[425px] max-w-full bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[50px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:w-full max-[767px]:p-[50px_30px] ${
+              isMenuOpen ? 'translate-x-0 opacity-100 visible' : '-translate-x-full opacity-0 invisible'
+            }`}
+          >
+            <div className="w-full flex justify-between">
+              <button
+                className="flex items-center gap-[5px] text-[#22282b] bg-transparent border-none text-[16px] cursor-pointer hover:opacity-70 transition-opacity"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <img src="/icons/Close.svg" alt="Close" />
               </button>
             </div>
-            <div className="menu_lists">
-              <nav>
-                <h2 className="menu__title">Menu</h2>
-                <ul className="menu__list">
+            <div className="flex mt-[50px] gap-[100px] justify-between max-[767px]:justify-center max-[767px]:flex-wrap">
+              <nav className="flex-[25%]">
+                <h2 className="font-['AvenirNextLTPro'] text-[14px] text-left text-[#909da2] uppercase font-medium mb-5">Menu</h2>
+                <ul className="list-none p-0 m-0 flex flex-col items-start gap-[10px]">
                   {menuItems.map((item, i) => {
                     const isAnchor = item.link?.startsWith('#')
                     const linkHref = isAnchor ? item.link : `/${currentLocale}${item.link}`
                     return (
-                      <li key={i}>
-                        <Link 
-                          href={linkHref} 
-                          className="menu__link"
+                      <li key={i} className="my-[5px] mx-0">
+                        <Link
+                          href={linkHref}
+                          className="text-[18px] no-underline text-[#22282b] opacity-60 hover:opacity-100 hover:text-[20px] transition-all duration-200"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {item.label}
@@ -158,18 +168,20 @@ export default function Header({ data, currentLocale }: HeaderProps) {
             </div>
 
             {/* Mobile language switcher inside drawer */}
-            <div className="drop-block lang switcher header-language header-language-mobi">
-              <ul className="switcher_list language-list" style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+            <div className="mt-auto pt-6 border-t border-[#22282b]/10 flex gap-5 max-[767px]:block">
+              <ul className="flex flex-row gap-5 list-none p-0 m-0">
                 {locales.map((loc) => (
-                  <Link 
-                    key={loc} 
-                    href={switchLanguage(loc)} 
-                    className={`drop-block__link language-item switcher-item link-switcher-item ${currentLocale === loc ? 'active' : ''}`}
-                    onClick={() => setIsMenuOpen(false)}
-                    style={{ fontSize: '14px', fontWeight: 'bold' }}
-                  >
-                    {langNames[loc]}
-                  </Link>
+                  <li key={loc}>
+                    <Link
+                      href={switchLanguage(loc)}
+                      className={`text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
+                        currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {langNames[loc]}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -177,41 +189,45 @@ export default function Header({ data, currentLocale }: HeaderProps) {
         </div>
 
         {/* CENTER: Logo */}
-        <Link href={`/${currentLocale}`} className="custom-logo-link">
-          <img src={logoUrl} alt={logoAlt} className="custom-logo" />
+        <Link href={`/${currentLocale}`} className="h-[50px] w-auto flex items-center justify-center">
+          <img src={logoUrl} alt={logoAlt} className="h-[50px] w-auto object-contain" />
         </Link>
 
         {/* RIGHT: Phones, Socials, and PC Language Switcher */}
-        <div className="switchers">
-          <div className="header-phones">
-            <li className="switcher-item header-telegram">
-              <a href={telegram} target="_blank" rel="noopener noreferrer">
-                <img src="/icons/telegram.svg" alt="Telegram" />
+        <div className="flex items-center justify-end gap-[10px]">
+          <ul className="flex items-center gap-[20px] max-[991px]:gap-[8px] list-none p-0 m-0">
+            <li className="switcher-item flex items-center cursor-pointer hover:scale-105 transition-transform max-[991px]:hidden">
+              <a href={telegram} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <img src="/icons/telegram.svg" alt="Telegram" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
               </a>
             </li>
-            <li className="switcher-item header-whatsapp">
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-                <img src="/icons/whatsapp.svg" alt="WhatsApp" />
+            <li className="switcher-item flex items-center cursor-pointer hover:scale-105 transition-transform">
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <img src="/icons/whatsapp.svg" alt="WhatsApp" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
               </a>
             </li>
-            <li className="switcher-item header-phone">
-              <a href={`tel:${phone.replace(/\s+/g, '')}`}>
-                <img src="/icons/phone.svg" alt="Phone" />
-                <span>{phone}</span>
+            <li className="switcher-item flex items-center cursor-pointer min-[992px]:border-l min-[992px]:border-[#22282b]/15 min-[992px]:pl-2 min-[992px]:ml-0">
+              <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b]">
+                <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
+                <span className="text-[14px] max-[991px]:hidden font-['AvenirNextLTPro'] font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity">
+                  {phone}
+                </span>
               </a>
             </li>
-          </div>
+          </ul>
 
           {/* PC Language Switcher */}
-          <div className="header-language-pc">
-            <ul className="language-list" style={{ display: 'flex', gap: '15px', listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
+          <div className="max-[991px]:hidden min-[992px]:block border-l border-[#22282b]/15 pl-2 ml-1">
+            <ul className="flex gap-[15px] list-none m-0 p-0 items-center">
               {locales.map((loc) => {
                 const isActive = currentLocale === loc
                 return (
                   <li key={loc}>
-                    <Link 
-                      href={switchLanguage(loc)} 
-                      className={`language-item link-switcher-item ${isActive ? 'active' : ''}`}
+                    <Link
+                      href={switchLanguage(loc)}
+                      className={`text-[12px] font-['AvenirNextLTPro'] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
+                        isActive ? 'text-[#22282b] font-bold opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
+                      }`}
                     >
                       {langNames[loc]}
                     </Link>
