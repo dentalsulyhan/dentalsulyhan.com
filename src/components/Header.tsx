@@ -176,7 +176,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
                   <li key={loc}>
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
+                      className={`text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
                         currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
@@ -196,38 +196,47 @@ export default function Header({ data, currentLocale }: HeaderProps) {
         </Link>
 
         {/* RIGHT: Phones, Socials, and PC Language Switcher */}
-        <div className="flex items-center justify-end gap-[10px]">
-          <ul className="flex items-center gap-[20px] max-[991px]:gap-[8px] list-none p-0 m-0">
-            <li className="switcher-item flex items-center cursor-pointer hover:scale-105 transition-transform max-[991px]:hidden">
-              <a href={telegram} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <img src="/icons/telegram.svg" alt="Telegram" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
-              </a>
-            </li>
-            <li className="switcher-item flex items-center cursor-pointer hover:scale-105 transition-transform">
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <img src="/icons/whatsapp.svg" alt="WhatsApp" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
-              </a>
-            </li>
-            <li className="switcher-item flex items-center cursor-pointer min-[992px]:border-l min-[992px]:border-[#22282b]/15 min-[992px]:pl-2 min-[992px]:ml-0">
-              <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b]">
-                <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
-                <span className="text-[14px] max-[991px]:hidden font-['AvenirNextLTPro'] font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity">
-                  {phone}
-                </span>
-              </a>
-            </li>
-          </ul>
+        <div className="flex items-center justify-end gap-[20px]">
+          {/* Social Icons */}
+          <div className="flex items-center gap-[16px]">
+            <a
+              href={telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:scale-105 transition-transform max-[991px]:hidden flex items-center"
+            >
+              <img src="/icons/telegram.svg" alt="Telegram" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
+            </a>
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:scale-105 transition-transform flex items-center"
+            >
+              <img src="/icons/whatsapp.svg" alt="WhatsApp" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
+            </a>
+          </div>
+
+          {/* Phone */}
+          <div className="flex items-center border-[#22282b]/15 min-[992px]:border-l min-[992px]:pl-[16px] h-[20px]">
+            <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b]">
+              <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
+              <span className="text-[14px] max-[991px]:hidden font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity">
+                {phone}
+              </span>
+            </a>
+          </div>
 
           {/* PC Language Switcher */}
-          <div className="max-[991px]:hidden min-[992px]:block border-l border-[#22282b]/15 pl-2 ml-1">
-            <ul className="flex gap-[15px] list-none m-0 p-0 items-center">
+          <div className="max-[991px]:hidden flex items-center border-l border-[#22282b]/15 pl-[16px] h-[20px]">
+            <ul className="flex gap-[12px] list-none m-0 p-0 items-center">
               {locales.map((loc) => {
                 const isActive = currentLocale === loc
                 return (
                   <li key={loc}>
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[14px] font-bold uppercase tracking-[0.08em] transition-all duration-200 ${
+                      className={`text-[12px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
                         isActive ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
                       }`}
                     >

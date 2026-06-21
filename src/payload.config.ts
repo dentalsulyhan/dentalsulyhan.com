@@ -12,6 +12,7 @@ import { Promotions } from './collections/Promotions'
 import { HomePage } from './globals/HomePage'
 import { HeaderFooter } from './globals/HeaderFooter'
 import { Services } from './collections/Services'
+import { TeamMembers } from './collections/TeamMembers'
 
 // Trigger HMR cache clear for global settings
 const filename = fileURLToPath(import.meta.url)
@@ -30,7 +31,7 @@ export default buildConfig({
     defaultLocale: 'es', // Іспанська як основна
     fallback: true,      // Якщо перекладу немає, показуватиметься es
   },
-  collections: [Users, Media, Pricing, Promotions, Services],
+  collections: [Users, Media, Pricing, Promotions, Services, TeamMembers],
   globals: [HomePage, HeaderFooter],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

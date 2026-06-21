@@ -72,6 +72,7 @@ export interface Config {
     pricing: Pricing;
     promotions: Promotion;
     services: Service;
+    'team-members': TeamMember;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     pricing: PricingSelect<false> | PricingSelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
+    'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -280,6 +282,24 @@ export interface Service {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members".
+ */
+export interface TeamMember {
+  id: number;
+  name: string;
+  position: string;
+  description?: string | null;
+  photo: number | Media;
+  photoHover?: (number | null) | Media;
+  /**
+   * Lower numbers appear first
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -321,6 +341,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'services';
         value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'team-members';
+        value: number | TeamMember;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -473,6 +497,20 @@ export interface ServicesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members_select".
+ */
+export interface TeamMembersSelect<T extends boolean = true> {
+  name?: T;
+  position?: T;
+  description?: T;
+  photo?: T;
+  photoHover?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -521,6 +559,7 @@ export interface HomePage {
     title: string;
     subtitle?: string | null;
     buttonText?: string | null;
+    buttonLink?: string | null;
     image?: (number | null) | Media;
   };
   advantages?:
@@ -531,6 +570,53 @@ export interface HomePage {
         id?: string | null;
       }[]
     | null;
+  aboutUs?: {
+    blocks?:
+      | {
+          text: string;
+          image?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  philosophy?: {
+    title?: string | null;
+    text?: string | null;
+    buttonText?: string | null;
+    buttonLink?: string | null;
+  };
+  offers?: {
+    text?: string | null;
+    image?: (number | null) | Media;
+  };
+  teamSection?: {
+    title?: string | null;
+  };
+  reviews?: {
+    title?: string | null;
+    /**
+     * Paste Google Reviews widget or other HTML embed code here
+     */
+    embedCode?: string | null;
+  };
+  gallery?: {
+    title?: string | null;
+    description?: string | null;
+    images?:
+      | {
+          image: number | Media;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  whyUs?: {
+    title?: string | null;
+    text?: string | null;
+  };
+  contactsSection?: {
+    title?: string | null;
+    description?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -581,6 +667,7 @@ export interface HomePageSelect<T extends boolean = true> {
         title?: T;
         subtitle?: T;
         buttonText?: T;
+        buttonLink?: T;
         image?: T;
       };
   advantages?:
@@ -590,6 +677,66 @@ export interface HomePageSelect<T extends boolean = true> {
         description?: T;
         icon?: T;
         id?: T;
+      };
+  aboutUs?:
+    | T
+    | {
+        blocks?:
+          | T
+          | {
+              text?: T;
+              image?: T;
+              id?: T;
+            };
+      };
+  philosophy?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        buttonText?: T;
+        buttonLink?: T;
+      };
+  offers?:
+    | T
+    | {
+        text?: T;
+        image?: T;
+      };
+  teamSection?:
+    | T
+    | {
+        title?: T;
+      };
+  reviews?:
+    | T
+    | {
+        title?: T;
+        embedCode?: T;
+      };
+  gallery?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        images?:
+          | T
+          | {
+              image?: T;
+              id?: T;
+            };
+      };
+  whyUs?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+      };
+  contactsSection?:
+    | T
+    | {
+        title?: T;
+        description?: T;
       };
   updatedAt?: T;
   createdAt?: T;
