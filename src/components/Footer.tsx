@@ -90,14 +90,14 @@ export default function Footer({ data, headerLogo, currentLocale }: FooterProps)
             </ul>
           </nav>
           <p className="copyright">
-            &copy;2024-{currentYear} All right reserved
+            {data.copyright || `©2024-${currentYear} All right reserved`}
           </p>
         </div>
       </div>
       <div className="footer_section">
         <div className="footer__container">
           <p className="copyright">
-            &copy;2024-{currentYear} All right reserved
+            {data.copyright || `©2024-${currentYear} All right reserved`}
           </p>
         </div>
       </div>
