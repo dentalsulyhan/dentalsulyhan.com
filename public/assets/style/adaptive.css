@@ -1,0 +1,416 @@
+@media (max-width: 1230px) {
+  .container {
+    padding: 0 30px;
+  }
+
+  .about_us > .about_us-1 > .about_us-description,
+  .about_us > .about_us-2 > .about_us-description,
+  .filosofia > .about_us-1 > .about_us-description,
+  .filosofia > .about_us-2 > .about_us-description {
+    padding: 0 30px;
+  }
+
+  .filosofia .benefits_blocks {
+    padding: 0 30px;
+  }
+
+  .gallery .gallery-slider {
+    height: 600px;
+  }
+
+  .main-photo .menu__link {
+    height: fit-content;
+    z-index: 1;
+    left: auto;
+    margin: 0px 30px 40px 30px;
+  }
+
+  .contact_us .form-group:nth-child(4) {
+    flex: 100%;
+    width: 100%;
+  }
+
+  .contact_us .form-row {
+    flex: 45%;
+    width: 45%;
+  }
+
+  .team .team-button-prev {
+    left: 0px;
+  }
+
+  .team .team-button-next {
+    right: 0px;
+  }
+
+  .team .team-pagination {
+    bottom: -40px !important;
+  }
+  .footer .footer_section,
+  .footer .footer_menu {
+    width: 100%;
+    padding: 20px 30px;
+  }
+  .page-services-row-R-text,
+  .page-services-row-L-text {
+    padding: 0 30px;
+  }
+  .firstsection-L {
+    padding: 0px 30px;
+  }
+  .firstsection {
+    height: 360px;
+  }
+  
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .about_us .about_us-1,
+  .about_us .about_us-2,
+  .filosofia .about_us-1,
+  .filosofia .about_us-2 {
+    height: 400px;
+  }
+
+  .about_us > .about_us-1 > .about_us-description,
+  .about_us > .about_us-2 > .about_us-description,
+  .filosofia > .about_us-1 > .about_us-description,
+  .filosofia > .about_us-2 > .about_us-description {
+    height: 100%;
+  }
+
+  .about_us > .about_us-1 > .about_us-description,
+  .filosofia > .about_us-1 > .about_us-description {
+    padding-left: 40px;
+  }
+
+  .about_us > .about_us-2 > .about_us-description,
+  .filosofia > .about_us-2 > .about_us-description {
+    padding-right: 40px;
+  }
+
+  .filosofia .benefit_body {
+    padding: 0;
+  }
+  .general_title h1 {
+    font-size: 22px;
+  }
+  .general_title p {
+    font-size: 20px;
+  }
+  .gallery .gallery-slider {
+    height: 400px;
+  }
+
+  .footer_menu {
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+  }
+  .footer .footer_section,
+  .footer .footer_menu {
+    width: 100%;
+    padding: 20px 30px;
+  }
+  .contact_us .container {
+    gap: 60px;
+  }
+  .firstsection {
+    height: 330px;
+  }
+
+  .firstsection-R,
+  .firstsection-R > div,
+  .firstsection-R > div > figure,
+  .firstsection-R > div > figure > img {
+    height: 100%;
+  }
+  .firstsection-R > div > figure > img {
+    object-fit: cover;
+  }
+
+  .about_us-description .pb-40 {
+    padding-bottom: 0;
+  }
+
+  .firstsection-L h1 {
+    font-size: 24px;
+  }
+  .firstsection-L .btn{
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .general_title h1 {
+    font-size: 22px;
+  }
+  .general_title p {
+    font-size: 20px;
+  }
+
+  .main-photo {
+    justify-content: center;
+  }
+
+  .main-photo .menu__link {
+    left: auto;
+    padding: 15px 20px;
+  }
+
+  .about_us,
+  .filosofia {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about_us .about_us-1,
+  .about_us .about_us-2,
+  .filosofia .about_us-1,
+  .filosofia .about_us-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+
+  .about_us > .about_us-1 > .about_us-description,
+  .about_us > .about_us-2 > .about_us-description,
+  .filosofia > .about_us-1 > .about_us-description,
+  .filosofia > .about_us-2 > .about_us-description {
+    padding: 50px 30px;
+    font-size: 14px;
+  }
+
+  .about_us > .about_us-1 > div,
+  .about_us > .about_us-2 > div,
+  .filosofia > .about_us-1 > div,
+  .filosofia > .about_us-2 > div {
+    width: 100%;
+  }
+
+  .about_us-1 {
+    flex-direction: column-reverse !important;
+  }
+
+  .team {
+    margin: 50px 0;
+  }
+
+  .filosofia .our_benefits .benefits_title {
+    margin-bottom: 50px;
+  }
+
+  .title filosofia_why-title {
+    padding-top: 50px;
+  }
+
+  .filosofia_why-body h2 {
+    padding-top: 50px;
+  }
+  .filosofia .our_benefits {
+    padding: 50px;
+  }
+
+  .filosofia .benefits_title {
+    margin-bottom: 50px;
+  }
+
+  .filosofia .benefits_blocks {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filosofia .our_benefits .benefits_blocks .benefit_body {
+    padding: 0;
+  }
+
+  .benefit_description {
+    font-size: 14px;
+  }
+
+  .gallery {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gallery .gallery-slider {
+    width: 100%;
+    height: 300px;
+  }
+  .gallery .gallery-info {
+    width: 100%;
+    margin: 0;
+    padding: 0 30px;
+  }
+
+  .reviews {
+    position: relative;
+    width: 100%;
+    /* height: 500px; */
+
+    background: url("/assets/photo/main-phto.jpg") no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  .reviews-slider {
+    padding: 80px 0;
+  }
+
+  .review-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+  }
+
+  .review-text {
+    text-align: center;
+    font-size: 22px;
+    color: var(--main-button-bg-color);
+  }
+
+  .footer .container {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .footer_menu {
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .footer_menu .copyright {
+    display: block;
+  }
+
+  .footer-menu__list {
+    gap: 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer .footer_section,
+  .footer .footer_menu {
+    width: 100%;
+    padding: 20px 30px;
+  }
+
+  .footer_section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .copyright {
+    display: none;
+  }
+
+  .contact_us {
+    padding-top: 50px;
+  }
+
+  .contact_us .container {
+    flex-direction: column;
+    gap: 50px;
+  }
+
+  .contact_us .contact_us-info,
+  .contact_us form {
+    width: 100%;
+    flex: 100%;
+  }
+
+  .contact-body-email,
+  .contact-body-phone {
+    flex: 100%;
+    width: 100%;
+  }
+  .contact_us .cf7sg-container {
+    width: 100% !important;
+  }
+
+  .page-services-row {
+    flex-direction: column;
+  }
+
+  .page-services-row-R-text,
+  .page-services-row-L-text {
+    padding: 50px 30px;
+  }
+  .page-services-row {
+    display: flex;
+    align-items: start;
+    height: 100%;
+  }
+  .page-services-row-R,
+  .page-services-row-L {
+    width: 100%;
+  }
+  .page-services-row-photo {
+    order: 2;
+  }
+
+  .btn a {
+    padding: 15px 12px;
+  }
+
+  .contact_us .container > div {
+    width: 100%;
+  }
+
+  .contacts-phones {
+    gap: 20px;
+  }
+
+  .firstsection {
+    flex-direction: column;
+    min-height: auto;
+    height: auto;
+  }
+  .firstsection-R::before {
+    display: none;
+  }
+  .firstsection-L,
+  .firstsection-R {
+    width: 100%;
+  }
+  
+
+  .firstsection-L {
+    padding: 10px 30px 30px 30px;
+  }
+
+  .about_us-description .pb-40 {
+    padding-bottom: 0;
+  }
+  .firstsection-L h1 {
+    font-size: 24px;
+    line-height: 30px;
+  }
+  .firstsection-L .btn {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .title {
+    font-size: 36px;
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
+
+  .team .container {
+    padding: 0;
+  }
+}

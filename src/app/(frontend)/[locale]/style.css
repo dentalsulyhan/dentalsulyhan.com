@@ -1,0 +1,1010 @@
+:root {
+  --main-bg-color: #fafafa;
+  --main-text-color: #22282b;
+  --second-text-color: #909da2;
+  --main-button-bg-color: #3c5557;
+  --main-button-hover-bg-color: #34494a;
+
+  --second-bg-color: #f4ede7; /* #F3E7DE */
+  --third-bg-color: #fbf6f3;
+  --main-font: "Raleway", sans-serif;
+  /*--main-font: "AvenirNextLTPro", sans-serif;*/
+  --second-font: "AvenirNextLTPro", sans-serif;
+}
+
+body {
+  font-family: var(--main-font);
+  font-weight: 500;
+  color: var(--main-text-color);
+  background-color: var(--main-bg-color);
+}
+
+/*  тоникий */
+.about_us p,
+.team p,
+.filosofia p,
+.contact_us p,
+.general_title p {
+  /* font-weight: 200; */
+}
+h1, h2{
+	font-size: 32px;
+}
+h3{
+	font-size: 20px;
+	font-weight: 500;
+}
+strong{
+	font-weight: 700;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.main-photo {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.general_title {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--main-text-color);
+  padding-left: 10%;
+  padding-right: 10%;
+}
+.general_title h1 {
+  font-size: 30px;
+  text-align: center;
+}
+.general_title p {
+  font-size: 26px;
+}
+
+.main-photo img {
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.main-photo .menu__link {
+  height: fit-content;
+  position: absolute;
+  left: calc((100vw - 1200px) / 2);
+  bottom: 40px;
+  z-index: 1;
+  padding: 15px 60px;
+  /*margin: 0px 30px 40px calc((100vw - 1200px) / 2);*/
+  /*margin-top: auto;*/
+  /*margin-right: auto;*/
+  border: 2px solid var(--main-button-bg-color);
+}
+
+.main-photo .menu__link:hover {
+  background-color: var(--second-bg-color);
+  color: var(--main-button-bg-color) !important;
+  font-weight: 700 !important;
+}
+
+.about_us,
+.filosofia {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.about_us .about_us-1,
+.about_us .about_us-2,
+.filosofia .about_us-1,
+.filosofia .about_us-2 {
+  display: flex;
+  align-items: center;
+  height: 500px;
+}
+
+.about_us > .about_us-1 > div,
+.about_us > .about_us-2 > div,
+.filosofia > .about_us-1 > div,
+.filosofia > .about_us-2 > div {
+  width: 50%;
+}
+
+.about_us > .about_us-1 > .about_us-description,
+.about_us > .about_us-2 > .about_us-description,
+.filosofia > .about_us-1 > .about_us-description,
+.filosofia > .about_us-2 > .about_us-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  /* align-items: center; */
+  height: 100%;
+}
+
+.about_us > .about_us-1 > .about_us-photo,
+.about_us > .about_us-2 > .about_us-photo,
+.filosofia > .about_us-1 > .about_us-photo,
+.filosofia > .about_us-2 > .about_us-photo {
+  display: flex;
+  height: 100%;
+}
+
+.about_us img {
+  object-fit: cover;
+  width: 100%;
+}
+
+.about_us-1 {
+  justify-content: end;
+}
+
+.about_us-1 .about_us-description {
+  padding-right: calc((100vw - 1200px) / 2);
+  padding-left: 100px;
+  background-color: var(--third-bg-color);
+}
+
+.about_us-1 .about_us-photo {
+  top: 0;
+  left: 0;
+}
+
+.about_us-2 {
+  justify-content: start;
+}
+
+.about_us-2 .about_us-description {
+  padding-left: calc((100vw - 1200px) / 2);
+  padding-right: 100px;
+  background-color: var(--second-bg-color);
+}
+
+.about_us-2 .about_us-photo {
+  right: 0;
+}
+
+.team {
+  margin: 100px 0;
+}
+
+.team .title {
+  margin-bottom: 50px;
+}
+
+.team .container {
+  position: relative;
+}
+
+.team .container .team-slider .person-card {
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /*     align-items: end; */
+}
+
+.team .container .team-slider .person-card img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  /*
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+	*/
+}
+.team .container .team-slider .person-card > div:first-child {
+  position: relative;
+  height: 400px;
+}
+.person-card:hover .team_member_hov-photo {
+  visibility: visible;
+  opacity: 1;
+}
+.team_member_hov-photo {
+  position: relative;
+  transition: all 0.5s ease;
+  visibility: hidden;
+  opacity: 0;
+  z-index: 2;
+}
+
+.person-info {
+  z-index: 1;
+  padding: 10px 20px;
+  border-radius: 40px;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.person-card .person-info {
+  border-radius: 30px 30px 20px 20px;
+  z-index: 1;
+  /* padding: 0; */
+}
+
+.person-card .person-info .person-position {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--first-text-color);
+  max-width: 100%;
+  max-height: 100px;
+}
+
+.person-card .person-info .person-description {
+  font-size: 14px;
+  display: block;
+  max-width: 400px;
+  max-height: 120px;
+}
+
+.team-button-prev {
+  left: -50px;
+}
+
+.team-button-next {
+  right: -50px;
+}
+
+.team-pagination {
+  bottom: -40px !important;
+}
+
+.filosofia_why {
+  position: relative;
+  width: 100%;
+  height: 500px;
+
+  background: url("/assets/photo/main-phto.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.filosofia_why-body {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  text-align: center;
+  color: var(--main-button-bg-color);
+  /* font-family: var(--second-font); */
+  max-width: 800px;
+}
+
+.filosofia_why-description {
+  /* font-style: italic; */
+}
+
+.filosofia_why-button {
+  font-size: 18px !important;
+  text-decoration: none;
+  font-weight: 400;
+  letter-spacing: 1.48px;
+  font-family: var(--main-font);
+  padding: 12px 40px;
+  background-color: var(--main-button-bg-color);
+  color: var(--main-bg-color) !important;
+  border-radius: 10px;
+  transition: 0.3s !important;
+  opacity: 1 !important;
+}
+
+.filosofia_why-button:hover {
+  background-color: var(--main-button-hover-bg-color);
+}
+
+.filosofia_why::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Накриття кольором */
+  z-index: 1;
+  /* На передньому плані */
+}
+
+.filosofia .about_us-2 {
+  text-align: center;
+}
+
+.filosofia .about_us-2 .about_us-description {
+  background: none;
+}
+
+.filosofia .our_benefits {
+  padding: 100px 0;
+  background-color: #fff;
+}
+
+.filosofia .our_benefits .benefits_title {
+  margin-bottom: 80px;
+}
+
+.filosofia .our_benefits .benefits_blocks {
+  padding: 0px calc((100vw - 1200px) / 2);
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+}
+
+.filosofia .our_benefits .benefits_blocks .benefit_body {
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center;*/
+  gap: 20px;
+  text-align: center;
+  width: 100%;
+  padding: 0 0px;
+}
+
+.filosofia .our_benefits .benefits_blocks .benefit_body img {
+  margin: 0 auto;
+}
+.advantages .our_benefits .benefits_blocks .benefit_body img {
+	width: auto;
+	height: 50px;
+}
+
+.footer {
+  background-color: var(--second-bg-color);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.footer_menu .copyright {
+  display: none;
+}
+
+.footer_menu,
+.footer_section {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px calc((100vw - 1200px) / 2);
+  border-top: 1px var(--main-button-bg-color) solid;
+
+  align-items: center;
+}
+
+.footer_button-contact {
+  font-size: 18px !important;
+  text-decoration: none;
+  padding: 12px 40px;
+  background-color: transparent !important;
+  color: var(--main-button-bg-color);
+  border-radius: 10px;
+  border: 1px var(--main-button-bg-color) solid;
+  transition: 0.3s !important;
+}
+
+.footer_button-contact:hover {
+  color: var(--main-bg-color);
+  background-color: var(--main-button-bg-color) !important;
+}
+
+.footer-menu__list,
+.footer__social {
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: end;
+}
+
+.footer-menu__link {
+  font-size: 15px !important;
+  text-decoration: none;
+  color: var(--main-text-color);
+}
+
+.copyright {
+  color: var(--second-text-color);
+  font-size: 14px;
+}
+
+.footer_section {
+  justify-content: center;
+}
+
+.contact_us {
+  background-color: var(--third-bg-color);
+  padding: 100px 0;
+}
+
+.contact_us .container {
+  display: flex;
+  gap: 100px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+.contact_us .container > div {
+  width: 50%;
+}
+.contact_us .container > .is-layout-flex {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.contact_us-info {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact_us-title {
+  text-align: start;
+  /* line-height: 65px; */
+  margin-bottom: 40px;
+}
+
+.contact_us-description {
+  color: var(--second-text-color);
+  font-size: 14px;
+}
+
+.contact_us-contact > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+.contact_us-contact a {
+  text-decoration: none;
+  color: black;
+}
+
+.contact-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contact-body-email,
+.contact-body-phone {
+  flex: 100%;
+  width: 100%;
+}
+
+.contact-body-adress,
+.contact-body-social {
+  width: 100%;
+  flex: 100%;
+}
+
+.contact_body-social {
+  display: flex;
+  gap: 25px;
+}
+
+.contact_body-social a {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: var(--third-bg-color);
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.contact_body-social img {
+  margin: auto;
+}
+
+.contact_body-social a:hover {
+  background-color: #e8e8e8;
+}
+
+form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  flex-shrink: 1;
+}
+.contact_us .wpcf7-submit {
+  font-weight: 400;
+  letter-spacing: 1.48px;
+  padding: 12px 40px;
+  background-color: var(--main-button-bg-color);
+  color: var(--main-bg-color) !important;
+  border-radius: 10px;
+  transition: 0.3s !important;
+  opacity: 1 !important;
+  cursor: pointer;
+}
+.contact_us .wpcf7-submit:hover {
+  background-color: var(--main-button-hover-bg-color);
+}
+
+.contact_us label {
+  display: none;
+}
+.contact_us .cf7sg-container {
+}
+
+.contact_us .form-group {
+  width: 100%;
+  flex: 100%;
+  position: relative;
+}
+
+.contact_us input,
+.contact_us textarea {
+  cursor: text;
+}
+
+.contact_us textarea {
+}
+
+.contact_us select {
+  cursor: pointer;
+}
+
+.contact_us input,
+.contact_us select,
+.contact_us textarea {
+  flex: 100%;
+  width: 100%;
+  height: 60px;
+  padding: 18px 25px;
+  border: none;
+  border-radius: 10px;
+  background-color: #efefef;
+  resize: none;
+}
+
+.contact_us .form-row {
+  flex: 30%;
+  width: 30%;
+}
+
+.contact_us button {
+  background-color: var(--main-button-bg-color);
+  /* Колір фону для кнопки */
+  color: var(--main-bg-color);
+  padding: 18px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.contact_us button:hover {
+  background-color: var(--main-button-hover-bg-color);
+}
+
+.gallery {
+  display: flex;
+  background-color: var(--third-bg-color);
+  gap: 30px;
+}
+.gallery .gallery-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 30px;
+  width: 50%;
+}
+.gallery .title {
+  text-align: start;
+  margin-bottom: 30px;
+}
+
+.gallery .gallery-slider {
+  height: 600px;
+  width: 50%;
+  margin: 0;
+}
+
+.gallery-photo img {
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+}
+
+.gallery-button_allPhotos {
+  position: absolute;
+  z-index: 10;
+  right: 20px;
+  bottom: 20px;
+
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  background-color: var(--main-button-bg-color);
+  border-radius: 50px;
+}
+
+.gallery-button_allPhotos img {
+  margin: auto;
+}
+
+.reviews {
+  position: relative;
+  width: 100%;
+  padding: 120px 0;
+  /* height: 500px; */
+  /* background-color: var(--second-bg-color); */
+  /* background: url("/assets/photo/main-phto.jpg") no-repeat center center fixed; */
+  background-size: cover;
+}
+.reviews .container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reviews-toprow {
+  display: flex;
+  gap: 40px;
+}
+
+.reviews .container > div:last-child {
+  background: #fff;
+  padding: 10px;
+}
+
+/* .reviews .reviews-slider {
+    padding: 120px 0;
+} */
+
+.review-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+}
+
+.review-text {
+  text-align: center;
+  font-size: 26px;
+  color: var(--main-button-bg-color);
+}
+
+.review_person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.review_person-photo {
+  width: 50px;
+  height: 50px;
+}
+
+.review_person-photo img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+}
+
+.reviews::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* background: rgba(243, 231, 222, 0.70); */
+  /* Накриття кольором */
+  z-index: 1;
+  /* На передньому плані */
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--main-button-bg-color) !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.swiper-button-next img,
+.swiper-button-prev img {
+  width: 50px;
+  height: 50px;
+}
+
+.swiper-button-next,
+.swiper-button-prev,
+.swiper-pagination {
+  z-index: 9 !important;
+}
+
+/* PAGE   */
+.container-page h1 {
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+}
+
+.container-page h2 {
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+}
+
+.container-page ul {
+  list-style-type: disc;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  padding-inline-start: 40px;
+}
+
+.page-services-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0px;
+}
+
+.page-services-row-R,
+.page-services-row-L {
+  display: flex;
+  height: 100%;
+  width: 50%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.page-services-row-photo div,
+.page-services-row-photo figure {
+  height: 100%;
+}
+.page-services-row-photo img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.page-services-row-R-text {
+  padding-right: calc((100vw - 1200px) / 2);
+  padding-left: 100px;
+  gap: 20px;
+}
+.page-services-row-L-text {
+  padding-left: calc((100vw - 1200px) / 2);
+  padding-right: 100px;
+  gap: 20px;
+}
+
+.second-bg-color {
+  background-color: var(--second-bg-color);
+}
+.third-bg-color {
+  background-color: var(--third-bg-color);
+}
+
+.list-style-pages ol,
+.list-style-pages ul {
+  margin: 1em 0;
+  padding-left: 2.5em; /* відступ під маркери/цифри */
+}
+
+/* --- Нумерований список (цифри в кружечку) --- */
+.list-style-pages ol {
+  counter-reset: item;
+  list-style: none; /* прибираємо стандартні цифри */
+}
+
+.list-style-pages ol > li {
+  counter-increment: item;
+  position: relative;
+  margin: 0.6em 0;
+  padding-left: 2.2em;
+}
+
+.list-style-pages ol > li::before {
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.6em;
+  height: 1.6em;
+  line-height: 1.6em;
+  border-radius: 50%;
+  background: #22282b;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+/* --- Маркерований список (кружечки кольору #22282b) --- */
+.list-style-pages ul {
+  list-style: none; /* прибираємо стандартні маркери */
+}
+
+.list-style-pages ul > li {
+  position: relative;
+  margin: 0.4em 0;
+  padding-left: 1.5em;
+}
+
+.list-style-pages ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: #22282b;
+}
+
+.h-400 {
+  height: 400px;
+}
+
+.h-500 {
+  height: 500px;
+}
+
+.h-600 {
+  height: 600px;
+}
+.h-700 {
+  height: 700px;
+}
+.h-800 {
+  height: 800px;
+}
+.h-900 {
+  height: 900px;
+}
+
+.h-1000 {
+  height: 1000px;
+}
+
+.h-1200 {
+  height: 1200px;
+}
+
+.h-1400 {
+  height: 1400px;
+}
+
+.btn a {
+  padding: 15px 60px;
+  text-decoration: none;
+  background-color: var(--main-button-bg-color);
+  transform: scale(1);
+  transition: 0.4s;
+  font-size: 18px;
+  opacity: 1;
+  border-radius: 10px;
+  color: var(--main-bg-color);
+}
+.btn a:hover {
+  transform: scale(1.03);
+  background-color: var(--main-button-hover-bg-color);
+}
+.btn {
+  display: flex;
+}
+
+.wp-block-social-link {
+  background: none;
+}
+.wp-block-social-link svg {
+  fill: #111 !important;
+  color: #111 !important;
+}
+
+.contacts-phonenumber a {
+  display: flex;
+}
+
+.contacts-phonenumber a::before {
+  content: url(/assets/icon/phone.svg);
+  width: 15px;
+  height: 15px;
+  display: block;
+  margin-right: 8px;
+}
+.contacts-phones {
+  gap: 30px;
+  align-items: center;
+}
+.contacts-phones figure,
+.contacts-phones p > a::before {
+  transform: scale(1);
+  transition: 0.2s ease-in-out;
+}
+.contacts-phones figure {
+  display: flex;
+  align-items: center;
+}
+.contacts-phones figure:hover,
+.contacts-phones p:hover > a::before {
+  transform: scale(1.1);
+}
+.main-block {
+  padding-top: 80px;
+}
+
+.firstsection {
+  display: flex;
+  gap: 0px;
+  align-items: stretch;
+/*   height: 400px; */
+}
+.firstsection-L {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: calc((100vw - 1200px) / 2);
+  padding-right: 30px;
+  width: 50%;
+}
+.firstsection-R {
+  width: 50%;
+  position: relative;
+  overflow: hidden;
+}
+.firstsection-R::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10%;
+  height: 100%;
+  background: linear-gradient(to right, var(--main-bg-color), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+.firstsection-R div,
+.firstsection-R figure,
+.firstsection-R img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.firstsection-L h1 {
+  margin-bottom: 20px;
+  line-height: 50px;
+}
+.firstsection-L .btn {
+  margin-top: 40px;
+}
+
+.list_decimal {
+  list-style: decimal !important;
+}
+
+.page-services-row-L-text h3, .page-services-row-R-text h3{
+	font-size: 24px;
+	font-weight: 700;
+	margin-bottom: 0.6em;
+}
