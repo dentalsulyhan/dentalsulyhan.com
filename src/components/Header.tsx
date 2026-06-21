@@ -124,7 +124,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
         {/* LEFT: Hamburger Menu trigger and Sidebar Drawer */}
         <div className="flex">
           <button
-            className="font-['AvenirNextLTPro'] text-[14px] uppercase font-normal tracking-[0.08em] cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
+            className="uppercase font-normal cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
             onClick={() => setIsMenuOpen(true)}
           >
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
@@ -146,7 +146,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
             </div>
             <div className="flex mt-[50px] gap-[100px] justify-between max-[767px]:justify-center max-[767px]:flex-wrap">
               <nav className="flex-[25%]">
-                <h2 className="font-['AvenirNextLTPro'] text-[14px] text-left text-[#909da2] uppercase font-medium mb-5">
+                <h2 className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-5">
                   {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
                 </h2>
                 <ul className="list-none p-0 m-0 flex flex-col items-start gap-[10px]">
