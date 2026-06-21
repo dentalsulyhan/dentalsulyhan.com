@@ -1,3 +1,4 @@
+// Shared Header and Footer Configuration for DentalSulyhan
 import { GlobalConfig } from 'payload'
 
 export const HeaderFooter: GlobalConfig = {

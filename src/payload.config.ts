@@ -13,6 +13,7 @@ import { HomePage } from './globals/HomePage'
 import { HeaderFooter } from './globals/HeaderFooter'
 import { Services } from './collections/Services'
 
+// Trigger HMR cache clear for global settings
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
