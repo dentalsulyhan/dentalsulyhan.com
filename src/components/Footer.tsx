@@ -4,7 +4,9 @@ import Link from 'next/link'
 import type { HeaderFooter, Media } from '@/payload-types'
 
 interface FooterProps {
-  data: NonNullable<HeaderFooter['footer']>
+  data: NonNullable<HeaderFooter['footer']> & {
+    menuItems?: HeaderFooter['menuItems']
+  }
   headerLogo?: number | Media | null
   currentLocale: string
 }

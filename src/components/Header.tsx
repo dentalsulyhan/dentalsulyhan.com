@@ -6,7 +6,9 @@ import { usePathname } from 'next/navigation'
 import type { HeaderFooter } from '@/payload-types'
 
 interface HeaderProps {
-  data: NonNullable<HeaderFooter['header']>
+  data: NonNullable<HeaderFooter['header']> & {
+    menuItems?: HeaderFooter['menuItems']
+  }
   currentLocale: string
 }
 

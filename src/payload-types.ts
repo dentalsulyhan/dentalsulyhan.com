@@ -540,16 +540,16 @@ export interface HomePage {
  */
 export interface HeaderFooter {
   id: number;
+  menuItems?:
+    | {
+        label: string;
+        link: string;
+        id?: string | null;
+      }[]
+    | null;
   header?: {
     logo?: (number | null) | Media;
     menuButtonLabel?: string | null;
-    menuItems?:
-      | {
-          label: string;
-          link: string;
-          id?: string | null;
-        }[]
-      | null;
     contacts?: {
       phone?: string | null;
       whatsapp?: string | null;
@@ -558,13 +558,6 @@ export interface HeaderFooter {
   };
   footer?: {
     logo?: (number | null) | Media;
-    menuItems?:
-      | {
-          label: string;
-          link: string;
-          id?: string | null;
-        }[]
-      | null;
     copyright?: string | null;
     socialLinks?:
       | {
@@ -607,18 +600,18 @@ export interface HomePageSelect<T extends boolean = true> {
  * via the `definition` "header-footer_select".
  */
 export interface HeaderFooterSelect<T extends boolean = true> {
+  menuItems?:
+    | T
+    | {
+        label?: T;
+        link?: T;
+        id?: T;
+      };
   header?:
     | T
     | {
         logo?: T;
         menuButtonLabel?: T;
-        menuItems?:
-          | T
-          | {
-              label?: T;
-              link?: T;
-              id?: T;
-            };
         contacts?:
           | T
           | {
@@ -631,13 +624,6 @@ export interface HeaderFooterSelect<T extends boolean = true> {
     | T
     | {
         logo?: T;
-        menuItems?:
-          | T
-          | {
-              label?: T;
-              link?: T;
-              id?: T;
-            };
         copyright?: T;
         socialLinks?:
           | T

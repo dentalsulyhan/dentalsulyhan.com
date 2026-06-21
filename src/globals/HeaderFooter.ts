@@ -12,6 +12,39 @@ export const HeaderFooter: GlobalConfig = {
   },
   fields: [
     {
+      name: 'menuItems',
+      type: 'array',
+      label: {
+        en: 'Shared Menu Items',
+        uk: 'Спільні пункти меню (для шапки та підвалу)',
+        es: 'Elementos del menú compartidos',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+          localized: true,
+          label: {
+            en: 'Label',
+            uk: 'Назва',
+            es: 'Etiqueta',
+          },
+        },
+        {
+          name: 'link',
+          type: 'text',
+          required: true,
+          localized: false,
+          label: {
+            en: 'Link (e.g. /services or #about_us)',
+            uk: 'Посилання (напр. /services або #about_us)',
+            es: 'Enlace (ej. /services o #about_us)',
+          },
+        },
+      ],
+    },
+    {
       name: 'header',
       type: 'group',
       label: {
@@ -40,39 +73,6 @@ export const HeaderFooter: GlobalConfig = {
             es: 'Texto del botón de menú (hamburguesa)',
           },
           defaultValue: 'Menu',
-        },
-        {
-          name: 'menuItems',
-          type: 'array',
-          label: {
-            en: 'Header Menu Items',
-            uk: 'Пункти меню шапки',
-            es: 'Elementos del menú de cabecera',
-          },
-          fields: [
-            {
-              name: 'label',
-              type: 'text',
-              required: true,
-              localized: true,
-              label: {
-                en: 'Label',
-                uk: 'Назва',
-                es: 'Etiqueta',
-              },
-            },
-            {
-              name: 'link',
-              type: 'text',
-              required: true,
-              localized: false,
-              label: {
-                en: 'Link (e.g. /services or #about_us)',
-                uk: 'Посилання (напр. /services або #about_us)',
-                es: 'Enlace (ej. /services o #about_us)',
-              },
-            },
-          ],
         },
         {
           name: 'contacts',
@@ -135,39 +135,6 @@ export const HeaderFooter: GlobalConfig = {
             uk: 'Логотип підвалу (необовʼязково)',
             es: 'Logo de pie de página (Opcional)',
           },
-        },
-        {
-          name: 'menuItems',
-          type: 'array',
-          label: {
-            en: 'Footer Menu Items',
-            uk: 'Пункти меню підвалу',
-            es: 'Elementos del menú de pie de página',
-          },
-          fields: [
-            {
-              name: 'label',
-              type: 'text',
-              required: true,
-              localized: true,
-              label: {
-                en: 'Label',
-                uk: 'Назва',
-                es: 'Etiqueta',
-              },
-            },
-            {
-              name: 'link',
-              type: 'text',
-              required: true,
-              localized: false,
-              label: {
-                en: 'Link',
-                uk: 'Посилання',
-                es: 'Enlace',
-              },
-            },
-          ],
         },
         {
           name: 'copyright',

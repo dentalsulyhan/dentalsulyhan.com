@@ -24,9 +24,10 @@ export default async function FrontendLayout({
     locale: locale as 'es' | 'en' | 'uk', 
   })
 
-  // Extract header and footer configurations from global settings
-  const headerData = headerFooter.header || {}
-  const footerData = headerFooter.footer || {}
+  // Extract shared menu items and inject them into header and footer data
+  const sharedMenuItems = headerFooter.menuItems || []
+  const headerData = { ...(headerFooter.header || {}), menuItems: sharedMenuItems }
+  const footerData = { ...(headerFooter.footer || {}), menuItems: sharedMenuItems }
 
   return (
     <html lang={locale}>
