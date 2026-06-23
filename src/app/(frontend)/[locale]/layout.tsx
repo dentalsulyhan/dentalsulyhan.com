@@ -78,8 +78,7 @@ export default async function FrontendLayout({
   }
 
   return (
-    <html lang={locale}>
-      <body className="flex flex-col min-h-screen bg-[#fafafa] text-[#22282b]">
+    <>
       <Header data={headerData} contacts={contactsData} currentLocale={locale} />
 
       <main className="flex-grow pt-[70px]">
@@ -92,7 +91,6 @@ export default async function FrontendLayout({
         headerLogo={headerData.logo} 
         currentLocale={locale} 
       />
-      </body>
-    </html>
+    </>
   )
 }
