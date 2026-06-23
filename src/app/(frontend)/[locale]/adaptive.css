@@ -337,6 +337,11 @@
     width: 100% !important;
   }
 
+  .contact_us .form-select-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
   .page-services-row {
     flex-direction: column;
   }

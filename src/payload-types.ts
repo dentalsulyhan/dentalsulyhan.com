@@ -69,10 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    pages: Page;
     pricing: Pricing;
     promotions: Promotion;
     services: Service;
     'team-members': TeamMember;
+    'contact-submissions': ContactSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,10 +84,12 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     pricing: PricingSelect<false> | PricingSelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -96,12 +100,16 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('es' | 'en' | 'uk') | ('es' | 'en' | 'uk')[];
   globals: {
+    'site-settings': SiteSetting;
     'home-page': HomePage;
     'header-footer': HeaderFooter;
+    'site-contacts': SiteContact;
   };
   globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'header-footer': HeaderFooterSelect<false> | HeaderFooterSelect<true>;
+    'site-contacts': SiteContactsSelect<false> | SiteContactsSelect<true>;
   };
   locale: 'es' | 'en' | 'uk';
   widgets: {
@@ -177,11 +185,499 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Use home for the homepage or a URL path like about-us
+   */
+  slug: string;
+  layout?:
+    | (
+        | {
+            title: string;
+            subtitle?: string | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            image?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            itemLayout?: ('column' | 'row') | null;
+            items: {
+              icon?: (number | null) | Media;
+              title: string;
+              /**
+               * Supports bold, italic and underline formatting.
+               */
+              text: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[];
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'advantages';
+          }
+        | {
+            sectionTitle?: string | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            /**
+             * Frontend can alternate image and text automatically by order.
+             */
+            items: {
+              title?: string | null;
+              /**
+               * Supports bold, italic and underline formatting.
+               */
+              text: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              buttonText?: string | null;
+              buttonLink?: string | null;
+              image: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'aboutUsGrid';
+          }
+        | {
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            itemLayout?: ('column' | 'row') | null;
+            items: {
+              icon?: (number | null) | Media;
+              title: string;
+              /**
+               * Supports bold, italic and underline formatting.
+               */
+              text: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[];
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'philosophy';
+          }
+        | {
+            position?: ('left' | 'right') | null;
+            promotion: number | Promotion;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'promotions';
+          }
+        | {
+            position?: ('left' | 'right') | null;
+            title?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            description?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            images: {
+              image: number | Media;
+              id?: string | null;
+            }[];
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            description?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            source?: ('all' | 'manual') | null;
+            selectedMembers?: (number | TeamMember)[] | null;
+            sliderLimit?: number | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'team';
+          }
+        | {
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            /**
+             * Paste the review widget code or placeholder markup.
+             */
+            embedCode?: string | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'reviews';
+          }
+        | {
+            position?: ('left' | 'right') | null;
+            title?: string | null;
+            /**
+             * Supports bold, italic and underline formatting.
+             */
+            text: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            image: number | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contentImage';
+          }
+        | {
+            position?: ('left' | 'right') | null;
+            image: number | Media;
+            pricingGroup: number | Pricing;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricingGroupShowcase';
+          }
+        | {
+            title?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            /**
+             * Supports bold, italic and underline formatting.
+             */
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Optional background image for this centered text block.
+             */
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Hex color for the overlay that sits on top of the background image.
+             */
+            overlayColor?: string | null;
+            /**
+             * 0 means fully transparent, 100 means fully opaque.
+             */
+            overlayOpacity?: number | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'globalContactSection';
+          }
+        | {
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            sectionDescription?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            formTitle?: string | null;
+            formDescription?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            submitButtonLabel?: string | null;
+            fullNamePlaceholder?: string | null;
+            phonePlaceholder?: string | null;
+            emailPlaceholder?: string | null;
+            patientTypePlaceholder?: string | null;
+            patientTypeOptions?:
+              | {
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            referralSourcePlaceholder?: string | null;
+            referralSourceOptions?:
+              | {
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            commentPlaceholder?: string | null;
+            successMessage?: string | null;
+            errorMessage?: string | null;
+            /**
+             * Reorder rows shown in the left contact column.
+             */
+            contactRowsOrder?:
+              | {
+                  row: 'email' | 'phone' | 'address' | 'transport' | 'social';
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactSection';
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promotions".
+ */
+export interface Promotion {
+  id: number;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: (number | null) | Media;
+  validUntil: string;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members".
+ */
+export interface TeamMember {
+  id: number;
+  name: string;
+  position: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  photo: number | Media;
+  photoHover?: (number | null) | Media;
+  /**
+   * Lower numbers appear first
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pricing".
  */
 export interface Pricing {
   id: number;
   title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  items?:
+    | {
+        serviceName: string;
+        price: string;
+        /**
+         * Optional. For example: from
+         */
+        pricePrefix?: string | null;
+        note?: string | null;
+        /**
+         * Optional. Link this pricing row to a detailed service page.
+         */
+        servicePage?: (number | null) | Service;
+        id?: string | null;
+      }[]
+    | null;
+  detailsLinkLabel?: string | null;
   /**
    * Додайте сюди категорії, наприклад "Діагностика та профілактика" або "Хірургія"
    */
@@ -191,7 +687,21 @@ export interface Pricing {
         /**
          * Наприклад: "Цей напрям вимагає ретельного планування..."
          */
-        categoryDescription?: string | null;
+        categoryDescription?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
         servicesList?:
           | {
               serviceName: string;
@@ -206,19 +716,6 @@ export interface Pricing {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "promotions".
- */
-export interface Promotion {
-  id: number;
-  title: string;
-  description?: string | null;
-  validUntil: string;
-  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -282,19 +779,17 @@ export interface Service {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team-members".
+ * via the `definition` "contact-submissions".
  */
-export interface TeamMember {
+export interface ContactSubmission {
   id: number;
-  name: string;
-  position: string;
-  description?: string | null;
-  photo: number | Media;
-  photoHover?: (number | null) | Media;
-  /**
-   * Lower numbers appear first
-   */
-  order?: number | null;
+  fullName: string;
+  phone: string;
+  email: string;
+  patientType: string;
+  referralSource: string;
+  comment?: string | null;
+  locale: 'es' | 'en' | 'uk';
   updatedAt: string;
   createdAt: string;
 }
@@ -331,6 +826,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'pricing';
         value: number | Pricing;
       } | null)
@@ -345,6 +844,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'team-members';
         value: number | TeamMember;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -430,10 +933,237 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        advantages?:
+          | T
+          | {
+              sectionTitle?: T;
+              compactSpacing?: T;
+              itemLayout?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        aboutUsGrid?:
+          | T
+          | {
+              sectionTitle?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    buttonText?: T;
+                    buttonLink?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        philosophy?:
+          | T
+          | {
+              sectionTitle?: T;
+              compactSpacing?: T;
+              itemLayout?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        promotions?:
+          | T
+          | {
+              position?: T;
+              promotion?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              position?: T;
+              title?: T;
+              compactSpacing?: T;
+              description?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        team?:
+          | T
+          | {
+              sectionTitle?: T;
+              compactSpacing?: T;
+              description?: T;
+              source?: T;
+              selectedMembers?: T;
+              sliderLimit?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        reviews?:
+          | T
+          | {
+              sectionTitle?: T;
+              compactSpacing?: T;
+              embedCode?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contentImage?:
+          | T
+          | {
+              position?: T;
+              title?: T;
+              text?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pricingGroupShowcase?:
+          | T
+          | {
+              position?: T;
+              image?: T;
+              pricingGroup?: T;
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              title?: T;
+              compactSpacing?: T;
+              content?: T;
+              backgroundImage?: T;
+              overlayColor?: T;
+              overlayOpacity?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        globalContactSection?:
+          | T
+          | {
+              compactSpacing?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contactSection?:
+          | T
+          | {
+              sectionTitle?: T;
+              compactSpacing?: T;
+              sectionDescription?: T;
+              formTitle?: T;
+              formDescription?: T;
+              submitButtonLabel?: T;
+              fullNamePlaceholder?: T;
+              phonePlaceholder?: T;
+              emailPlaceholder?: T;
+              patientTypePlaceholder?: T;
+              patientTypeOptions?:
+                | T
+                | {
+                    label?: T;
+                    id?: T;
+                  };
+              referralSourcePlaceholder?: T;
+              referralSourceOptions?:
+                | T
+                | {
+                    label?: T;
+                    id?: T;
+                  };
+              commentPlaceholder?: T;
+              successMessage?: T;
+              errorMessage?: T;
+              contactRowsOrder?:
+                | T
+                | {
+                    row?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pricing_select".
  */
 export interface PricingSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
+  items?:
+    | T
+    | {
+        serviceName?: T;
+        price?: T;
+        pricePrefix?: T;
+        note?: T;
+        servicePage?: T;
+        id?: T;
+      };
+  detailsLinkLabel?: T;
   categories?:
     | T
     | {
@@ -459,6 +1189,8 @@ export interface PricingSelect<T extends boolean = true> {
 export interface PromotionsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  content?: T;
+  image?: T;
   validUntil?: T;
   isActive?: T;
   updatedAt?: T;
@@ -511,6 +1243,21 @@ export interface TeamMembersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  fullName?: T;
+  phone?: T;
+  email?: T;
+  patientType?: T;
+  referralSource?: T;
+  comment?: T;
+  locale?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -551,10 +1298,194 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  menuItems?:
+    | {
+        label: string;
+        /**
+         * Use /services for pages or #contact_us for anchors
+         */
+        link: string;
+        id?: string | null;
+      }[]
+    | null;
+  header?: {
+    logo?: (number | null) | Media;
+    menuButtonLabel?: string | null;
+  };
+  footer?: {
+    logo?: (number | null) | Media;
+    copyright?: string | null;
+  };
+  contacts?: {
+    sectionTitle?: string | null;
+    sectionDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    phoneLabel?: string | null;
+    emailLabel?: string | null;
+    addressLabel?: string | null;
+    transportLabel?: string | null;
+    socialLabel?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    whatsapp?: string | null;
+    telegram?: string | null;
+    address?: string | null;
+    transport?: string | null;
+    googleMapsUrl?: string | null;
+  };
+  socialLinks?:
+    | {
+        platform: 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  globalContactSection?: {
+    sectionTitle?: string | null;
+    sectionDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    formTitle?: string | null;
+    formDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    submitButtonLabel?: string | null;
+    fullNamePlaceholder?: string | null;
+    phonePlaceholder?: string | null;
+    emailPlaceholder?: string | null;
+    patientTypePlaceholder?: string | null;
+    patientTypes?:
+      | {
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    referralSourcePlaceholder?: string | null;
+    refSources?:
+      | {
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    commentPlaceholder?: string | null;
+    successMessage?: string | null;
+    errorMessage?: string | null;
+  };
+  formNotifications?: {
+    /**
+     * Where contact form submissions should be sent.
+     */
+    recipientEmail?: string | null;
+    sendConfirmationToUser?: boolean | null;
+    adminSubject?: string | null;
+    /**
+     * Use the editor for bold, italic, lists and links.
+     */
+    adminMessage?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    userSubject?: string | null;
+    /**
+     * Use the editor for bold, italic, lists and links.
+     */
+    userMessage?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-page".
  */
 export interface HomePage {
   id: number;
+  /**
+   * Drag to reorder sections. Uncheck "Enabled" to hide a section.
+   */
+  sectionOrder?:
+    | {
+        section:
+          | 'hero'
+          | 'advantages'
+          | 'aboutUs'
+          | 'philosophy'
+          | 'promotions'
+          | 'team'
+          | 'reviews'
+          | 'gallery'
+          | 'whyUs'
+          | 'contacts';
+        enabled?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   hero: {
     title: string;
     subtitle?: string | null;
@@ -565,7 +1496,21 @@ export interface HomePage {
   advantages?:
     | {
         title: string;
-        description: string;
+        description: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
         icon?: (number | null) | Media;
         id?: string | null;
       }[]
@@ -573,27 +1518,46 @@ export interface HomePage {
   aboutUs?: {
     blocks?:
       | {
+          title?: string | null;
           text: string;
+          buttonText?: string | null;
+          buttonLink?: string | null;
           image?: (number | null) | Media;
           id?: string | null;
         }[]
       | null;
   };
   philosophy?: {
-    title?: string | null;
-    text?: string | null;
-    buttonText?: string | null;
-    buttonLink?: string | null;
-  };
-  offers?: {
-    text?: string | null;
-    image?: (number | null) | Media;
+    sectionTitle?: string | null;
+    cards?:
+      | {
+          title: string;
+          description: {
+            root: {
+              type: string;
+              children: {
+                type: any;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
+            [k: string]: unknown;
+          };
+          icon?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
   };
   teamSection?: {
     title?: string | null;
   };
   reviews?: {
     title?: string | null;
+    subtitle?: string | null;
     /**
      * Paste Google Reviews widget or other HTML embed code here
      */
@@ -601,7 +1565,21 @@ export interface HomePage {
   };
   gallery?: {
     title?: string | null;
-    description?: string | null;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     images?:
       | {
           image: number | Media;
@@ -615,7 +1593,21 @@ export interface HomePage {
   };
   contactsSection?: {
     title?: string | null;
-    description?: string | null;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -636,31 +1628,144 @@ export interface HeaderFooter {
   header?: {
     logo?: (number | null) | Media;
     menuButtonLabel?: string | null;
-    contacts?: {
-      phone?: string | null;
-      whatsapp?: string | null;
-      telegram?: string | null;
-    };
   };
   footer?: {
     logo?: (number | null) | Media;
     copyright?: string | null;
-    socialLinks?:
-      | {
-          platform: 'instagram' | 'facebook' | 'twitter' | 'youtube';
-          url: string;
-          id?: string | null;
-        }[]
-      | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-contacts".
+ */
+export interface SiteContact {
+  id: number;
+  email?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  telegram?: string | null;
+  address?: string | null;
+  transport?: string | null;
+  socialLinks?:
+    | {
+        platform: 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional: paste Google Maps embed URL for the contact section map
+   */
+  googleMapsUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  menuItems?:
+    | T
+    | {
+        label?: T;
+        link?: T;
+        id?: T;
+      };
+  header?:
+    | T
+    | {
+        logo?: T;
+        menuButtonLabel?: T;
+      };
+  footer?:
+    | T
+    | {
+        logo?: T;
+        copyright?: T;
+      };
+  contacts?:
+    | T
+    | {
+        sectionTitle?: T;
+        sectionDescription?: T;
+        phoneLabel?: T;
+        emailLabel?: T;
+        addressLabel?: T;
+        transportLabel?: T;
+        socialLabel?: T;
+        email?: T;
+        phone?: T;
+        whatsapp?: T;
+        telegram?: T;
+        address?: T;
+        transport?: T;
+        googleMapsUrl?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  globalContactSection?:
+    | T
+    | {
+        sectionTitle?: T;
+        sectionDescription?: T;
+        formTitle?: T;
+        formDescription?: T;
+        submitButtonLabel?: T;
+        fullNamePlaceholder?: T;
+        phonePlaceholder?: T;
+        emailPlaceholder?: T;
+        patientTypePlaceholder?: T;
+        patientTypes?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
+        referralSourcePlaceholder?: T;
+        refSources?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
+        commentPlaceholder?: T;
+        successMessage?: T;
+        errorMessage?: T;
+      };
+  formNotifications?:
+    | T
+    | {
+        recipientEmail?: T;
+        sendConfirmationToUser?: T;
+        adminSubject?: T;
+        adminMessage?: T;
+        userSubject?: T;
+        userMessage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-page_select".
  */
 export interface HomePageSelect<T extends boolean = true> {
+  sectionOrder?:
+    | T
+    | {
+        section?: T;
+        enabled?: T;
+        id?: T;
+      };
   hero?:
     | T
     | {
@@ -684,7 +1789,10 @@ export interface HomePageSelect<T extends boolean = true> {
         blocks?:
           | T
           | {
+              title?: T;
               text?: T;
+              buttonText?: T;
+              buttonLink?: T;
               image?: T;
               id?: T;
             };
@@ -692,16 +1800,15 @@ export interface HomePageSelect<T extends boolean = true> {
   philosophy?:
     | T
     | {
-        title?: T;
-        text?: T;
-        buttonText?: T;
-        buttonLink?: T;
-      };
-  offers?:
-    | T
-    | {
-        text?: T;
-        image?: T;
+        sectionTitle?: T;
+        cards?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
       };
   teamSection?:
     | T
@@ -712,6 +1819,7 @@ export interface HomePageSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        subtitle?: T;
         embedCode?: T;
       };
   gallery?:
@@ -759,27 +1867,36 @@ export interface HeaderFooterSelect<T extends boolean = true> {
     | {
         logo?: T;
         menuButtonLabel?: T;
-        contacts?:
-          | T
-          | {
-              phone?: T;
-              whatsapp?: T;
-              telegram?: T;
-            };
       };
   footer?:
     | T
     | {
         logo?: T;
         copyright?: T;
-        socialLinks?:
-          | T
-          | {
-              platform?: T;
-              url?: T;
-              id?: T;
-            };
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-contacts_select".
+ */
+export interface SiteContactsSelect<T extends boolean = true> {
+  email?: T;
+  phone?: T;
+  whatsapp?: T;
+  telegram?: T;
+  address?: T;
+  transport?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  googleMapsUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import 'swiper/css'
@@ -23,6 +24,28 @@ interface GallerySliderProps {
 }
 
 export default function GallerySlider({ images }: GallerySliderProps) {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    const firstImg = images[0]
+    const url = firstImg ? mediaUrl(firstImg.image) : null
+    return (
+      <div className="w-full h-full">
+        {url ? (
+          <img src={url} alt="Gallery fallback" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full bg-[#e8e0d8] flex items-center justify-center text-[#909da2]">
+            Photo 1
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <Swiper
       modules={[Navigation, Pagination]}

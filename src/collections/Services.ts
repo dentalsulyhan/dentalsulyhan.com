@@ -14,7 +14,14 @@ export const Services: CollectionConfig = {
       es: 'Servicios',
     },
   },
-  admin: { useAsTitle: 'title' },
+  admin: {
+    useAsTitle: 'title',
+    group: {
+      en: 'Content',
+      uk: 'Контент',
+      es: 'Contenido',
+    },
+  },
   access: {
     read: () => true, // Відкриваємо доступ для читання фронтенду
   },

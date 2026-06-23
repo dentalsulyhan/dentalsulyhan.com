@@ -7,10 +7,82 @@ export const HomePage: GlobalConfig = {
     uk: 'Головна сторінка',
     es: 'Página de Inicio',
   },
+  admin: {
+    hidden: true,
+    group: {
+      en: 'Legacy',
+      uk: 'Legacy',
+      es: 'Legacy',
+    },
+  },
   access: {
     read: () => true,
   },
   fields: [
+    // ─── Section Order & Visibility ───
+    {
+      name: 'sectionOrder',
+      type: 'array',
+      label: {
+        en: 'Section Order & Visibility',
+        uk: 'Порядок та видимість секцій',
+        es: 'Orden y visibilidad de secciones',
+      },
+      admin: {
+        description: {
+          en: 'Drag to reorder sections. Uncheck "Enabled" to hide a section.',
+          uk: 'Перетягуйте для зміни порядку. Зніміть галочку «Увімкнено», щоб приховати секцію.',
+          es: 'Arrastre para reordenar. Desmarque "Habilitado" para ocultar una sección.',
+        },
+      },
+      defaultValue: [
+        { section: 'hero', enabled: true },
+        { section: 'advantages', enabled: true },
+        { section: 'aboutUs', enabled: true },
+        { section: 'philosophy', enabled: true },
+        { section: 'promotions', enabled: true },
+        { section: 'team', enabled: true },
+        { section: 'reviews', enabled: true },
+        { section: 'gallery', enabled: true },
+        { section: 'whyUs', enabled: true },
+        { section: 'contacts', enabled: true },
+      ],
+      fields: [
+        {
+          name: 'section',
+          type: 'select',
+          required: true,
+          label: {
+            en: 'Section',
+            uk: 'Секція',
+            es: 'Sección',
+          },
+          options: [
+            { label: 'Hero', value: 'hero' },
+            { label: { en: 'Advantages', uk: 'Переваги', es: 'Ventajas' }, value: 'advantages' },
+            { label: { en: 'About Us', uk: 'Про нас', es: 'Sobre Nosotros' }, value: 'aboutUs' },
+            { label: { en: 'Philosophy', uk: 'Філософія', es: 'Filosofía' }, value: 'philosophy' },
+            { label: { en: 'Promotions', uk: 'Промо', es: 'Promociones' }, value: 'promotions' },
+            { label: { en: 'Team', uk: 'Команда', es: 'Equipo' }, value: 'team' },
+            { label: { en: 'Reviews', uk: 'Відгуки', es: 'Reseñas' }, value: 'reviews' },
+            { label: { en: 'Gallery', uk: 'Галерея', es: 'Galería' }, value: 'gallery' },
+            { label: { en: 'Why Us', uk: 'Чому ми', es: 'Por qué' }, value: 'whyUs' },
+            { label: { en: 'Contacts', uk: 'Контакти', es: 'Contacto' }, value: 'contacts' },
+          ],
+        },
+        {
+          name: 'enabled',
+          type: 'checkbox',
+          defaultValue: true,
+          label: {
+            en: 'Enabled',
+            uk: 'Увімкнено',
+            es: 'Habilitado',
+          },
+        },
+      ],
+    },
+
     // ─── 1. Hero (First Section / Main Block) ───
     {
       name: 'hero',
@@ -98,7 +170,7 @@ export const HomePage: GlobalConfig = {
         },
         {
           name: 'description',
-          type: 'textarea',
+          type: 'richText',
           required: true,
           label: {
             en: 'Description',
@@ -109,6 +181,7 @@ export const HomePage: GlobalConfig = {
         {
           name: 'icon',
           type: 'upload',
+          localized: false,
           relationTo: 'media',
           label: {
             en: 'Icon',
@@ -119,7 +192,7 @@ export const HomePage: GlobalConfig = {
       ],
     },
 
-    // ─── 3. About Us (3 alternating blocks) ───
+    // ─── 3. About Us (alternating blocks with title, richtext, button, image) ───
     {
       name: 'aboutUs',
       type: 'group',
@@ -132,7 +205,7 @@ export const HomePage: GlobalConfig = {
         {
           name: 'blocks',
           type: 'array',
-          maxRows: 3,
+          maxRows: 5,
           label: {
             en: 'Content Blocks',
             uk: 'Блоки контенту',
@@ -140,15 +213,45 @@ export const HomePage: GlobalConfig = {
           },
           fields: [
             {
+              name: 'title',
+              type: 'text',
+              localized: true,
+              label: {
+                en: 'Title (optional)',
+                uk: 'Заголовок (необовʼязково)',
+                es: 'Título (opcional)',
+              },
+            },
+            {
               name: 'text',
               type: 'textarea',
               localized: true,
               required: true,
               label: {
-                en: 'Text',
-                uk: 'Текст',
-                es: 'Texto',
+                en: 'Content',
+                uk: 'Вміст',
+                es: 'Contenido',
               },
+            },
+            {
+              name: 'buttonText',
+              type: 'text',
+              localized: true,
+              label: {
+                en: 'Button Text (optional)',
+                uk: 'Текст кнопки (необовʼязково)',
+                es: 'Texto del botón (opcional)',
+              },
+            },
+            {
+              name: 'buttonLink',
+              type: 'text',
+              label: {
+                en: 'Button Link',
+                uk: 'Посилання кнопки',
+                es: 'Enlace del botón',
+              },
+              defaultValue: '#contact_us',
             },
             {
               name: 'image',
@@ -165,7 +268,7 @@ export const HomePage: GlobalConfig = {
       ],
     },
 
-    // ─── 4. Philosophy ───
+    // ─── 4. Philosophy (cards like advantages: icon + title + description) ───
     {
       name: 'philosophy',
       type: 'group',
@@ -176,82 +279,66 @@ export const HomePage: GlobalConfig = {
       },
       fields: [
         {
-          name: 'title',
+          name: 'sectionTitle',
           type: 'text',
           localized: true,
           label: {
-            en: 'Section Title',
-            uk: 'Заголовок секції',
-            es: 'Título de la sección',
+            en: 'Section Title (optional)',
+            uk: 'Заголовок секції (необовʼязково)',
+            es: 'Título de la sección (opcional)',
           },
         },
         {
-          name: 'text',
-          type: 'textarea',
+          name: 'cards',
+          type: 'array',
+          label: {
+            en: 'Philosophy Cards',
+            uk: 'Картки філософії',
+            es: 'Tarjetas de filosofía',
+          },
           localized: true,
-          label: {
-            en: 'Text',
-            uk: 'Текст',
-            es: 'Texto',
-          },
-        },
-        {
-          name: 'buttonText',
-          type: 'text',
-          localized: true,
-          label: {
-            en: 'Button Text',
-            uk: 'Текст кнопки',
-            es: 'Texto del botón',
-          },
-        },
-        {
-          name: 'buttonLink',
-          type: 'text',
-          label: {
-            en: 'Button Link',
-            uk: 'Посилання кнопки',
-            es: 'Enlace del botón',
-          },
-          defaultValue: '#contact_us',
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              required: true,
+              label: {
+                en: 'Title',
+                uk: 'Заголовок',
+                es: 'Título',
+              },
+            },
+            {
+              name: 'description',
+              type: 'richText',
+              required: true,
+              label: {
+                en: 'Description',
+                uk: 'Опис',
+                es: 'Descripción',
+              },
+            },
+            {
+              name: 'icon',
+              type: 'upload',
+              localized: false,
+              relationTo: 'media',
+              label: {
+                en: 'Icon',
+                uk: 'Іконка',
+                es: 'Icono',
+              },
+            },
+          ],
         },
       ],
     },
 
-    // ─── 5. Offers ───
-    {
-      name: 'offers',
-      type: 'group',
-      label: {
-        en: 'Offers',
-        uk: 'Пропозиції',
-        es: 'Ofertas',
-      },
-      fields: [
-        {
-          name: 'text',
-          type: 'textarea',
-          localized: true,
-          label: {
-            en: 'Text',
-            uk: 'Текст',
-            es: 'Texto',
-          },
-        },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          label: {
-            en: 'Image',
-            uk: 'Зображення',
-            es: 'Imagen',
-          },
-        },
-      ],
-    },
+    // ─── 5. Promotions (references Promotions collection — no fields needed here) ───
+    // Промоакції підтягуються автоматично з колекції Promotions (isActive === true)
+    // Секцію можна увімкнути/вимкнути через sectionOrder
 
-    // ─── 6. Team (title only; members come from TeamMembers collection) ───
+    // ─── 6. Team (title only; members from TeamMembers collection) ───
     {
       name: 'teamSection',
       type: 'group',
@@ -289,9 +376,19 @@ export const HomePage: GlobalConfig = {
           type: 'text',
           localized: true,
           label: {
-            en: 'Section Title',
-            uk: 'Заголовок секції',
-            es: 'Título de la sección',
+            en: 'Section Title (optional)',
+            uk: 'Заголовок секції (необовʼязково)',
+            es: 'Título de la sección (opcional)',
+          },
+        },
+        {
+          name: 'subtitle',
+          type: 'text',
+          localized: true,
+          label: {
+            en: 'Subtitle (optional)',
+            uk: 'Підзаголовок (необовʼязково)',
+            es: 'Subtítulo (opcional)',
           },
         },
         {
@@ -335,7 +432,7 @@ export const HomePage: GlobalConfig = {
         },
         {
           name: 'description',
-          type: 'textarea',
+          type: 'richText',
           localized: true,
           label: {
             en: 'Description',
@@ -401,7 +498,7 @@ export const HomePage: GlobalConfig = {
       ],
     },
 
-    // ─── 10. Contacts Section ───
+    // ─── 10. Contacts Section (title + description; rest from SiteContacts) ───
     {
       name: 'contactsSection',
       type: 'group',
@@ -416,19 +513,19 @@ export const HomePage: GlobalConfig = {
           type: 'text',
           localized: true,
           label: {
-            en: 'Section Title',
-            uk: 'Заголовок секції',
-            es: 'Título de la sección',
+            en: 'Section Title (optional)',
+            uk: 'Заголовок секції (необовʼязково)',
+            es: 'Título de la sección (opcional)',
           },
         },
         {
           name: 'description',
-          type: 'textarea',
+          type: 'richText',
           localized: true,
           label: {
-            en: 'Description',
-            uk: 'Опис',
-            es: 'Descripción',
+            en: 'Description (optional)',
+            uk: 'Опис (необовʼязково)',
+            es: 'Descripción (opcional)',
           },
         },
       ],

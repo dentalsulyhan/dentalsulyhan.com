@@ -7,6 +7,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
 
 export default async function FrontendLayout({
   children,
@@ -18,21 +19,69 @@ export default async function FrontendLayout({
   const { locale } = await params
   const payload = await getPayload({ config: configPromise })
 
-  const headerFooter = await payload.findGlobal({
-    slug: 'header-footer',
-    locale: locale as 'es' | 'en' | 'uk', 
-  })
+  let siteSettings: SiteSetting | null = null
+  try {
+    const fetchedSiteSettings = await payload.findGlobal({
+      slug: 'site-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })
+    if (fetchedSiteSettings) {
+      siteSettings = fetchedSiteSettings as SiteSetting
+    }
+  } catch (err) {
+    console.error('Error fetching site-settings global:', err)
+  }
 
-  // Extract shared menu items and inject them into header and footer data
-  const sharedMenuItems = headerFooter.menuItems || []
-  const headerData = { ...(headerFooter.header || {}), menuItems: sharedMenuItems }
-  const footerData = { ...(headerFooter.footer || {}), menuItems: sharedMenuItems }
+  let headerFooter: HeaderFooter | null = null
+  try {
+    const fetchedHeaderFooter = await payload.findGlobal({
+      slug: 'header-footer',
+      locale: locale as 'es' | 'en' | 'uk',
+    })
+    if (fetchedHeaderFooter) {
+      headerFooter = fetchedHeaderFooter as HeaderFooter
+    }
+  } catch (err) {
+    console.error('Error fetching header-footer global:', err)
+  }
+
+  let siteContacts: SiteContact | null = null
+  try {
+    const fetchedContacts = await payload.findGlobal({
+      slug: 'site-contacts',
+      locale: locale as 'es' | 'en' | 'uk',
+    })
+    if (fetchedContacts) {
+      siteContacts = fetchedContacts as SiteContact
+    }
+  } catch (err) {
+    console.error('Error fetching site-contacts global:', err)
+  }
+
+  const sharedMenuItems = siteSettings?.menuItems?.length
+    ? siteSettings.menuItems
+    : (headerFooter?.menuItems || [])
+  const headerData = {
+    ...(headerFooter?.header || {}),
+    ...(siteSettings?.header || {}),
+    menuItems: sharedMenuItems,
+  }
+  const footerData = {
+    ...(headerFooter?.footer || {}),
+    ...(siteSettings?.footer || {}),
+    menuItems: sharedMenuItems,
+  }
+  const contactsData = {
+    ...(siteContacts || {}),
+    ...(siteSettings?.contacts || {}),
+    socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
+  }
 
   return (
     <html lang={locale}>
       <body className="flex flex-col min-h-screen bg-[#fafafa] text-[#22282b]">
         {/* Render Header with parsed settings */}
-        <Header data={headerData} currentLocale={locale} />
+        <Header data={headerData} contacts={contactsData} currentLocale={locale} />
 
         {/* Content area with 70px offset matching the header height */}
         <main className="flex-grow pt-[70px]">
@@ -42,6 +91,7 @@ export default async function FrontendLayout({
         {/* Render Footer with parsed settings and fallback logo */}
         <Footer 
           data={footerData} 
+          contacts={contactsData}
           headerLogo={headerData.logo} 
           currentLocale={locale} 
         />

@@ -8,6 +8,14 @@ export const HeaderFooter: GlobalConfig = {
     uk: 'Шапка та підвал',
     es: 'Cabecera y Pie',
   },
+  admin: {
+    hidden: true,
+    group: {
+      en: 'Legacy',
+      uk: 'Legacy',
+      es: 'Legacy',
+    },
+  },
   access: {
     read: () => true, // Відкриваємо для Next.js
   },
@@ -75,47 +83,6 @@ export const HeaderFooter: GlobalConfig = {
           },
           defaultValue: 'Menu',
         },
-        {
-          name: 'contacts',
-          type: 'group',
-          label: {
-            en: 'Contacts in Header',
-            uk: 'Контакти в шапці',
-            es: 'Contactos en cabecera',
-          },
-          fields: [
-            {
-              name: 'phone',
-              type: 'text',
-              label: {
-                en: 'Phone Number',
-                uk: 'Номер телефону',
-                es: 'Número de teléfono',
-              },
-              defaultValue: '+34 665-399-280',
-            },
-            {
-              name: 'whatsapp',
-              type: 'text',
-              label: {
-                en: 'WhatsApp Link',
-                uk: 'Посилання на WhatsApp',
-                es: 'Enlace de WhatsApp',
-              },
-              defaultValue: 'https://wa.me/+34665399280',
-            },
-            {
-              name: 'telegram',
-              type: 'text',
-              label: {
-                en: 'Telegram Link',
-                uk: 'Посилання на Telegram',
-                es: 'Enlace de Telegram',
-              },
-              defaultValue: 'https://t.me/+34665399280',
-            },
-          ],
-        },
       ],
     },
     {
@@ -147,43 +114,6 @@ export const HeaderFooter: GlobalConfig = {
             es: 'Texto de copyright',
           },
           defaultValue: '©2024 - All right reserved',
-        },
-        {
-          name: 'socialLinks',
-          type: 'array',
-          label: {
-            en: 'Social Links',
-            uk: 'Соціальні мережі',
-            es: 'Redes sociales',
-          },
-          fields: [
-            {
-              name: 'platform',
-              type: 'select',
-              label: {
-                en: 'Platform',
-                uk: 'Платформа',
-                es: 'Plataforma',
-              },
-              required: true,
-              options: [
-                { label: 'Instagram', value: 'instagram' },
-                { label: 'Facebook', value: 'facebook' },
-                { label: 'Twitter / X', value: 'twitter' },
-                { label: 'YouTube', value: 'youtube' },
-              ],
-            },
-            {
-              name: 'url',
-              type: 'text',
-              label: {
-                en: 'URL Link',
-                uk: 'Посилання',
-                es: 'Enlace',
-              },
-              required: true,
-            },
-          ],
         },
       ],
     },

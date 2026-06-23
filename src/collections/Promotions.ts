@@ -14,7 +14,14 @@ export const Promotions: CollectionConfig = {
       es: 'Promociones',
     },
   },
-  admin: { useAsTitle: 'title' },
+  admin: {
+    useAsTitle: 'title',
+    group: {
+      en: 'Content',
+      uk: 'Контент',
+      es: 'Contenido',
+    },
+  },
   fields: [
     {
       name: 'title',
@@ -29,12 +36,35 @@ export const Promotions: CollectionConfig = {
     },
     {
       name: 'description',
-      type: 'textarea',
+      type: 'richText',
+      admin: {
+        hidden: true,
+      },
       localized: true,
       label: {
         en: 'Description',
         uk: 'Опис',
         es: 'Descripción',
+      },
+    },
+    {
+      name: 'content',
+      type: 'richText',
+      localized: true,
+      label: {
+        en: 'Formatted Content',
+        uk: 'Форматований контент',
+        es: 'Contenido con formato',
+      },
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      label: {
+        en: 'Promotion Image',
+        uk: 'Зображення акції',
+        es: 'Imagen de la promocion',
       },
     },
     {

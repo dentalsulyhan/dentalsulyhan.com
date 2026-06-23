@@ -14,6 +14,13 @@ export const Media: CollectionConfig = {
       es: 'Medios',
     },
   },
+  admin: {
+    group: {
+      en: 'Content',
+      uk: 'Контент',
+      es: 'Contenido',
+    },
+  },
   access: {
     read: () => true,
   },

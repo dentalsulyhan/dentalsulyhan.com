@@ -3,16 +3,21 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import type { HeaderFooter } from '@/payload-types'
+import type { HeaderFooter, SiteContact } from '@/payload-types'
+
+type ContactData = Partial<SiteContact> & {
+  socialLinks?: SiteContact['socialLinks']
+}
 
 interface HeaderProps {
   data: NonNullable<HeaderFooter['header']> & {
     menuItems?: HeaderFooter['menuItems']
   }
+  contacts: ContactData
   currentLocale: string
 }
 
-export default function Header({ data, currentLocale }: HeaderProps) {
+export default function Header({ data, contacts, currentLocale }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
@@ -106,10 +111,9 @@ export default function Header({ data, currentLocale }: HeaderProps) {
     ? data.menuItems
     : (fallbackMenus[currentLocale] || fallbackMenus.es)
 
-  const contacts = data?.contacts || {}
-  const phone = contacts.phone || '+34 665-399-280'
-  const whatsapp = contacts.whatsapp || 'https://wa.me/+34665399280'
-  const telegram = contacts.telegram || 'https://t.me/+34665399280'
+  const phone = contacts?.phone || '+34 665-399-280'
+  const whatsapp = contacts?.whatsapp || 'https://wa.me/+34665399280'
+  const telegram = contacts?.telegram || 'https://t.me/+34665399280'
 
   return (
     <header
@@ -119,7 +123,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
           : 'bg-transparent border-transparent shadow-none'
       }`}
     >
-      <div className="max-w-[1200px] mx-auto grid grid-cols-[1fr_auto_1fr] items-center py-4 max-[1230px]:mx-[30px] max-[1230px]:w-auto">
+      <div className="max-w-[1200px] mx-auto grid grid-cols-[1fr_auto_1fr] items-center py-3 max-[1230px]:mx-[24px] max-[1230px]:w-auto max-[1100px]:mx-[18px] max-[767px]:py-[10px] max-[767px]:mx-[16px]">
         
         {/* LEFT: Hamburger Menu trigger and Sidebar Drawer */}
         <div className="flex">
@@ -132,7 +136,7 @@ export default function Header({ data, currentLocale }: HeaderProps) {
 
           {/* Mobile slide-out drawer (menuBody) */}
           <div
-            className={`fixed top-0 left-0 h-full w-[425px] max-w-full bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[50px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:w-full max-[767px]:p-[50px_30px] ${
+            className={`fixed top-0 left-0 h-full w-[425px] max-w-full bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[42px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:w-full max-[767px]:p-[32px_20px] ${
               isMenuOpen ? 'translate-x-0 opacity-100 visible' : '-translate-x-full opacity-0 invisible'
             }`}
           >
@@ -144,20 +148,20 @@ export default function Header({ data, currentLocale }: HeaderProps) {
                 <img src="/icons/Close.svg" alt="Close" />
               </button>
             </div>
-            <div className="flex mt-[50px] gap-[100px] justify-between max-[767px]:justify-center max-[767px]:flex-wrap">
+            <div className="flex mt-[36px] gap-[72px] justify-between max-[767px]:mt-[28px] max-[767px]:justify-center max-[767px]:flex-wrap">
               <nav className="flex-[25%]">
-                <h2 className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-5">
+                <h2 className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-4">
                   {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
                 </h2>
-                <ul className="list-none p-0 m-0 flex flex-col items-start gap-[10px]">
+                <ul className="list-none p-0 m-0 flex flex-col items-start gap-[8px]">
                   {menuItems.map((item, i) => {
                     const isAnchor = item.link?.startsWith('#')
                     const linkHref = isAnchor ? item.link : `/${currentLocale}${item.link}`
                     return (
-                      <li key={i} className="my-[5px] mx-0">
+                      <li key={i} className="my-[2px] mx-0">
                         <Link
                           href={linkHref}
-                          className="text-[18px] no-underline text-[#22282b] opacity-60 hover:opacity-100 hover:text-[20px] transition-all duration-200"
+                          className="text-[17px] no-underline text-[#22282b] opacity-60 hover:opacity-100 hover:text-[18px] transition-all duration-200"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {item.label}
@@ -173,10 +177,10 @@ export default function Header({ data, currentLocale }: HeaderProps) {
             <div className="mt-auto pt-6 border-t border-[#22282b]/10 flex gap-5 max-[767px]:block">
               <ul className="flex flex-row gap-5 list-none p-0 m-0">
                 {locales.map((loc) => (
-                  <li key={loc}>
+                  <li key={loc} className="flex items-center">
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
+                      className={`inline-flex items-center h-[20px] leading-none text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
                         currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
@@ -191,14 +195,14 @@ export default function Header({ data, currentLocale }: HeaderProps) {
         </div>
 
         {/* CENTER: Logo */}
-        <Link href={`/${currentLocale}`} className="h-[50px] w-auto flex items-center justify-center">
-          <img src={logoUrl} alt={logoAlt} className="h-[50px] w-auto object-contain" />
+        <Link href={`/${currentLocale}`} className="h-[44px] w-auto flex items-center justify-center max-[767px]:h-[38px]">
+          <img src={logoUrl} alt={logoAlt} className="h-[44px] w-auto object-contain max-[767px]:h-[38px]" />
         </Link>
 
         {/* RIGHT: Phones, Socials, and PC Language Switcher */}
-        <div className="flex items-center justify-end gap-[20px]">
+        <div className="flex items-center justify-end gap-[16px] max-[1100px]:gap-[12px] max-[767px]:gap-[12px]">
           {/* Social Icons */}
-          <div className="flex items-center gap-[16px]">
+          <div className="flex items-center gap-[12px] max-[1100px]:gap-[10px] max-[767px]:gap-[10px]">
             <a
               href={telegram}
               target="_blank"
@@ -218,25 +222,25 @@ export default function Header({ data, currentLocale }: HeaderProps) {
           </div>
 
           {/* Phone */}
-          <div className="flex items-center border-[#22282b]/15 min-[992px]:border-l min-[992px]:pl-[16px] h-[20px]">
+          <div className="flex items-center border-[#22282b]/15 min-[992px]:border-l min-[992px]:pl-[12px] h-[20px]">
             <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b]">
               <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
-              <span className="text-[14px] max-[991px]:hidden font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity">
+              <span className="text-[14px] max-[1100px]:hidden font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity">
                 {phone}
               </span>
             </a>
           </div>
 
           {/* PC Language Switcher */}
-          <div className="max-[991px]:hidden flex items-center border-l border-[#22282b]/15 pl-[16px] h-[20px]">
-            <ul className="flex gap-[12px] list-none m-0 p-0 items-center">
+          <div className="max-[991px]:hidden flex items-center border-l border-[#22282b]/15 pl-[12px] h-[20px]">
+            <ul className="flex gap-[10px] list-none m-0 p-0 items-center">
               {locales.map((loc) => {
                 const isActive = currentLocale === loc
                 return (
-                  <li key={loc}>
+                  <li key={loc} className="flex items-center">
                     <Link
                       href={switchLanguage(loc)}
-                      className={`text-[12px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
+                      className={`inline-flex items-center h-[20px] leading-none text-[12px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
                         isActive ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
                       }`}
                     >

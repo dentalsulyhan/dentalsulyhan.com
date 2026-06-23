@@ -1,0 +1,445 @@
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
+import { notFound } from 'next/navigation'
+import { RichText } from '@payloadcms/richtext-lexical/react'
+import ContactForm from '../../../../components/ContactForm'
+import type { Media, Page, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
+
+function mediaUrl(field: unknown): string | null {
+  if (!field) return null
+  if (typeof field === 'object' && field !== null && 'url' in field) {
+    return (field as Media).url ?? null
+  }
+  return null
+}
+
+function resolveHref(link: string | null | undefined, locale: string) {
+  if (!link) return '#'
+  if (link.startsWith('#')) return link
+  if (link.startsWith('/')) return `/${locale}${link}`
+  return `/${locale}/${link}`
+}
+
+function isPricingDoc(value: number | Pricing): value is Pricing {
+  return typeof value === 'object' && value !== null
+}
+
+function isServiceDoc(value: number | Service): value is Service {
+  return typeof value === 'object' && value !== null
+}
+
+function isCompactSpacing(block: unknown): boolean {
+  return typeof block === 'object' && block !== null && Boolean((block as { compactSpacing?: boolean }).compactSpacing)
+}
+
+function getDefaultPatientTypeOptions(locale: string) {
+  if (locale === 'uk') return [{ label: 'Новий пацієнт' }, { label: 'Існуючий пацієнт' }]
+  if (locale === 'en') return [{ label: 'New patient' }, { label: 'Existing patient' }]
+  return [{ label: 'Nuevo paciente' }, { label: 'Paciente existente' }]
+}
+
+function getDefaultReferralSourceOptions(locale: string) {
+  if (locale === 'uk') {
+    return [
+      { label: 'Instagram' },
+      { label: 'Google' },
+      { label: 'Facebook' },
+      { label: 'Рекомендація' },
+      { label: 'Інше' },
+    ]
+  }
+  if (locale === 'en') {
+    return [
+      { label: 'Instagram' },
+      { label: 'Google' },
+      { label: 'Facebook' },
+      { label: 'Recommendation' },
+      { label: 'Other' },
+    ]
+  }
+  return [
+    { label: 'Instagram' },
+    { label: 'Google' },
+    { label: 'Facebook' },
+    { label: 'Recomendación' },
+    { label: 'Otro' },
+  ]
+}
+
+type ContactData = SiteContact & {
+  socialLinks?: SiteSetting['socialLinks']
+}
+
+const primaryButtonClass =
+  'inline-flex items-center justify-center px-7 py-3 border border-[#3c5557] bg-[#3c5557] text-[#fafafa] rounded-full text-[15px] tracking-[0.05em] font-medium transition-all duration-300 hover:bg-transparent hover:text-[#3c5557] no-underline'
+
+export default async function ServicesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const payload = await getPayload({ config: configPromise })
+
+  const pagesResult = await payload.find({
+    collection: 'pages',
+    locale: locale as 'es' | 'en' | 'uk',
+    fallbackLocale: false,
+    where: {
+      slug: {
+        equals: 'services',
+      },
+    },
+    depth: 3,
+    limit: 1,
+  })
+
+  const pageData = (pagesResult.docs[0] as Page | undefined) || null
+  if (!pageData) return notFound()
+
+  let siteSettings: SiteSetting | null = null
+  try {
+    siteSettings = (await payload.findGlobal({
+      slug: 'site-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as SiteSetting
+  } catch (error) {
+    console.error('Error fetching site settings for services page:', error)
+  }
+
+  let siteContacts: SiteContact = {} as SiteContact
+  try {
+    siteContacts = (await payload.findGlobal({
+      slug: 'site-contacts',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as SiteContact
+  } catch (error) {
+    console.error('Error fetching site contacts for services page:', error)
+  }
+
+  const contacts: ContactData = {
+    ...siteContacts,
+    ...(siteSettings?.contacts || {}),
+    socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
+  }
+
+  const pageLayout = pageData.layout || []
+  const globalContact = siteSettings?.globalContactSection
+
+  const copy = {
+    phoneLabel: siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono'),
+    emailLabel: siteSettings?.contacts?.emailLabel || 'Email',
+    addressLabel: siteSettings?.contacts?.addressLabel || (locale === 'uk' ? 'Адреса' : locale === 'en' ? 'Address' : 'Direccion'),
+    transportLabel:
+      siteSettings?.contacts?.transportLabel ||
+      (locale === 'uk' ? 'Як дістатися' : locale === 'en' ? 'How to get here' : 'Como llegar'),
+    socialLabel:
+      siteSettings?.contacts?.socialLabel ||
+      (locale === 'uk' ? 'Соцмережі' : locale === 'en' ? 'Social media' : 'Redes sociales'),
+    detailsLabel:
+      locale === 'uk' ? 'Детальніше' : locale === 'en' ? 'Learn more' : 'Más información',
+  }
+
+  return (
+    <main>
+      {pageLayout.map((block, idx) => {
+        switch (block.blockType) {
+          case 'hero': {
+            const imageUrl = mediaUrl(block.image)
+            return (
+              <section key={block.id || idx} className="pt-[10px]">
+                <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
+                  <div className="w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10">
+                    <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
+                      {block.title}
+                    </h1>
+                    {block.subtitle && (
+                      <p className="text-[18px] max-[767px]:text-[15px] text-[#909da2] mb-8 leading-relaxed">
+                        {block.subtitle}
+                      </p>
+                    )}
+                    {block.buttonText && (
+                      <div>
+                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                          {block.buttonText}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-1/2 max-[991px]:w-full relative overflow-hidden min-h-[300px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3]">
+                    {imageUrl ? <img src={imageUrl} alt={block.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                  </div>
+                </div>
+              </section>
+            )
+          }
+
+          case 'contentImage': {
+            const imageUrl = mediaUrl(block.image)
+            const isImageLeft = (block.position || 'left') === 'left'
+            return (
+              <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
+                <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                  {imageUrl ? <img src={imageUrl} alt={block.title || `Services ${idx + 1}`} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                </div>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                  {block.title && <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>}
+                  <div className="prose max-w-none text-[#22282b]">
+                    <RichText data={block.text} />
+                  </div>
+                  {block.buttonText && (
+                    <div className="mt-4">
+                      <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'content': {
+            const compactSpacing = isCompactSpacing(block)
+            const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
+            const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
+              ? (block as { overlayColor?: string }).overlayColor
+              : '#000000'
+            const overlayOpacityValue = typeof (block as { overlayOpacity?: unknown }).overlayOpacity === 'number'
+              ? (block as { overlayOpacity?: number }).overlayOpacity
+              : 35
+            const overlayOpacity = Math.min(100, Math.max(0, overlayOpacityValue ?? 35)) / 100
+            return (
+              <section
+                key={block.id || idx}
+                className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? 'py-[50px] max-[767px]:py-[32px] bg-white' : 'py-[100px] max-[767px]:py-[64px] bg-white'}
+              >
+                {backgroundImageUrl && (
+                  <>
+                    <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        backgroundColor: overlayColor,
+                        opacity: overlayOpacity,
+                      }}
+                    />
+                  </>
+                )}
+                <div className={`relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
+                  {block.title && (
+                    <h2
+                      className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center ${
+                        block.content ? 'mb-6' : 'mb-0'
+                      }`}
+                    >
+                      {block.title}
+                    </h2>
+                  )}
+                  {block.content && (
+                    <div className="prose prose-lg max-w-none text-[#22282b]">
+                      <RichText data={block.content} />
+                    </div>
+                  )}
+                  {block.buttonText && (
+                    <div className="mt-6 text-center">
+                      <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'pricingGroupShowcase': {
+            const pricingGroup = isPricingDoc(block.pricingGroup) ? block.pricingGroup : null
+            const imageUrl = mediaUrl(block.image)
+            const isImageLeft = (block.position || 'left') === 'left'
+
+            if (!pricingGroup) return null
+
+            return (
+              <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
+                <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                  {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                </div>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? 'bg-[#fbf6f3]' : 'bg-[#f4ede7]'} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                  <div className="flex flex-col gap-3">
+                    <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
+                      {pricingGroup.title}
+                    </h2>
+                    {pricingGroup.description && (
+                      <div className="prose max-w-none text-[#5d676b] prose-p:my-0 prose-p:leading-relaxed">
+                        <RichText data={pricingGroup.description} />
+                      </div>
+                    )}
+                  </div>
+
+                  {pricingGroup.items && pricingGroup.items.length > 0 && (
+                    <div className="flex flex-col">
+                      {pricingGroup.items.map((item, itemIndex) => {
+                          const linkedService = item.servicePage && isServiceDoc(item.servicePage) ? item.servicePage : null
+                          return (
+                            <div
+                              key={item.id || itemIndex}
+                              className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-5 gap-y-2 items-center border-b border-[#22282b]/10 py-2 last:border-b-0 max-[767px]:grid-cols-[minmax(0,1fr)_auto] max-[767px]:gap-x-3 max-[767px]:gap-y-2 max-[767px]:items-start max-[767px]:py-3"
+                            >
+                              <div className="min-w-0 pr-2">
+                                {linkedService ? (
+                                  <a
+                                    href={`/${locale}/services/${linkedService.slug}`}
+                                    className="block mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug hover:text-[#3c5557] transition-colors no-underline"
+                                  >
+                                    {item.serviceName}
+                                  </a>
+                                ) : (
+                                  <h3 className="mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug">
+                                    {item.serviceName}
+                                  </h3>
+                                )}
+                                {item.note && (
+                                  <p className="text-[13px] text-[#7a8489] mt-0 leading-relaxed italic">
+                                    {item.note}
+                                  </p>
+                                )}
+                                {linkedService && (
+                                  <a
+                                    href={`/${locale}/services/${linkedService.slug}`}
+                                    className="inline-flex mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#3c5557] hover:opacity-80 no-underline"
+                                  >
+                                    {pricingGroup.detailsLinkLabel || copy.detailsLabel}
+                                  </a>
+                                )}
+                              </div>
+                              <div className="justify-self-end self-center max-[767px]:justify-self-start">
+                                <div className="inline-flex items-center px-0 py-0 text-[15px] max-[767px]:text-[14px] font-semibold text-[#3c5557] whitespace-nowrap">
+                                  {item.pricePrefix ? `${item.pricePrefix} ` : ''}
+                                  {item.price}
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'globalContactSection': {
+            const compactSpacing = isCompactSpacing(block)
+            return (
+              <section
+                key={block.id || idx}
+                id="contact_us"
+                className={compactSpacing ? 'bg-[#fbf6f3] py-[64px] max-[767px]:py-[44px] contact_us' : 'bg-[#fbf6f3] py-[100px] max-[767px]:py-[64px] contact_us'}
+              >
+                <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
+                  <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-6 text-[#22282b]">
+                      {siteSettings?.contacts?.sectionTitle || (locale === 'uk' ? 'Контакти' : locale === 'en' ? 'Contact' : 'Contacto')}
+                    </h2>
+                    {siteSettings?.contacts?.sectionDescription && (
+                      <div className="text-[15px] text-[#909da2] leading-relaxed mb-8 prose max-w-none">
+                        {typeof siteSettings.contacts.sectionDescription === 'string' ? (
+                          <p>{siteSettings.contacts.sectionDescription}</p>
+                        ) : (
+                          <RichText data={siteSettings.contacts.sectionDescription} />
+                        )}
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-6 text-[#22282b]">
+                      {contacts.email && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.emailLabel}</span>
+                          <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.email}</a>
+                        </div>
+                      )}
+                      {contacts.phone && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.phoneLabel}</span>
+                          <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.phone}</a>
+                        </div>
+                      )}
+                      {contacts.address && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.addressLabel}</span>
+                          <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                        </div>
+                      )}
+                      {contacts.transport && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.transportLabel}</span>
+                          <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                        </div>
+                      )}
+                      {contacts.socialLinks && contacts.socialLinks.length > 0 && (
+                        <div className="flex flex-col gap-2 mt-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.socialLabel}</span>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            {contacts.socialLinks.map((link, linkIndex) => (
+                              <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-medium text-[#3c5557] hover:opacity-80 no-underline">
+                                {link.platform}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="w-1/2 max-[991px]:w-full bg-white rounded-[20px] p-8 max-[1100px]:p-6 shadow-md">
+                    {(globalContact?.formTitle || globalContact?.formDescription) && (
+                      <div className="mb-6">
+                        {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
+                        {globalContact?.formDescription && (
+                          <div className="text-[#909da2] prose max-w-none">
+                            <RichText data={globalContact.formDescription} />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <ContactForm
+                      locale={locale}
+                      fullNamePlaceholder={globalContact?.fullNamePlaceholder || (locale === 'uk' ? 'ПІБ' : locale === 'en' ? 'Full name' : 'Nombre completo')}
+                      phonePlaceholder={globalContact?.phonePlaceholder || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono')}
+                      emailPlaceholder={globalContact?.emailPlaceholder || 'Email'}
+                      patientTypePlaceholder={globalContact?.patientTypePlaceholder || (locale === 'uk' ? 'Я:' : locale === 'en' ? 'I am:' : 'Soy:')}
+                      referralSourcePlaceholder={globalContact?.referralSourcePlaceholder || (locale === 'uk' ? 'Дізнався про вас:' : locale === 'en' ? 'How did you hear about us:' : 'Como nos conociste:')}
+                      commentPlaceholder={globalContact?.commentPlaceholder || (locale === 'uk' ? 'Коментар' : locale === 'en' ? 'Comment' : 'Comentario')}
+                      submitButtonLabel={globalContact?.submitButtonLabel || (locale === 'uk' ? 'Надіслати' : locale === 'en' ? 'Send' : 'Enviar')}
+                      successMessage={globalContact?.successMessage || (locale === 'uk' ? 'Дякуємо! Ваше повідомлення успішно надіслано.' : locale === 'en' ? 'Thank you. Your message has been sent successfully.' : 'Gracias. Su mensaje ha sido enviado correctamente.')}
+                      errorMessage={globalContact?.errorMessage || (locale === 'uk' ? 'Не вдалося надіслати форму. Спробуйте ще раз.' : locale === 'en' ? 'The form could not be submitted. Please try again.' : 'No se pudo enviar el formulario. Inténtelo de nuevo.')}
+                      patientTypeOptions={
+                        (globalContact as { patientTypes?: Array<{ id?: string | null; label: string }> } | undefined)
+                          ?.patientTypes?.length
+                          ? (
+                              globalContact as { patientTypes?: Array<{ id?: string | null; label: string }> }
+                            ).patientTypes!.map((option) => ({ id: option.id, label: option.label }))
+                          : getDefaultPatientTypeOptions(locale)
+                      }
+                      referralSourceOptions={
+                        (globalContact as { refSources?: Array<{ id?: string | null; label: string }> } | undefined)
+                          ?.refSources?.length
+                          ? (
+                              globalContact as { refSources?: Array<{ id?: string | null; label: string }> }
+                            ).refSources!.map((option) => ({ id: option.id, label: option.label }))
+                          : getDefaultReferralSourceOptions(locale)
+                      }
+                    />
+                  </div>
+                </div>
+              </section>
+            )
+          }
+
+          default:
+            return null
+        }
+      })}
+    </main>
+  )
+}

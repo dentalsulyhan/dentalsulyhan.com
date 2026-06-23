@@ -17,6 +17,11 @@ export const TeamMembers: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'position', 'order'],
+    group: {
+      en: 'Content',
+      uk: 'Контент',
+      es: 'Contenido',
+    },
   },
   access: {
     read: () => true,
@@ -46,7 +51,7 @@ export const TeamMembers: CollectionConfig = {
     },
     {
       name: 'description',
-      type: 'textarea',
+      type: 'richText',
       localized: true,
       label: {
         en: 'Description',
