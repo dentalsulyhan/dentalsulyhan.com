@@ -812,16 +812,19 @@ export default async function HomePage({
             case 'contentImage': {
               const imageUrl = mediaUrl(block.image)
               const isImageLeft = (block.position || 'left') === 'left'
+              const isImageContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
               const buttonLink = block.buttonLink || '#contact_us'
 
               return (
                 <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
-                  <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
-                    {imageUrl ? (
-                      <img src={imageUrl} alt={block.title || `Content block ${idx + 1}`} className="w-full h-full object-cover block" />
-                    ) : (
-                      <ImagePlaceholder label={block.title || `Content block ${idx + 1}`} className="w-full h-full" />
-                    )}
+                  <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
+                    <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
+                      {imageUrl ? (
+                        <img src={imageUrl} alt={block.title || `Content block ${idx + 1}`} className="w-full h-full object-cover block" />
+                      ) : (
+                        <ImagePlaceholder label={block.title || `Content block ${idx + 1}`} className="w-full h-full" />
+                      )}
+                    </div>
                   </div>
                   <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
                     {block.title && (

@@ -103,6 +103,34 @@ export const Services: CollectionConfig = {
               defaultValue: 'left',
             },
             {
+              name: 'imageWidth',
+              type: 'select',
+              defaultValue: 'full',
+              label: {
+                en: 'Image Width',
+                uk: 'Ширина фото',
+                es: 'Ancho de la imagen',
+              },
+              options: [
+                {
+                  label: {
+                    en: 'Full width',
+                    uk: 'На всю ширину',
+                    es: 'Ancho completo',
+                  },
+                  value: 'full',
+                },
+                {
+                  label: {
+                    en: 'Contained',
+                    uk: 'У контейнері',
+                    es: 'Contenido en contenedor',
+                  },
+                  value: 'contained',
+                },
+              ],
+            },
+            {
               name: 'text',
               type: 'richText',
               required: true,

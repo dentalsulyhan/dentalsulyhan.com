@@ -45,6 +45,7 @@ export default async function ServicePage({
           if (block.blockType === 'contentImage') {
             const isRight = block.position === 'right'
             const imageUrl = mediaUrl(block.image)
+            const isContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
 
             return (
               <div
@@ -54,13 +55,15 @@ export default async function ServicePage({
                 <div
                   className={`page-services-row-photo w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${
                     isRight ? 'order-2 max-[991px]:order-1' : 'order-1'
-                  }`}
+                  } ${isContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}
                 >
-                  {imageUrl ? (
-                    <img src={imageUrl} alt={service.title} className="w-full h-full object-cover block" />
-                  ) : (
-                    <div className="w-full h-full bg-[#e8e0d8]" />
-                  )}
+                  <div className={isContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
+                    {imageUrl ? (
+                      <img src={imageUrl} alt={service.title} className="w-full h-full object-cover block" />
+                    ) : (
+                      <div className="w-full h-full bg-[#e8e0d8]" />
+                    )}
+                  </div>
                 </div>
 
                 <div

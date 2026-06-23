@@ -67,9 +67,9 @@ export const Pages: CollectionConfig = {
       },
       admin: {
         description: {
-          en: 'Use home for the homepage or a URL path like about-us',
-          uk: 'Використовуйте home для головної або шлях типу about-us',
-          es: 'Use home para la pagina principal o una ruta como about-us',
+          en: 'Use home for the homepage, 404 for the not found page, or a URL path like about-us',
+          uk: 'Використовуйте home для головної, 404 для сторінки не знайдено або шлях типу about-us',
+          es: 'Use home para la pagina principal, 404 para la pagina no encontrada o una ruta como about-us',
         },
       },
     },
@@ -922,6 +922,34 @@ export const Pages: CollectionConfig = {
                 en: 'Image Position',
                 uk: 'Позиція зображення',
                 es: 'Posicion de la imagen',
+              },
+            },
+            {
+              name: 'imageWidth',
+              type: 'select',
+              defaultValue: 'full',
+              options: [
+                {
+                  label: {
+                    en: 'Full width',
+                    uk: 'На всю ширину',
+                    es: 'Ancho completo',
+                  },
+                  value: 'full',
+                },
+                {
+                  label: {
+                    en: 'Contained',
+                    uk: 'У контейнері',
+                    es: 'Contenido en contenedor',
+                  },
+                  value: 'contained',
+                },
+              ],
+              label: {
+                en: 'Image Width',
+                uk: 'Ширина фото',
+                es: 'Ancho de la imagen',
               },
             },
             {

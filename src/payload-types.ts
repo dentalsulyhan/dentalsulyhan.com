@@ -191,7 +191,7 @@ export interface Page {
   id: number;
   title: string;
   /**
-   * Use home for the homepage or a URL path like about-us
+   * Use home for the homepage, 404 for the not found page, or a URL path like about-us
    */
   slug: string;
   layout?:
@@ -403,6 +403,7 @@ export interface Page {
           }
         | {
             position?: ('left' | 'right') | null;
+            imageWidth?: ('full' | 'contained') | null;
             title?: string | null;
             /**
              * Supports bold, italic and underline formatting.
@@ -731,6 +732,7 @@ export interface Service {
     | (
         | {
             position?: ('left' | 'right') | null;
+            imageWidth?: ('full' | 'contained') | null;
             text: {
               root: {
                 type: string;
@@ -1066,6 +1068,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               position?: T;
+              imageWidth?: T;
               title?: T;
               text?: T;
               buttonText?: T;
@@ -1210,6 +1213,7 @@ export interface ServicesSelect<T extends boolean = true> {
           | T
           | {
               position?: T;
+              imageWidth?: T;
               text?: T;
               image?: T;
               id?: T;

@@ -7,6 +7,7 @@ const defaultLocale = 'es'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const headers = new Headers(request.headers)
   
   // Skip static files with extensions and common asset directories
   if (
@@ -27,6 +28,17 @@ export function middleware(request: NextRequest) {
   if (pathnameIsMissingLocale && !pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
     return NextResponse.redirect(new URL(`/${defaultLocale}${pathname}`, request.url))
   }
+
+  const localeMatch = pathname.match(/^\/(es|en|uk)(?:\/|$)/)
+  if (localeMatch) {
+    headers.set('x-sulyhan-locale', localeMatch[1])
+  }
+
+  return NextResponse.next({
+    request: {
+      headers,
+    },
+  })
 }
 
 export const config = {

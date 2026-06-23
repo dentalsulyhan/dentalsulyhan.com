@@ -80,21 +80,18 @@ export default async function FrontendLayout({
   return (
     <html lang={locale}>
       <body className="flex flex-col min-h-screen bg-[#fafafa] text-[#22282b]">
-        {/* Render Header with parsed settings */}
-        <Header data={headerData} contacts={contactsData} currentLocale={locale} />
+      <Header data={headerData} contacts={contactsData} currentLocale={locale} />
 
-        {/* Content area with 70px offset matching the header height */}
-        <main className="flex-grow pt-[70px]">
-          {children}
-        </main>
+      <main className="flex-grow pt-[70px]">
+        {children}
+      </main>
 
-        {/* Render Footer with parsed settings and fallback logo */}
-        <Footer 
-          data={footerData} 
-          contacts={contactsData}
-          headerLogo={headerData.logo} 
-          currentLocale={locale} 
-        />
+      <Footer 
+        data={footerData} 
+        contacts={contactsData}
+        headerLogo={headerData.logo} 
+        currentLocale={locale} 
+      />
       </body>
     </html>
   )
