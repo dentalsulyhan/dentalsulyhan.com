@@ -6,6 +6,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import TeamSlider from '../../../components/TeamSlider'
 import GallerySlider from '../../../components/GallerySlider'
 import ContactForm from '../../../components/ContactForm'
+import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {
@@ -84,8 +85,7 @@ function SocialIcon({ platform }: { platform: string }) {
   return <span className="text-[12px] uppercase font-semibold">{platform}</span>
 }
 
-const primaryButtonClass =
-  'inline-flex items-center justify-center px-7 py-3 border border-[#3c5557] bg-[#3c5557] text-[#fafafa] rounded-full text-[15px] tracking-[0.05em] font-medium transition-all duration-300 hover:bg-transparent hover:text-[#3c5557] no-underline'
+const primaryButtonClass = getButtonStyle('primary')
 
 function getDefaultPatientTypeOptions(locale: string) {
   if (locale === 'uk') {
@@ -329,7 +329,9 @@ export default async function HomePage({
     loc.aboutPlaceholder,
     loc.aboutPlaceholder,
   ]
-  const aboutBgColors = ['bg-[#fbf6f3]', 'bg-[#f4ede7]', 'bg-[#fbf6f3]']
+  const legacyPrimaryTheme = getBlockTheme('white')
+  const legacySecondaryTheme = getBlockTheme('soft')
+  const aboutBgColors = [legacyPrimaryTheme.panel, legacyPrimaryTheme.panelAlt, legacyPrimaryTheme.panel]
   const aboutLabels = ['About Us — 1', 'About Us — 2', 'About Us — 3']
 
   const pageLayout = pageData?.layout || []
@@ -342,11 +344,13 @@ export default async function HomePage({
             case 'hero': {
               const imageUrl = mediaUrl(block.image)
               const buttonLink = block.buttonLink || '#contact_us'
+              const buttonClass = getButtonStyle(block.buttonStyle)
+              const theme = getBlockTheme(block.theme)
 
               return (
-                <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className="pt-[10px]">
+                <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className={`pt-[10px] ${theme.section}`}>
                   <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
-                    <div className="w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10">
+                    <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`}>
                       <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
                         {block.title}
                       </h1>
@@ -357,7 +361,7 @@ export default async function HomePage({
                         <div>
                           <a
                             href={resolveHref(buttonLink, locale)}
-                            className={primaryButtonClass}
+                            className={buttonClass}
                           >
                             {block.buttonText}
                           </a>
@@ -365,7 +369,10 @@ export default async function HomePage({
                       )}
                     </div>
                     <div className="w-1/2 max-[991px]:w-full relative overflow-hidden min-h-[300px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3]">
-                      <div className="absolute top-0 left-0 w-[10%] h-full bg-gradient-to-r from-[#fafafa] to-transparent z-[1] pointer-events-none max-[991px]:hidden" />
+                      <div
+                        className="absolute top-0 left-0 w-[10%] h-full z-[1] pointer-events-none max-[991px]:hidden"
+                        style={{ background: `linear-gradient(to right, ${theme.sectionColor} 0%, transparent 100%)` }}
+                      />
                       {imageUrl ? (
                         <img src={imageUrl} alt={block.title} className="w-full h-full object-cover block" />
                       ) : (
@@ -380,11 +387,13 @@ export default async function HomePage({
             case 'advantages': {
               const isRowLayout = (block.itemLayout || 'column') === 'row'
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
               return (
                 <section
                   key={block.id || idx}
                   id="advantages"
-                  className={compactSpacing ? 'bg-white py-[56px] max-[767px]:py-[40px]' : 'bg-white py-[100px] max-[767px]:py-[64px]'}
+                  className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
@@ -421,7 +430,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-[50px] text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -432,10 +441,12 @@ export default async function HomePage({
             }
 
             case 'aboutUsGrid': {
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
               return (
                 <section key={block.id || idx} id="about_us" className="flex flex-col">
                   {block.sectionTitle && (
-                    <div className="bg-white py-[40px] px-[30px] max-[1100px]:px-[24px]">
+                    <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px]`}>
                       <div className="max-w-[1200px] mx-auto">
                         <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center">
                           {block.sectionTitle}
@@ -446,7 +457,7 @@ export default async function HomePage({
                   {block.items.map((item, itemIndex) => {
                     const imgUrl = mediaUrl(item.image)
                     const isReversed = itemIndex % 2 === 1
-                    const bgClass = aboutBgColors[itemIndex % aboutBgColors.length]
+                    const bgClass = itemIndex % 2 === 0 ? theme.panel : theme.panelAlt
                     const buttonLink = item.buttonLink || '#contact_us'
 
                     return (
@@ -482,7 +493,7 @@ export default async function HomePage({
                             <div className="mt-4">
                               <a
                                 href={resolveHref(buttonLink, locale)}
-                                className={primaryButtonClass}
+                                className={buttonClass}
                               >
                                 {item.buttonText}
                               </a>
@@ -493,8 +504,8 @@ export default async function HomePage({
                     )
                   })}
                   {block.buttonText && (
-                    <div className="bg-white py-[40px] px-[30px] max-[1100px]:px-[24px] text-center">
-                      <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                    <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px] text-center`}>
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -506,11 +517,13 @@ export default async function HomePage({
             case 'philosophy': {
               const isRowLayout = (block.itemLayout || 'column') === 'row'
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
               return (
                 <section
                   key={block.id || idx}
                   id="filosofia"
-                  className={compactSpacing ? 'py-[56px] max-[767px]:py-[40px] bg-[#fafafa]' : 'py-[100px] max-[767px]:py-[64px] bg-[#fafafa]'}
+                  className={compactSpacing ? `py-[56px] max-[767px]:py-[40px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
@@ -547,7 +560,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-[50px] text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -566,9 +579,11 @@ export default async function HomePage({
 
               const imageUrl = mediaUrl(promotion.image)
               const isImageLeft = (block.position || 'left') === 'left'
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
-                <section key={block.id || idx} id="offers" className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
+                <section key={block.id || idx} id="offers" className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {imageUrl ? (
                       <img src={imageUrl} alt={promotion.title} className="w-full h-full object-cover block" />
@@ -576,7 +591,7 @@ export default async function HomePage({
                       <ImagePlaceholder label={promotion.title} className="w-full h-full min-h-[320px]" />
                     )}
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
                     <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{promotion.title}</h2>
                     {promotion.content ? (
                       <div className="prose max-w-none text-[#22282b]">
@@ -597,7 +612,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-2">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -613,12 +628,14 @@ export default async function HomePage({
                 ? selectedMembers
                 : team).slice(0, block.sliderLimit || 12)
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
                 <section
                   key={block.id || idx}
                   id="team"
-                  className={compactSpacing ? 'my-[56px] max-[767px]:my-[40px]' : 'my-[100px] max-[767px]:my-[64px]'}
+                  className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-0">
                     <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[20px]">
@@ -671,7 +688,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-[40px] text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -683,11 +700,13 @@ export default async function HomePage({
 
             case 'reviews': {
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
               return (
                 <section
                   key={block.id || idx}
                   id="reviews"
-                  className={compactSpacing ? 'py-[72px] max-[767px]:py-[48px] relative bg-white' : 'py-[120px] max-[767px]:py-[80px] relative bg-white'}
+                  className={compactSpacing ? `py-[72px] max-[767px]:py-[48px] relative ${theme.section}` : `py-[120px] max-[767px]:py-[80px] relative ${theme.section}`}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] flex flex-col gap-5">
                     <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-6">
@@ -711,7 +730,7 @@ export default async function HomePage({
                     )}
                     {block.buttonText && (
                       <div className="mt-6 text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -724,9 +743,11 @@ export default async function HomePage({
             case 'gallery': {
               const isSliderLeft = (block.position || 'right') === 'left'
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
-                <section key={block.id || idx} id="gallery" className="flex max-[991px]:flex-col bg-[#fbf6f3]">
+                <section key={block.id || idx} id="gallery" className={`flex max-[991px]:flex-col ${theme.panel}`}>
                   <div className={`w-1/2 max-[991px]:w-full h-[600px] max-[991px]:h-auto max-[991px]:aspect-[4/3] ${isSliderLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {block.images.length > 0 ? (
                       <GallerySlider images={block.images} />
@@ -745,7 +766,7 @@ export default async function HomePage({
                     )}
                     {block.buttonText && (
                       <div className="mt-6">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -757,6 +778,8 @@ export default async function HomePage({
 
             case 'content': {
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
               const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
               const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
                 ? (block as { overlayColor?: string }).overlayColor
@@ -768,7 +791,7 @@ export default async function HomePage({
               return (
                 <section
                   key={block.id || idx}
-                  className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? 'py-[50px] max-[767px]:py-[32px] bg-white' : 'py-[100px] max-[767px]:py-[64px] bg-white'}
+                  className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
                 >
                   {backgroundImageUrl && (
                     <>
@@ -799,7 +822,7 @@ export default async function HomePage({
                     )}
                     {block.buttonText && (
                       <div className="mt-6 text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -814,6 +837,8 @@ export default async function HomePage({
               const isImageLeft = (block.position || 'left') === 'left'
               const isImageContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
               const buttonLink = block.buttonLink || '#contact_us'
+              const theme = getBlockTheme(block.theme)
+              const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
                 <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
@@ -826,7 +851,7 @@ export default async function HomePage({
                       )}
                     </div>
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
                     {block.title && (
                       <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>
                     )}
@@ -837,7 +862,7 @@ export default async function HomePage({
                       <div className="mt-4">
                         <a
                           href={resolveHref(buttonLink, locale)}
-                          className={primaryButtonClass}
+                          className={buttonClass}
                         >
                           {block.buttonText}
                         </a>
@@ -853,6 +878,7 @@ export default async function HomePage({
                 ? block.contactRowsOrder.map((item) => item.row)
                 : ['email', 'phone', 'address', 'transport', 'social']
               const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
               const formLabels = {
                 name: locale === 'uk' ? 'Ваше імʼя' : locale === 'es' ? 'Tu nombre' : 'Your name',
                 phone: locale === 'uk' ? 'Ваш телефон' : locale === 'es' ? 'Tu telefono' : 'Your phone',
@@ -864,7 +890,7 @@ export default async function HomePage({
                 <section
                   key={block.id || idx}
                   id="contact_us"
-                  className={compactSpacing ? 'bg-[#fbf6f3] py-[64px] max-[767px]:py-[44px] contact_us' : 'bg-[#fbf6f3] py-[100px] max-[767px]:py-[64px] contact_us'}
+                  className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                     <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
@@ -968,7 +994,7 @@ export default async function HomePage({
                       </div>
                     </div>
 
-                    <div className="w-1/2 max-[991px]:w-full bg-white rounded-[20px] p-8 max-[1100px]:p-6 shadow-md">
+                    <div className={`w-1/2 max-[991px]:w-full ${theme.card} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
                       {(block.formTitle || block.formDescription) && (
                         <div className="mb-6">
                           {block.formTitle && (
@@ -1070,7 +1096,7 @@ export default async function HomePage({
                     <div>
                       <a
                         href={heroButtonLink.startsWith('#') ? heroButtonLink : `/${locale}${heroButtonLink}`}
-                        className="inline-block px-10 py-3 bg-[#3c5557] text-[#fafafa] rounded-[10px] text-lg tracking-[0.09em] font-normal transition-colors duration-300 hover:bg-[#34494a] no-underline"
+                        className={primaryButtonClass}
                       >
                         {heroButtonText}
                       </a>
@@ -1095,7 +1121,7 @@ export default async function HomePage({
 
           case 'advantages':
             return (
-              <section key={`sec-${idx}`} id="advantages" className="bg-white py-[100px]">
+              <section key={`sec-${idx}`} id="advantages" className={`${legacyPrimaryTheme.section} py-[100px]`}>
                 <div className="px-[max(30px,calc((100vw-1200px)/2))] flex flex-wrap gap-[50px] justify-center max-[767px]:flex-col max-[767px]:items-center">
                   {advantages.length > 0 ? (
                     advantages.map((adv, i) => {
@@ -1189,7 +1215,7 @@ export default async function HomePage({
                             <div className="mt-4">
                               <a
                                 href={block.buttonLink.startsWith('#') ? block.buttonLink : `/${locale}${block.buttonLink}`}
-                                className="inline-block px-8 py-3 bg-[#3c5557] text-[#fafafa] rounded-[10px] text-base tracking-[0.05em] font-normal transition-colors duration-300 hover:bg-[#34494a] no-underline"
+                                className={primaryButtonClass}
                               >
                                 {block.buttonText}
                               </a>
@@ -1233,7 +1259,7 @@ export default async function HomePage({
 
           case 'philosophy':
             return (
-              <section key={`sec-${idx}`} id="filosofia" className="py-[100px] bg-[#fafafa]">
+              <section key={`sec-${idx}`} id="filosofia" className={`py-[100px] ${legacySecondaryTheme.sectionAlt}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px]">
                   {philTitle && (
                     <h2 className="text-[32px] font-semibold text-center mb-[60px] text-[#3c5557]">{philTitle}</h2>
@@ -1268,7 +1294,7 @@ export default async function HomePage({
                         <p className="text-[18px] text-[#22282b] leading-relaxed mb-10">{philText}</p>
                         <a
                           href={`/${locale}${philLink}`}
-                          className="inline-block px-10 py-3 bg-[#3c5557] text-[#fafafa] rounded-[10px] text-lg tracking-[0.09em] font-normal transition-colors duration-300 hover:bg-[#34494a] no-underline"
+                          className={primaryButtonClass}
                         >
                           {philButton}
                         </a>
@@ -1281,7 +1307,7 @@ export default async function HomePage({
 
           case 'promotions':
             return (
-              <section key={`sec-${idx}`} id="offers" className="py-[100px] bg-[#fbf6f3]">
+              <section key={`sec-${idx}`} id="offers" className={`py-[100px] ${legacyPrimaryTheme.panel}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px]">
                   <h2 className="text-[32px] font-semibold text-center mb-[50px] text-[#22282b]">
                     {locale === 'uk' ? 'Акції та спеціальні пропозиції' : locale === 'es' ? 'Promociones especiales' : 'Special Promotions'}
@@ -1289,7 +1315,7 @@ export default async function HomePage({
                   {activePromos.length > 0 ? (
                     <div className="grid grid-cols-2 max-[767px]:grid-cols-1 gap-[30px]">
                       {activePromos.map((promo, idx) => (
-                        <div key={promo.id || idx} className="bg-white rounded-[20px] p-8 shadow-sm flex flex-col justify-between border border-[#22282b]/[0.03] min-h-[220px]">
+                        <div key={promo.id || idx} className={`${legacyPrimaryTheme.card} rounded-[20px] p-8 shadow-sm flex flex-col justify-between border border-[#22282b]/[0.03] min-h-[220px]`}>
                           <div>
                             <h3 className="text-[20px] font-semibold text-[#3c5557] mb-3">{promo.title}</h3>
                             <div className="text-[15px] text-[#505a5e] leading-relaxed mb-6 prose max-w-none prose-p:my-0">
@@ -1328,7 +1354,7 @@ export default async function HomePage({
 
           case 'team':
             return (
-              <section key={`sec-${idx}`} id="team" className="my-[100px]">
+              <section key={`sec-${idx}`} id="team" className={`${legacyPrimaryTheme.section} py-[100px]`}>
                 <h2 className="text-[32px] font-semibold text-center mb-[50px]">{teamTitle}</h2>
                 <div className="max-w-[1200px] mx-auto relative px-[30px] max-[1230px]:px-[30px]">
                   {team.length > 0 ? (
@@ -1352,7 +1378,7 @@ export default async function HomePage({
 
           case 'reviews':
             return (
-              <section key={`sec-${idx}`} id="reviews" className="py-[120px] relative bg-white">
+              <section key={`sec-${idx}`} id="reviews" className={`py-[120px] relative ${legacyPrimaryTheme.section}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px] flex flex-col gap-5">
                   <h2 className="text-[32px] font-semibold text-center mb-6">{reviewsTitle}</h2>
                   {homeData.reviews?.subtitle && (
@@ -1382,7 +1408,7 @@ export default async function HomePage({
 
           case 'gallery':
             return (
-              <section key={`sec-${idx}`} id="gallery" className="flex max-[991px]:flex-col bg-[#fbf6f3]">
+              <section key={`sec-${idx}`} id="gallery" className={`flex max-[991px]:flex-col ${legacyPrimaryTheme.panel}`}>
                 {/* Left: Info */}
                 <div className="w-1/2 max-[991px]:w-full flex flex-col justify-center py-10 max-[1100px]:py-8 max-[991px]:py-6 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]">
                   <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-[30px]">{galleryTitle}</h2>
@@ -1403,7 +1429,7 @@ export default async function HomePage({
 
           case 'whyUs':
             return (
-              <section key={`sec-${idx}`} id="whyus" className="py-[100px] flex flex-col items-center text-center px-[30px] bg-white">
+              <section key={`sec-${idx}`} id="whyus" className={`py-[100px] flex flex-col items-center text-center px-[30px] ${legacyPrimaryTheme.section}`}>
                 <div className="max-w-[800px]">
                   <h2 className="text-[32px] font-semibold text-[#3c5557] mb-8">{whyUsTitle}</h2>
                   <p className="text-[18px] text-[#22282b] leading-relaxed">{whyUsText}</p>
@@ -1413,7 +1439,7 @@ export default async function HomePage({
 
           case 'contacts':
             return (
-              <section key={`sec-${idx}`} id="contact_us" className="bg-[#fbf6f3] py-[100px] contact_us">
+              <section key={`sec-${idx}`} id="contact_us" className={`${legacyPrimaryTheme.panel} py-[100px] contact_us`}>
                 <div className="max-w-[1200px] mx-auto px-[30px] flex gap-[80px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                   {/* Left: Info */}
                   <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import ContactForm from '../../../../components/ContactForm'
 import type { Media, Page, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
+import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -70,8 +71,7 @@ type ContactData = SiteContact & {
   socialLinks?: SiteSetting['socialLinks']
 }
 
-const primaryButtonClass =
-  'inline-flex items-center justify-center px-7 py-3 border border-[#3c5557] bg-[#3c5557] text-[#fafafa] rounded-full text-[15px] tracking-[0.05em] font-medium transition-all duration-300 hover:bg-transparent hover:text-[#3c5557] no-underline'
+const primaryButtonClass = getButtonStyle('primary')
 
 export default async function ServicesPage({
   params,
@@ -146,10 +146,12 @@ export default async function ServicesPage({
         switch (block.blockType) {
           case 'hero': {
             const imageUrl = mediaUrl(block.image)
+            const buttonClass = getButtonStyle(block.buttonStyle)
+            const theme = getBlockTheme(block.theme)
             return (
-              <section key={block.id || idx} className="pt-[10px]">
+              <section key={block.id || idx} className={`pt-[10px] ${theme.section}`}>
                 <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
-                  <div className="w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10">
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`}>
                     <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
                       {block.title}
                     </h1>
@@ -160,7 +162,7 @@ export default async function ServicesPage({
                     )}
                     {block.buttonText && (
                       <div>
-                        <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -178,6 +180,8 @@ export default async function ServicesPage({
             const imageUrl = mediaUrl(block.image)
             const isImageLeft = (block.position || 'left') === 'left'
             const isImageContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
             return (
               <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
                 <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
@@ -185,14 +189,14 @@ export default async function ServicesPage({
                     {imageUrl ? <img src={imageUrl} alt={block.title || `Services ${idx + 1}`} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
                   {block.title && <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>}
                   <div className="prose max-w-none text-[#22282b]">
                     <RichText data={block.text} />
                   </div>
                   {block.buttonText && (
                     <div className="mt-4">
-                      <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -204,6 +208,8 @@ export default async function ServicesPage({
 
           case 'content': {
             const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
               ? (block as { overlayColor?: string }).overlayColor
@@ -215,7 +221,7 @@ export default async function ServicesPage({
             return (
               <section
                 key={block.id || idx}
-                className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? 'py-[50px] max-[767px]:py-[32px] bg-white' : 'py-[100px] max-[767px]:py-[64px] bg-white'}
+                className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
               >
                 {backgroundImageUrl && (
                   <>
@@ -246,7 +252,7 @@ export default async function ServicesPage({
                   )}
                   {block.buttonText && (
                     <div className="mt-6 text-center">
-                      <a href={resolveHref(block.buttonLink, locale)} className={primaryButtonClass}>
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -260,6 +266,7 @@ export default async function ServicesPage({
             const pricingGroup = isPricingDoc(block.pricingGroup) ? block.pricingGroup : null
             const imageUrl = mediaUrl(block.image)
             const isImageLeft = (block.position || 'left') === 'left'
+            const theme = getBlockTheme(block.theme)
 
             if (!pricingGroup) return null
 
@@ -268,7 +275,7 @@ export default async function ServicesPage({
                 <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? 'bg-[#fbf6f3]' : 'bg-[#f4ede7]'} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
                   <div className="flex flex-col gap-3">
                     <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
                       {pricingGroup.title}
@@ -334,11 +341,12 @@ export default async function ServicesPage({
 
           case 'globalContactSection': {
             const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
             return (
               <section
                 key={block.id || idx}
                 id="contact_us"
-                className={compactSpacing ? 'bg-[#fbf6f3] py-[64px] max-[767px]:py-[44px] contact_us' : 'bg-[#fbf6f3] py-[100px] max-[767px]:py-[64px] contact_us'}
+                className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
               >
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                   <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
@@ -394,7 +402,7 @@ export default async function ServicesPage({
                     </div>
                   </div>
 
-                  <div className="w-1/2 max-[991px]:w-full bg-white rounded-[20px] p-8 max-[1100px]:p-6 shadow-md">
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.card} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
                     {(globalContact?.formTitle || globalContact?.formDescription) && (
                       <div className="mb-6">
                         {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}

@@ -23,6 +23,11 @@ export const HeaderFooter: GlobalConfig = {
     {
       name: 'menuItems',
       type: 'array',
+      admin: {
+        components: {
+          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+        },
+      },
       label: {
         en: 'Shared Menu Items',
         uk: 'Спільні пункти меню (для шапки та підвалу)',

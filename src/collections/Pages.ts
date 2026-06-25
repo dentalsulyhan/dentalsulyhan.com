@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
 
 const sectionSpacingField = {
   name: 'compactSpacing',
@@ -98,6 +99,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'title',
               type: 'textarea',
@@ -162,6 +165,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'sectionTitle',
               type: 'text',
@@ -205,6 +210,11 @@ export const Pages: CollectionConfig = {
               type: 'array',
               required: true,
               minRows: 1,
+              admin: {
+                components: {
+                  RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+                },
+              },
               labels: {
                 singular: {
                   en: 'Advantage',
@@ -292,6 +302,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'sectionTitle',
               type: 'text',
@@ -337,6 +349,9 @@ export const Pages: CollectionConfig = {
                 },
               },
               admin: {
+                components: {
+                  RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+                },
                 description: {
                   en: 'Frontend can alternate image and text automatically by order.',
                   uk: 'Фронтенд може автоматично чергувати фото і текст за порядком.',
@@ -418,6 +433,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'sectionTitle',
               type: 'text',
@@ -461,6 +478,11 @@ export const Pages: CollectionConfig = {
               type: 'array',
               required: true,
               minRows: 1,
+              admin: {
+                components: {
+                  RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+                },
+              },
               labels: {
                 singular: {
                   en: 'Card',
@@ -548,6 +570,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'position',
               type: 'select',
@@ -622,6 +646,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'position',
               type: 'select',
@@ -728,6 +754,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'sectionTitle',
               type: 'text',
@@ -835,6 +863,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'sectionTitle',
               type: 'text',
@@ -896,6 +926,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'position',
               type: 'select',
@@ -1024,6 +1056,7 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
             {
               name: 'position',
               type: 'select',
@@ -1091,6 +1124,8 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
+            buttonStyleField,
             {
               name: 'title',
               type: 'text',
@@ -1204,7 +1239,7 @@ export const Pages: CollectionConfig = {
               es: 'Bloques globales de contacto',
             },
           },
-          fields: [sectionSpacingField],
+          fields: [blockThemeField, sectionSpacingField],
         },
         {
           slug: 'contactSection',
@@ -1221,6 +1256,7 @@ export const Pages: CollectionConfig = {
             },
           },
           fields: [
+            blockThemeField,
             {
               name: 'sectionTitle',
               type: 'text',
@@ -1409,6 +1445,13 @@ export const Pages: CollectionConfig = {
             {
               name: 'contactRowsOrder',
               type: 'array',
+              admin: {
+                description: {
+                  en: 'Reorder rows shown in the left contact column.',
+                  uk: 'Перетягуйте, щоб змінити порядок рядків у лівій колонці контактів.',
+                  es: 'Reordena las filas mostradas en la columna izquierda de contactos.',
+                },
+              },
               labels: {
                 singular: {
                   en: 'Contact Row',
@@ -1419,13 +1462,6 @@ export const Pages: CollectionConfig = {
                   en: 'Contact Rows Order',
                   uk: 'Порядок рядків контакту',
                   es: 'Orden de filas de contacto',
-                },
-              },
-              admin: {
-                description: {
-                  en: 'Reorder rows shown in the left contact column.',
-                  uk: 'Перетягуйте, щоб змінити порядок рядків у лівій колонці контактів.',
-                  es: 'Reordena las filas mostradas en la columna izquierda de contactos.',
                 },
               },
               fields: [

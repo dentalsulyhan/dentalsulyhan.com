@@ -25,6 +25,11 @@ import { ContactSubmissions } from './collections/ContactSubmissions'
 // Trigger HMR cache clear for global settings
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const isMigrateCommand = process.argv.some((arg) => arg.includes('migrate'))
+const editor = lexicalEditor({
+  features: ({ defaultFeatures }) =>
+    isMigrateCommand ? defaultFeatures.filter((feature) => feature.key !== 'upload') : defaultFeatures,
+})
 
 const email =
   process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS
@@ -46,9 +51,13 @@ const email =
 export default buildConfig({
   admin: {
     user: Users.slug,
-    importMap: {
-      baseDir: path.resolve(dirname),
-    },
+    ...(isMigrateCommand
+      ? {}
+      : {
+          importMap: {
+            baseDir: path.resolve(dirname),
+          },
+        }),
   },
   // Додаємо конфігурацію локалізації
   localization: {
@@ -66,7 +75,7 @@ export default buildConfig({
   },
   collections: [Users, Media, Pages, Pricing, Promotions, Services, TeamMembers, ContactSubmissions],
   globals: [SiteSettings, HomePage, HeaderFooter, SiteContacts],
-  editor: lexicalEditor(),
+  editor,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

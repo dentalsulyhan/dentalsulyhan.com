@@ -62,6 +62,11 @@ export const SiteSettings: GlobalConfig = {
     {
       name: 'menuItems',
       type: 'array',
+      admin: {
+        components: {
+          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+        },
+      },
       label: {
         en: 'Shared Menu Items',
         uk: 'Спільні пункти меню',
@@ -317,6 +322,11 @@ export const SiteSettings: GlobalConfig = {
     {
       name: 'socialLinks',
       type: 'array',
+      admin: {
+        components: {
+          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+        },
+      },
       label: {
         en: 'Social Media Links',
         uk: 'Соціальні мережі',

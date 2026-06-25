@@ -197,6 +197,14 @@ export interface Page {
   layout?:
     | (
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             title: string;
             subtitle?: string | null;
             buttonText?: string | null;
@@ -207,6 +215,14 @@ export interface Page {
             blockType: 'hero';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
@@ -243,6 +259,14 @@ export interface Page {
             blockType: 'advantages';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             sectionTitle?: string | null;
             buttonText?: string | null;
             buttonLink?: string | null;
@@ -279,6 +303,14 @@ export interface Page {
             blockType: 'aboutUsGrid';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
@@ -315,6 +347,14 @@ export interface Page {
             blockType: 'philosophy';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             position?: ('left' | 'right') | null;
             promotion: number | Promotion;
             buttonText?: string | null;
@@ -324,6 +364,14 @@ export interface Page {
             blockType: 'promotions';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             position?: ('left' | 'right') | null;
             title?: string | null;
             /**
@@ -356,6 +404,14 @@ export interface Page {
             blockType: 'gallery';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
@@ -386,6 +442,14 @@ export interface Page {
             blockType: 'team';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
@@ -402,6 +466,14 @@ export interface Page {
             blockType: 'reviews';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             position?: ('left' | 'right') | null;
             imageWidth?: ('full' | 'contained') | null;
             title?: string | null;
@@ -431,6 +503,10 @@ export interface Page {
             blockType: 'contentImage';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
             position?: ('left' | 'right') | null;
             image: number | Media;
             pricingGroup: number | Pricing;
@@ -439,6 +515,14 @@ export interface Page {
             blockType: 'pricingGroupShowcase';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             title?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
@@ -482,6 +566,10 @@ export interface Page {
           }
         | {
             /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
@@ -490,6 +578,10 @@ export interface Page {
             blockType: 'globalContactSection';
           }
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
             sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
@@ -727,12 +819,80 @@ export interface Pricing {
 export interface Service {
   id: number;
   title: string;
+  /**
+   * URL path, for example dental-implants
+   */
   slug: string;
   layout?:
     | (
         | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            title: string;
+            subtitle?: string | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            image?: (number | null) | Media;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            title?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            backgroundImage?: (number | null) | Media;
+            overlayColor?: string | null;
+            overlayOpacity?: number | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             position?: ('left' | 'right') | null;
             imageWidth?: ('full' | 'contained') | null;
+            title?: string | null;
             text: {
               root: {
                 type: string;
@@ -748,14 +908,98 @@ export interface Service {
               };
               [k: string]: unknown;
             };
+            buttonText?: string | null;
+            buttonLink?: string | null;
             image: number | Media;
             id?: string | null;
             blockName?: string | null;
             blockType: 'contentImage';
           }
         | {
-            heading: string;
-            content: {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            itemLayout?: ('column' | 'row') | null;
+            items: {
+              icon?: (number | null) | Media;
+              title?: string | null;
+              text: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[];
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            items: {
+              title: string;
+              text: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            intro?: {
               root: {
                 type: string;
                 children: {
@@ -769,10 +1013,193 @@ export interface Service {
                 version: number;
               };
               [k: string]: unknown;
-            };
+            } | null;
+            columns?: ('one' | 'two') | null;
+            items: {
+              heading: string;
+              content: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[];
             id?: string | null;
             blockName?: string | null;
-            blockType: 'accordion';
+            blockType: 'faq';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            layoutStyle?: ('cards' | 'split') | null;
+            sectionTitle?: string | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            intro?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            backgroundImage?: (number | null) | Media;
+            overlayColor?: string | null;
+            overlayOpacity?: number | null;
+            leftColumnTitle: string;
+            leftItems: {
+              text: string;
+              id?: string | null;
+            }[];
+            rightColumnTitle: string;
+            rightItems: {
+              text: string;
+              id?: string | null;
+            }[];
+            conclusion?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'comparison';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            position?: ('left' | 'right') | null;
+            title?: string | null;
+            intro?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            image: number | Media;
+            items: {
+              heading: string;
+              content: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contentAccordion';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            title?: string | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            backgroundImage?: (number | null) | Media;
+            overlayColor?: string | null;
+            overlayOpacity?: number | null;
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            position?: ('left' | 'right') | null;
+            image: number | Media;
+            pricingGroup: number | Pricing;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricingGroupShowcase';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'globalContactSection';
           }
       )[]
     | null;
@@ -946,6 +1373,8 @@ export interface PagesSelect<T extends boolean = true> {
         hero?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               title?: T;
               subtitle?: T;
               buttonText?: T;
@@ -957,6 +1386,8 @@ export interface PagesSelect<T extends boolean = true> {
         advantages?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               sectionTitle?: T;
               compactSpacing?: T;
               itemLayout?: T;
@@ -976,6 +1407,8 @@ export interface PagesSelect<T extends boolean = true> {
         aboutUsGrid?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               sectionTitle?: T;
               buttonText?: T;
               buttonLink?: T;
@@ -995,6 +1428,8 @@ export interface PagesSelect<T extends boolean = true> {
         philosophy?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               sectionTitle?: T;
               compactSpacing?: T;
               itemLayout?: T;
@@ -1014,6 +1449,8 @@ export interface PagesSelect<T extends boolean = true> {
         promotions?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               position?: T;
               promotion?: T;
               buttonText?: T;
@@ -1024,6 +1461,8 @@ export interface PagesSelect<T extends boolean = true> {
         gallery?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               position?: T;
               title?: T;
               compactSpacing?: T;
@@ -1042,6 +1481,8 @@ export interface PagesSelect<T extends boolean = true> {
         team?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               sectionTitle?: T;
               compactSpacing?: T;
               description?: T;
@@ -1056,6 +1497,8 @@ export interface PagesSelect<T extends boolean = true> {
         reviews?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               sectionTitle?: T;
               compactSpacing?: T;
               embedCode?: T;
@@ -1067,6 +1510,8 @@ export interface PagesSelect<T extends boolean = true> {
         contentImage?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               position?: T;
               imageWidth?: T;
               title?: T;
@@ -1080,6 +1525,7 @@ export interface PagesSelect<T extends boolean = true> {
         pricingGroupShowcase?:
           | T
           | {
+              theme?: T;
               position?: T;
               image?: T;
               pricingGroup?: T;
@@ -1089,6 +1535,8 @@ export interface PagesSelect<T extends boolean = true> {
         content?:
           | T
           | {
+              theme?: T;
+              buttonStyle?: T;
               title?: T;
               compactSpacing?: T;
               content?: T;
@@ -1103,6 +1551,7 @@ export interface PagesSelect<T extends boolean = true> {
         globalContactSection?:
           | T
           | {
+              theme?: T;
               compactSpacing?: T;
               id?: T;
               blockName?: T;
@@ -1110,6 +1559,7 @@ export interface PagesSelect<T extends boolean = true> {
         contactSection?:
           | T
           | {
+              theme?: T;
               sectionTitle?: T;
               compactSpacing?: T;
               sectionDescription?: T;
@@ -1209,21 +1659,182 @@ export interface ServicesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        contentImage?:
+        hero?:
           | T
           | {
-              position?: T;
-              imageWidth?: T;
-              text?: T;
+              theme?: T;
+              buttonStyle?: T;
+              title?: T;
+              subtitle?: T;
+              buttonText?: T;
+              buttonLink?: T;
               image?: T;
               id?: T;
               blockName?: T;
             };
-        accordion?:
+        content?:
           | T
           | {
-              heading?: T;
+              theme?: T;
+              buttonStyle?: T;
+              title?: T;
+              compactSpacing?: T;
               content?: T;
+              backgroundImage?: T;
+              overlayColor?: T;
+              overlayOpacity?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contentImage?:
+          | T
+          | {
+              theme?: T;
+              buttonStyle?: T;
+              position?: T;
+              imageWidth?: T;
+              title?: T;
+              text?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cards?:
+          | T
+          | {
+              theme?: T;
+              buttonStyle?: T;
+              sectionTitle?: T;
+              compactSpacing?: T;
+              itemLayout?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              theme?: T;
+              sectionTitle?: T;
+              compactSpacing?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              theme?: T;
+              sectionTitle?: T;
+              compactSpacing?: T;
+              intro?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    heading?: T;
+                    content?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        comparison?:
+          | T
+          | {
+              theme?: T;
+              layoutStyle?: T;
+              sectionTitle?: T;
+              compactSpacing?: T;
+              intro?: T;
+              backgroundImage?: T;
+              overlayColor?: T;
+              overlayOpacity?: T;
+              leftColumnTitle?: T;
+              leftItems?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              rightColumnTitle?: T;
+              rightItems?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              conclusion?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contentAccordion?:
+          | T
+          | {
+              theme?: T;
+              position?: T;
+              title?: T;
+              intro?: T;
+              image?: T;
+              items?:
+                | T
+                | {
+                    heading?: T;
+                    content?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              theme?: T;
+              buttonStyle?: T;
+              title?: T;
+              content?: T;
+              backgroundImage?: T;
+              overlayColor?: T;
+              overlayOpacity?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pricingGroupShowcase?:
+          | T
+          | {
+              theme?: T;
+              position?: T;
+              image?: T;
+              pricingGroup?: T;
+              id?: T;
+              blockName?: T;
+            };
+        globalContactSection?:
+          | T
+          | {
+              theme?: T;
+              compactSpacing?: T;
               id?: T;
               blockName?: T;
             };

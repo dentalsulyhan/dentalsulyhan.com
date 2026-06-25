@@ -1,7 +1,3 @@
-import './null.css'
-import './style.css'
-import './adaptive.css'
-import './globals.css'
 import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'

@@ -151,6 +151,11 @@ export const HomePage: GlobalConfig = {
     {
       name: 'advantages',
       type: 'array',
+      admin: {
+        components: {
+          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+        },
+      },
       label: {
         en: 'Advantages',
         uk: 'Переваги',
@@ -206,6 +211,11 @@ export const HomePage: GlobalConfig = {
           name: 'blocks',
           type: 'array',
           maxRows: 5,
+          admin: {
+            components: {
+              RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+            },
+          },
           label: {
             en: 'Content Blocks',
             uk: 'Блоки контенту',
@@ -291,6 +301,11 @@ export const HomePage: GlobalConfig = {
         {
           name: 'cards',
           type: 'array',
+          admin: {
+            components: {
+              RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+            },
+          },
           label: {
             en: 'Philosophy Cards',
             uk: 'Картки філософії',

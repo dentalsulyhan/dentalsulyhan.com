@@ -1,9 +1,11 @@
-import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import type { Media } from '@/payload-types'
+import ContactForm from '../../../../../components/ContactForm'
+import AccordionList from '../../../../../components/AccordionList'
+import type { Media, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
+import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -13,6 +15,96 @@ function mediaUrl(field: unknown): string | null {
   return null
 }
 
+function resolveHref(link: string | null | undefined, locale: string) {
+  if (!link) return '#'
+  if (link.startsWith('#')) return link
+  if (link.startsWith('/')) return `/${locale}${link}`
+  return `/${locale}/${link}`
+}
+
+function isPricingDoc(value: number | Pricing): value is Pricing {
+  return typeof value === 'object' && value !== null
+}
+
+function isServiceDoc(value: number | Service): value is Service {
+  return typeof value === 'object' && value !== null
+}
+
+function isCompactSpacing(block: unknown): boolean {
+  return typeof block === 'object' && block !== null && Boolean((block as { compactSpacing?: boolean }).compactSpacing)
+}
+
+function hexToRgb(hex: string) {
+  const sanitized = hex.replace('#', '').trim()
+  const normalized =
+    sanitized.length === 3
+      ? sanitized
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      : sanitized
+
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null
+
+  return {
+    r: Number.parseInt(normalized.slice(0, 2), 16),
+    g: Number.parseInt(normalized.slice(2, 4), 16),
+    b: Number.parseInt(normalized.slice(4, 6), 16),
+  }
+}
+
+function getOverlayTextTone(backgroundImageUrl: string | null, overlayColor: string, overlayOpacity: number) {
+  if (!backgroundImageUrl) return 'dark'
+
+  const rgb = hexToRgb(overlayColor)
+  if (!rgb) return 'light'
+
+  const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000
+  const effectiveBrightness = brightness * overlayOpacity + 255 * (1 - overlayOpacity)
+
+  return effectiveBrightness < 165 ? 'light' : 'dark'
+}
+
+function getDefaultPatientTypeOptions(locale: string) {
+  if (locale === 'uk') return [{ label: 'Новий пацієнт' }, { label: 'Існуючий пацієнт' }]
+  if (locale === 'en') return [{ label: 'New patient' }, { label: 'Existing patient' }]
+  return [{ label: 'Nuevo paciente' }, { label: 'Paciente existente' }]
+}
+
+function getDefaultReferralSourceOptions(locale: string) {
+  if (locale === 'uk') {
+    return [
+      { label: 'Instagram' },
+      { label: 'Google' },
+      { label: 'Facebook' },
+      { label: 'Рекомендація' },
+      { label: 'Інше' },
+    ]
+  }
+  if (locale === 'en') {
+    return [
+      { label: 'Instagram' },
+      { label: 'Google' },
+      { label: 'Facebook' },
+      { label: 'Recommendation' },
+      { label: 'Other' },
+    ]
+  }
+  return [
+    { label: 'Instagram' },
+    { label: 'Google' },
+    { label: 'Facebook' },
+    { label: 'Recomendación' },
+    { label: 'Otro' },
+  ]
+}
+
+type ContactData = SiteContact & {
+  socialLinks?: SiteSetting['socialLinks']
+}
+
+const primaryButtonClass = getButtonStyle('primary')
+
 export default async function ServicePage({
   params,
 }: {
@@ -21,95 +113,667 @@ export default async function ServicePage({
   const { locale, slug } = await params
   const payload = await getPayload({ config: configPromise })
 
-  // Шукаємо послугу за її slug та поточною мовою
   const { docs } = await payload.find({
     collection: 'services',
     where: {
       slug: { equals: slug },
     },
     locale: locale as 'es' | 'en' | 'uk',
+    fallbackLocale: false,
+    depth: 3,
+    limit: 1,
   })
 
   const service = docs[0]
-
   if (!service) return notFound()
 
+  let siteSettings: SiteSetting | null = null
+  try {
+    siteSettings = (await payload.findGlobal({
+      slug: 'site-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as SiteSetting
+  } catch (error) {
+    console.error('Error fetching site settings for service page:', error)
+  }
+
+  let siteContacts: SiteContact = {} as SiteContact
+  try {
+    siteContacts = (await payload.findGlobal({
+      slug: 'site-contacts',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as SiteContact
+  } catch (error) {
+    console.error('Error fetching site contacts for service page:', error)
+  }
+
+  const contacts: ContactData = {
+    ...siteContacts,
+    ...(siteSettings?.contacts || {}),
+    socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
+  }
+
+  const globalContact = siteSettings?.globalContactSection
+  const serviceLayout = service.layout || []
+
+  const copy = {
+    phoneLabel: siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono'),
+    emailLabel: siteSettings?.contacts?.emailLabel || 'Email',
+    addressLabel: siteSettings?.contacts?.addressLabel || (locale === 'uk' ? 'Адреса' : locale === 'en' ? 'Address' : 'Direccion'),
+    transportLabel:
+      siteSettings?.contacts?.transportLabel ||
+      (locale === 'uk' ? 'Як дістатися' : locale === 'en' ? 'How to get here' : 'Como llegar'),
+    socialLabel:
+      siteSettings?.contacts?.socialLabel ||
+      (locale === 'uk' ? 'Соцмережі' : locale === 'en' ? 'Social media' : 'Redes sociales'),
+    detailsLabel:
+      locale === 'uk' ? 'Детальніше' : locale === 'en' ? 'Learn more' : 'Mas informacion',
+  }
+
   return (
-    <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] pt-[140px] pb-[100px]">
-      <h1 className="text-[40px] max-[767px]:text-[28px] font-semibold text-[#22282b] mb-12 text-center">
-        {service.title}
-      </h1>
-
-      <div className="flex flex-col gap-16">
-        {service.layout?.map((block, index) => {
-          if (block.blockType === 'contentImage') {
-            const isRight = block.position === 'right'
+    <main>
+      {serviceLayout.map((block, idx) => {
+        switch (block.blockType) {
+          case 'hero': {
             const imageUrl = mediaUrl(block.image)
-            const isContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
-
+            const buttonClass = getButtonStyle(block.buttonStyle)
+            const theme = getBlockTheme(block.theme)
             return (
-              <div
-                key={index}
-                className={`page-services-row ${isRight ? 'page-services-row-L' : 'page-services-row-R'} flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col`}
-              >
-                <div
-                  className={`page-services-row-photo w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${
-                    isRight ? 'order-2 max-[991px]:order-1' : 'order-1'
-                  } ${isContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}
-                >
-                  <div className={isContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
-                    {imageUrl ? (
-                      <img src={imageUrl} alt={service.title} className="w-full h-full object-cover block" />
-                    ) : (
-                      <div className="w-full h-full bg-[#e8e0d8]" />
+              <section key={block.id || idx} className={`pt-[10px] ${theme.section}`}>
+                <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`}>
+                    <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
+                      {block.title}
+                    </h1>
+                    {block.subtitle && (
+                      <p className="text-[18px] max-[767px]:text-[15px] text-[#909da2] mb-8 leading-relaxed">
+                        {block.subtitle}
+                      </p>
+                    )}
+                    {block.buttonText && (
+                      <div>
+                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                          {block.buttonText}
+                        </a>
+                      </div>
                     )}
                   </div>
-                </div>
-
-                <div
-                  className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 bg-[#fbf6f3] py-12 max-[1100px]:py-10 ${
-                    isRight
-                      ? 'page-services-row-L-text order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'
-                      : 'page-services-row-R-text order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'
-                  }`}
-                >
-                  <div className="prose max-w-none text-[#505a5e]">
-                    <RichText data={block.text} />
+                  <div className="w-1/2 max-[991px]:w-full relative overflow-hidden h-[clamp(400px,44vw,640px)] max-[991px]:h-auto max-[991px]:min-h-[300px] max-[991px]:aspect-[4/3]">
+                    {imageUrl ? <img src={imageUrl} alt={block.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
-              </div>
+              </section>
             )
           }
 
-          if (block.blockType === 'accordion') {
+          case 'content': {
+            const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
+            const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
+            const hasBackgroundImage = Boolean(backgroundImageUrl)
+            const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
+              ? (block as { overlayColor?: string }).overlayColor
+              : '#000000'
+            const overlayOpacityValue = typeof (block as { overlayOpacity?: unknown }).overlayOpacity === 'number'
+              ? (block as { overlayOpacity?: number }).overlayOpacity
+              : 35
+            const overlayOpacity = Math.min(100, Math.max(0, overlayOpacityValue ?? 35)) / 100
+            const textTone = getOverlayTextTone(backgroundImageUrl, overlayColor || '#000000', overlayOpacity)
+            const isLightText = textTone === 'light'
+
             return (
-              <details
-                key={index}
-                className="group rounded-[20px] bg-[#f4ede7] border border-[#3c5557]/10 p-6 cursor-pointer"
+              <section
+                key={block.id || idx}
+                className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
               >
-                <summary className="text-[22px] max-[767px]:text-[18px] font-semibold text-[#22282b] list-none flex justify-between items-center gap-4">
-                  <span>{block.heading}</span>
-                  <span className="group-open:rotate-45 transition-transform text-2xl text-[#3c5557]">+</span>
-                </summary>
-                <div className="mt-4 prose max-w-none text-[#505a5e]">
-                  <RichText data={block.content} />
+                {backgroundImageUrl && (
+                  <>
+                    <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
+                  </>
+                )}
+                <div className={`relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
+                  {block.title && (
+                    <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold text-center ${hasBackgroundImage ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'} ${block.content ? 'mb-6' : 'mb-0'}`}>
+                      {block.title}
+                    </h2>
+                  )}
+                  {block.content && (
+                    <div
+                      className={`prose prose-lg max-w-none ${
+                        hasBackgroundImage
+                          ? isLightText
+                            ? 'prose-light'
+                            : 'prose-dark'
+                          : 'text-[#22282b]'
+                      }`}
+                    >
+                      <RichText data={block.content} />
+                    </div>
+                  )}
+                  {block.buttonText && (
+                    <div className="mt-6 text-center">
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
                 </div>
-              </details>
+              </section>
             )
           }
 
-          return null
-        })}
-      </div>
-    </div>
+          case 'contentImage': {
+            const imageUrl = mediaUrl(block.image)
+            const isImageLeft = (block.position || 'left') === 'left'
+            const isImageContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
+
+            return (
+              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
+                <div className={`w-1/2 max-[991px]:w-full h-[clamp(380px,42vw,620px)] max-[991px]:h-auto max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
+                  <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full overflow-hidden'}>
+                    {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                  </div>
+                </div>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                  {block.title && <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>}
+                  <div className="prose max-w-none text-[#22282b]">
+                    <RichText data={block.text} />
+                  </div>
+                  {block.buttonText && (
+                    <div className="mt-4">
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'cards': {
+            const compactSpacing = isCompactSpacing(block)
+            const itemLayout = block.itemLayout || 'column'
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
+            return (
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+                <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                  {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-8 max-[767px]:mb-6">{block.sectionTitle}</h2>}
+                  <div className="grid grid-cols-3 gap-x-8 gap-y-8 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-6 max-[1200px]:gap-y-6 max-[767px]:grid-cols-1 max-[767px]:gap-y-4">
+                    {block.items?.map((item, itemIndex) => {
+                      const iconUrl = mediaUrl(item.icon)
+                      return (
+                        <div
+                          key={item.id || itemIndex}
+                          className="relative h-full border-t border-[#3c5557]/[0.16] pt-4 max-[767px]:pt-3"
+                        >
+                          {(iconUrl || item.title) && (
+                            <div className={`flex ${itemLayout === 'row' ? 'items-start gap-3' : 'flex-col gap-2'} ${item.title ? 'mb-3' : 'mb-2'}`}>
+                              {iconUrl && (
+                                <div className="w-[38px] h-[38px] rounded-[12px] bg-[#3c5557]/[0.05] flex items-center justify-center shrink-0 mt-[2px]">
+                                  <img src={iconUrl} alt={item.title || 'Card icon'} className="w-[20px] h-[20px] object-contain shrink-0" />
+                                </div>
+                              )}
+                              {item.title && <h3 className="text-[17px] max-[767px]:text-[15px] font-semibold text-[#2d4447] mb-0 leading-snug tracking-[-0.01em]">{item.title}</h3>}
+                            </div>
+                          )}
+                          <div className="prose max-w-none text-[13.5px] leading-[1.65] text-[#5a666b] prose-p:my-0 prose-p:leading-[1.65] prose-li:my-1 prose-li:text-[13.5px] prose-li:leading-[1.65]">
+                            <RichText data={item.text} />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {block.buttonText && (
+                    <div className="mt-8 text-center">
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'steps': {
+            const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            return (
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+                <div className="max-w-[1100px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                  {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-10">{block.sectionTitle}</h2>}
+                  <div className="grid grid-cols-2 gap-6 max-[767px]:grid-cols-1">
+                    {block.items?.map((item, itemIndex) => (
+                      <div key={item.id || itemIndex} className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5`}>
+                        <div className="flex items-start gap-4">
+                          <div className="w-[42px] h-[42px] rounded-full bg-[#3c5557] text-white flex items-center justify-center text-[18px] font-semibold shrink-0">
+                            {itemIndex + 1}
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-[22px] max-[767px]:text-[19px] font-semibold text-[#3c5557] mb-3">{item.title}</h3>
+                            <div className="prose max-w-none text-[#505a5e]">
+                              <RichText data={item.text} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )
+          }
+
+          case 'faq': {
+            const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            const faqColumns = block.columns === 'two'
+            return (
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+                <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                  {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-10">{block.sectionTitle}</h2>}
+                  {block.intro && (
+                    <div className="prose prose-lg max-w-[760px] mx-auto text-[#505a5e] mb-10 text-center">
+                      <RichText data={block.intro} />
+                    </div>
+                  )}
+                  <AccordionList
+                    items={block.items}
+                    columns={faqColumns ? 2 : 1}
+                    itemClassName={`rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
+                    headingClassName="text-[18px] max-[767px]:text-[16px] font-semibold text-[#22282b]"
+                    iconClassName="text-[24px] text-[#3c5557]"
+                    contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
+                  />
+                </div>
+              </section>
+            )
+          }
+
+          case 'comparison': {
+            const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            const isSplitLayout = block.layoutStyle === 'split'
+            const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
+            const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
+              ? (block as { overlayColor?: string }).overlayColor
+              : '#000000'
+            const overlayOpacityValue = typeof (block as { overlayOpacity?: unknown }).overlayOpacity === 'number'
+              ? (block as { overlayOpacity?: number }).overlayOpacity
+              : 35
+            const overlayOpacity = Math.min(100, Math.max(0, overlayOpacityValue ?? 35)) / 100
+            const textTone = getOverlayTextTone(backgroundImageUrl, overlayColor || '#000000', overlayOpacity)
+            const isLightText = textTone === 'light'
+
+            if (isSplitLayout) {
+              return (
+                <section
+                  key={block.id || idx}
+                  className={`relative overflow-hidden ${compactSpacing ? 'py-[56px] max-[767px]:py-[40px]' : 'py-[110px] max-[767px]:py-[70px]'} ${backgroundImageUrl ? '' : theme.section}`}
+                >
+                  {backgroundImageUrl && (
+                    <>
+                      <img src={backgroundImageUrl} alt={block.sectionTitle || 'Comparison background'} className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
+                    </>
+                  )}
+                  <div className="relative z-10 max-w-[1120px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                    {block.sectionTitle && (
+                      <h2 className={`text-[34px] max-[767px]:text-[24px] font-semibold text-center mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>
+                        {block.sectionTitle}
+                      </h2>
+                    )}
+                    {block.intro && (
+                      <div className={`prose prose-lg max-w-[820px] mx-auto text-center mb-12 ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                        <RichText data={block.intro} />
+                      </div>
+                    )}
+                    <div className="grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-x-10 items-start max-[767px]:grid-cols-1 max-[767px]:gap-y-8">
+                      <div className={backgroundImageUrl && isLightText ? 'text-white' : ''}>
+                        <h3 className={`text-[24px] max-[767px]:text-[20px] font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.leftColumnTitle}</h3>
+                        <ul className="m-0 p-0 list-none flex flex-col gap-4">
+                          {block.leftItems?.map((item, itemIndex) => (
+                            <li key={item.id || itemIndex} className={`text-[16px] leading-relaxed pl-5 relative before:content-['•'] before:absolute before:left-0 before:top-0 ${backgroundImageUrl ? (isLightText ? 'text-white/90 before:text-white' : 'text-[#22282b] before:text-[#22282b]') : 'text-[#505a5e] before:text-[#3c5557]'}`}>
+                              {item.text}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className={`w-px self-stretch ${backgroundImageUrl ? (isLightText ? 'bg-white/30 max-[767px]:hidden' : 'bg-[#22282b]/20 max-[767px]:hidden') : 'bg-[#3c5557]/15 max-[767px]:hidden'}`} />
+                      <div className={backgroundImageUrl && isLightText ? 'text-white' : ''}>
+                        <h3 className={`text-[24px] max-[767px]:text-[20px] font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.rightColumnTitle}</h3>
+                        <ul className="m-0 p-0 list-none flex flex-col gap-4">
+                          {block.rightItems?.map((item, itemIndex) => (
+                            <li key={item.id || itemIndex} className={`text-[16px] leading-relaxed pl-5 relative before:content-['•'] before:absolute before:left-0 before:top-0 ${backgroundImageUrl ? (isLightText ? 'text-white/90 before:text-white' : 'text-[#22282b] before:text-[#22282b]') : 'text-[#505a5e] before:text-[#3c5557]'}`}>
+                              {item.text}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    {block.conclusion && (
+                      <div className={`prose prose-lg max-w-[820px] mx-auto text-center mt-12 ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                        <RichText data={block.conclusion} />
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )
+            }
+
+            return (
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+                <div className="max-w-[1100px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                  {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-6">{block.sectionTitle}</h2>}
+                  {block.intro && (
+                    <div className="prose prose-lg max-w-[900px] mx-auto text-[#505a5e] mb-10">
+                      <RichText data={block.intro} />
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-6 max-[767px]:grid-cols-1">
+                    <div className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`}>
+                      <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-5">{block.leftColumnTitle}</h3>
+                      <ul className="m-0 p-0 list-none flex flex-col gap-3">
+                        {block.leftItems?.map((item, itemIndex) => (
+                          <li key={item.id || itemIndex} className="pl-6 relative text-[16px] leading-relaxed text-[#505a5e] before:content-['-'] before:absolute before:left-0 before:text-[#3c5557] before:font-semibold">
+                            {item.text}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={`rounded-[24px] ${theme.panelAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`}>
+                      <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-5">{block.rightColumnTitle}</h3>
+                      <ul className="m-0 p-0 list-none flex flex-col gap-3">
+                        {block.rightItems?.map((item, itemIndex) => (
+                          <li key={item.id || itemIndex} className="pl-6 relative text-[16px] leading-relaxed text-[#505a5e] before:content-['-'] before:absolute before:left-0 before:text-[#3c5557] before:font-semibold">
+                            {item.text}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  {block.conclusion && (
+                    <div className="prose prose-lg max-w-[900px] mx-auto text-[#505a5e] mt-10">
+                      <RichText data={block.conclusion} />
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'contentAccordion': {
+            const imageUrl = mediaUrl(block.image)
+            const isImageLeft = (block.position || 'left') === 'left'
+            const theme = getBlockTheme(block.theme)
+
+            return (
+              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
+                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                  {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                </div>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                  {block.title && <h2 className="text-[28px] max-[767px]:text-[22px] font-semibold text-[#3c5557]">{block.title}</h2>}
+                  {block.intro && (
+                    <div className="prose max-w-none text-[#505a5e]">
+                      <RichText data={block.intro} />
+                    </div>
+                  )}
+                  <AccordionList
+                    items={block.items}
+                    itemClassName={`w-full rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
+                    headingClassName="text-[18px] max-[767px]:text-[16px] font-semibold text-[#22282b]"
+                    iconClassName="text-[24px] text-[#3c5557]"
+                    contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
+                  />
+                </div>
+              </section>
+            )
+          }
+
+          case 'cta': {
+            const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
+            const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
+              ? (block as { overlayColor?: string }).overlayColor
+              : '#000000'
+            const overlayOpacityValue = typeof (block as { overlayOpacity?: unknown }).overlayOpacity === 'number'
+              ? (block as { overlayOpacity?: number }).overlayOpacity
+              : 35
+            const overlayOpacity = Math.min(100, Math.max(0, overlayOpacityValue ?? 35)) / 100
+            const textTone = getOverlayTextTone(backgroundImageUrl, overlayColor || '#000000', overlayOpacity)
+            const isLightText = textTone === 'light'
+
+            return (
+              <section key={block.id || idx} className={`relative overflow-hidden py-[100px] max-[767px]:py-[64px] ${backgroundImageUrl ? '' : theme.section}`}>
+                {backgroundImageUrl && (
+                  <>
+                    <img src={backgroundImageUrl} alt={block.title || 'CTA background'} className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
+                  </>
+                )}
+                <div className="relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] text-center">
+                  {block.title && <h2 className={`text-[34px] max-[767px]:text-[24px] font-semibold mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>{block.title}</h2>}
+                  {block.content && (
+                    <div className={`prose prose-lg max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                      <RichText data={block.content} />
+                    </div>
+                  )}
+                  {block.buttonText && (
+                    <div className="mt-8">
+                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'pricingGroupShowcase': {
+            const pricingGroup = isPricingDoc(block.pricingGroup) ? block.pricingGroup : null
+            const imageUrl = mediaUrl(block.image)
+            const isImageLeft = (block.position || 'left') === 'left'
+            const theme = getBlockTheme(block.theme)
+
+            if (!pricingGroup) return null
+
+            return (
+              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
+                <div className={`w-1/2 max-[991px]:w-full h-[clamp(380px,42vw,620px)] max-[991px]:h-auto max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                  {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                </div>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                  <div className="flex flex-col gap-3">
+                    <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
+                      {pricingGroup.title}
+                    </h2>
+                    {pricingGroup.description && (
+                      <div className="prose max-w-none text-[#5d676b] prose-p:my-0 prose-p:leading-relaxed">
+                        <RichText data={pricingGroup.description} />
+                      </div>
+                    )}
+                  </div>
+
+                  {pricingGroup.items && pricingGroup.items.length > 0 && (
+                    <div className="flex flex-col">
+                      {pricingGroup.items.map((item, itemIndex) => {
+                        const linkedService = item.servicePage && isServiceDoc(item.servicePage) ? item.servicePage : null
+                        return (
+                          <div
+                            key={item.id || itemIndex}
+                            className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-5 gap-y-2 items-center border-b border-[#22282b]/10 py-2 last:border-b-0 max-[767px]:grid-cols-[minmax(0,1fr)_auto] max-[767px]:gap-x-3 max-[767px]:gap-y-2 max-[767px]:items-start max-[767px]:py-3"
+                          >
+                            <div className="min-w-0 pr-2">
+                              {linkedService ? (
+                                <a
+                                  href={`/${locale}/services/${linkedService.slug}`}
+                                  className="block mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug hover:text-[#3c5557] transition-colors no-underline"
+                                >
+                                  {item.serviceName}
+                                </a>
+                              ) : (
+                                <h3 className="mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug">
+                                  {item.serviceName}
+                                </h3>
+                              )}
+                              {item.note && (
+                                <p className="text-[13px] text-[#7a8489] mt-0 leading-relaxed italic">
+                                  {item.note}
+                                </p>
+                              )}
+                              {linkedService && (
+                                <a
+                                  href={`/${locale}/services/${linkedService.slug}`}
+                                  className="inline-flex mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#3c5557] hover:opacity-80 no-underline"
+                                >
+                                  {pricingGroup.detailsLinkLabel || copy.detailsLabel}
+                                </a>
+                              )}
+                            </div>
+                            <div className="justify-self-end self-center max-[767px]:justify-self-start">
+                              <div className="inline-flex items-center px-0 py-0 text-[15px] max-[767px]:text-[14px] font-semibold text-[#3c5557] whitespace-nowrap">
+                                {item.pricePrefix ? `${item.pricePrefix} ` : ''}
+                                {item.price}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'globalContactSection': {
+            const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            return (
+              <section
+                key={block.id || idx}
+                id="contact_us"
+                className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
+              >
+                <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
+                  <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-6 text-[#22282b]">
+                      {siteSettings?.contacts?.sectionTitle || (locale === 'uk' ? 'Контакти' : locale === 'en' ? 'Contact' : 'Contacto')}
+                    </h2>
+                    {siteSettings?.contacts?.sectionDescription && (
+                      <div className="text-[15px] text-[#909da2] leading-relaxed mb-8 prose max-w-none">
+                        {typeof siteSettings.contacts.sectionDescription === 'string' ? (
+                          <p>{siteSettings.contacts.sectionDescription}</p>
+                        ) : (
+                          <RichText data={siteSettings.contacts.sectionDescription} />
+                        )}
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-6 text-[#22282b]">
+                      {contacts.email && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.emailLabel}</span>
+                          <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.email}</a>
+                        </div>
+                      )}
+                      {contacts.phone && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.phoneLabel}</span>
+                          <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.phone}</a>
+                        </div>
+                      )}
+                      {contacts.address && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.addressLabel}</span>
+                          <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                        </div>
+                      )}
+                      {contacts.transport && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.transportLabel}</span>
+                          <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                        </div>
+                      )}
+                      {contacts.socialLinks && contacts.socialLinks.length > 0 && (
+                        <div className="flex flex-col gap-2 mt-2">
+                          <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.socialLabel}</span>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            {contacts.socialLinks.map((link, linkIndex) => (
+                              <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-medium text-[#3c5557] hover:opacity-80 no-underline">
+                                {link.platform}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.card} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                    {(globalContact?.formTitle || globalContact?.formDescription) && (
+                      <div className="mb-6">
+                        {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
+                        {globalContact?.formDescription && (
+                          <div className="text-[#909da2] prose max-w-none">
+                            <RichText data={globalContact.formDescription} />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <ContactForm
+                      locale={locale}
+                      fullNamePlaceholder={globalContact?.fullNamePlaceholder || (locale === 'uk' ? 'ПІБ' : locale === 'en' ? 'Full name' : 'Nombre completo')}
+                      phonePlaceholder={globalContact?.phonePlaceholder || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono')}
+                      emailPlaceholder={globalContact?.emailPlaceholder || 'Email'}
+                      patientTypePlaceholder={globalContact?.patientTypePlaceholder || (locale === 'uk' ? 'Я:' : locale === 'en' ? 'I am:' : 'Soy:')}
+                      referralSourcePlaceholder={globalContact?.referralSourcePlaceholder || (locale === 'uk' ? 'Дізнався про вас:' : locale === 'en' ? 'How did you hear about us:' : 'Como nos conociste:')}
+                      commentPlaceholder={globalContact?.commentPlaceholder || (locale === 'uk' ? 'Коментар' : locale === 'en' ? 'Comment' : 'Comentario')}
+                      submitButtonLabel={globalContact?.submitButtonLabel || (locale === 'uk' ? 'Надіслати' : locale === 'en' ? 'Send' : 'Enviar')}
+                      successMessage={globalContact?.successMessage || (locale === 'uk' ? 'Дякуємо! Ваше повідомлення успішно надіслано.' : locale === 'en' ? 'Thank you. Your message has been sent successfully.' : 'Gracias. Su mensaje ha sido enviado correctamente.')}
+                      errorMessage={globalContact?.errorMessage || (locale === 'uk' ? 'Не вдалося надіслати форму. Спробуйте ще раз.' : locale === 'en' ? 'The form could not be submitted. Please try again.' : 'No se pudo enviar el formulario. Intentelo de nuevo.')}
+                      patientTypeOptions={
+                        (globalContact as { patientTypes?: Array<{ id?: string | null; label: string }> } | undefined)
+                          ?.patientTypes?.length
+                          ? (
+                              globalContact as { patientTypes?: Array<{ id?: string | null; label: string }> }
+                            ).patientTypes!.map((option) => ({ id: option.id, label: option.label }))
+                          : getDefaultPatientTypeOptions(locale)
+                      }
+                      referralSourceOptions={
+                        (globalContact as { refSources?: Array<{ id?: string | null; label: string }> } | undefined)
+                          ?.refSources?.length
+                          ? (
+                              globalContact as { refSources?: Array<{ id?: string | null; label: string }> }
+                            ).refSources!.map((option) => ({ id: option.id, label: option.label }))
+                          : getDefaultReferralSourceOptions(locale)
+                      }
+                    />
+                  </div>
+                </div>
+              </section>
+            )
+          }
+
+          default:
+            return null
+        }
+      })}
+    </main>
   )
 }
 
-// Функція для генерації статичних шляхів під час білду (для швидкості та SEO)
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
-  
-  // Отримуємо всі послуги з бази
+
   const services = await payload.find({
     collection: 'services',
     limit: 100,
@@ -118,7 +782,6 @@ export async function generateStaticParams() {
   const locales = ['es', 'en', 'uk']
   const params: { locale: string; slug: string }[] = []
 
-  // Генеруємо комбінації: мова + послуга
   services.docs.forEach((service) => {
     locales.forEach((locale) => {
       params.push({ locale, slug: service.slug as string })

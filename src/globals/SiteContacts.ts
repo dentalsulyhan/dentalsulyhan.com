@@ -84,6 +84,11 @@ export const SiteContacts: GlobalConfig = {
     {
       name: 'socialLinks',
       type: 'array',
+      admin: {
+        components: {
+          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+        },
+      },
       label: {
         en: 'Social Media Links',
         uk: 'Соціальні мережі',

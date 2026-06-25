@@ -1,7 +1,4 @@
-import './(frontend)/[locale]/null.css'
-import './(frontend)/[locale]/style.css'
-import './(frontend)/[locale]/adaptive.css'
-import './(frontend)/[locale]/globals.css'
+import './frontend.css'
 import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
