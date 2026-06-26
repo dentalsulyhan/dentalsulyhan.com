@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LinkJSXConverter, RichText } from '@payloadcms/richtext-lexical/react'
 import type { Media } from '@/payload-types'
+import { buildLocalizedPath } from '@/lib/localizedRouting'
 
 type SplitNotFoundContent = {
   title?: string | null
@@ -62,19 +63,19 @@ function mediaUrl(field: unknown): string | null {
 function internalDocToHref({ linkNode }: { linkNode: any }) {
   const doc = linkNode?.fields?.doc?.value
   const relationTo = linkNode?.fields?.doc?.relationTo
-  const slug = typeof doc === 'object' && doc ? doc.slug : null
+  const slug = typeof doc === 'object' && doc ? (doc.path || doc.slug) : null
 
   if (!slug) return '#'
 
   if (relationTo === 'pages') {
-    return slug === 'home' ? '/' : `/${slug}`
+    return buildLocalizedPath(detectLocale(window.location.pathname), slug === 'home' ? '/' : `/${slug}`)
   }
 
   if (relationTo === 'services') {
-    return slug === 'home' ? '/services' : `/services/${slug}`
+    return buildLocalizedPath(detectLocale(window.location.pathname), `/services/${slug}`)
   }
 
-  return `/${slug}`
+  return buildLocalizedPath(detectLocale(window.location.pathname), `/${slug}`)
 }
 
 export default function FrontendNotFound({ locale: forcedLocale, splitContent }: FrontendNotFoundProps = {}) {
@@ -121,7 +122,7 @@ export default function FrontendNotFound({ locale: forcedLocale, splitContent }:
               </div>
               {splitContent.buttonText && (
                 <div>
-                  <Link href={splitContent.buttonLink || `/${locale}`} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#3c5557] text-[#3c5557] text-[15px] font-medium hover:bg-[#3c5557] hover:text-white transition-colors no-underline bg-white/80">
+                  <Link href={splitContent.buttonLink || buildLocalizedPath(locale, '/')} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#3c5557] text-[#3c5557] text-[15px] font-medium hover:bg-[#3c5557] hover:text-white transition-colors no-underline bg-white/80">
                     {splitContent.buttonText}
                   </Link>
                 </div>
@@ -146,13 +147,13 @@ export default function FrontendNotFound({ locale: forcedLocale, splitContent }:
               {t.text}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={`/${locale}`} className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#3c5557] text-white border border-[#3c5557] text-[15px] font-medium hover:bg-transparent hover:text-[#3c5557] transition-colors no-underline">
+              <Link href={buildLocalizedPath(locale, '/')} className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#3c5557] text-white border border-[#3c5557] text-[15px] font-medium hover:bg-transparent hover:text-[#3c5557] transition-colors no-underline">
                 {t.home}
               </Link>
-              <Link href={`/${locale}/services`} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
+              <Link href={buildLocalizedPath(locale, '/services')} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
                 {t.services}
               </Link>
-              <Link href={`/${locale}/#contact_us`} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
+              <Link href={buildLocalizedPath(locale, '/#contact_us')} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
                 {t.contact}
               </Link>
             </div>

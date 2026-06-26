@@ -3,7 +3,8 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
+import type { HeaderFooter, Page, SiteContact, SiteSetting } from '@/payload-types'
+import { getDesignSettingsVars } from '@/lib/designSettings'
 
 export default async function FrontendLayout({
   children,
@@ -54,9 +55,39 @@ export default async function FrontendLayout({
     console.error('Error fetching site-contacts global:', err)
   }
 
+  let designSettings: Record<string, unknown> | null = null
+  try {
+    designSettings = (await payload.findGlobal({
+      slug: 'design-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as unknown as Record<string, unknown>
+  } catch (err) {
+    console.error('Error fetching design-settings global:', err)
+  }
+
   const sharedMenuItems = siteSettings?.menuItems?.length
     ? siteSettings.menuItems
     : (headerFooter?.menuItems || [])
+
+  let servicesPage: Page | null = null
+  try {
+    const servicesPageResult = await payload.find({
+      collection: 'pages',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      where: {
+        slug: {
+          equals: 'services',
+        },
+      },
+      limit: 1,
+    })
+    servicesPage = (servicesPageResult.docs[0] as Page | undefined) || null
+  } catch (err) {
+    console.error('Error fetching services page path:', err)
+  }
+
+  const servicesPath = `/${servicesPage?.path || 'services'}`
   const headerData = {
     ...(headerFooter?.header || {}),
     ...(siteSettings?.header || {}),
@@ -74,8 +105,8 @@ export default async function FrontendLayout({
   }
 
   return (
-    <>
-      <Header data={headerData} contacts={contactsData} currentLocale={locale} />
+    <div style={getDesignSettingsVars(designSettings)}>
+      <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} />
 
       <main className="flex-grow pt-[70px]">
         {children}
@@ -86,7 +117,8 @@ export default async function FrontendLayout({
         contacts={contactsData}
         headerLogo={headerData.logo} 
         currentLocale={locale} 
+        servicesPath={servicesPath}
       />
-    </>
+    </div>
   )
 }

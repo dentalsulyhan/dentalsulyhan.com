@@ -6,6 +6,8 @@ import ContactForm from '../../../../../components/ContactForm'
 import AccordionList from '../../../../../components/AccordionList'
 import type { Media, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
 import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
+import { buildLocalizedPath } from '@/lib/localizedRouting'
+import { resolveInternalHref } from '@/lib/internalLinkResolver'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -13,13 +15,6 @@ function mediaUrl(field: unknown): string | null {
     return (field as Media).url ?? null
   }
   return null
-}
-
-function resolveHref(link: string | null | undefined, locale: string) {
-  if (!link) return '#'
-  if (link.startsWith('#')) return link
-  if (link.startsWith('/')) return `/${locale}${link}`
-  return `/${locale}/${link}`
 }
 
 function isPricingDoc(value: number | Pricing): value is Pricing {
@@ -65,6 +60,51 @@ function getOverlayTextTone(backgroundImageUrl: string | null, overlayColor: str
   return effectiveBrightness < 165 ? 'light' : 'dark'
 }
 
+function getCenteredGridClass(columns: '2' | '3' | '4', itemIndex: number, totalItems: number) {
+  return getGridItemClass(columns, itemIndex, totalItems, 'center')
+}
+
+function getGridItemClass(
+  columns: '2' | '3' | '4',
+  itemIndex: number,
+  totalItems: number,
+  incompleteRowAlignment: 'center' | 'start' = 'center',
+) {
+  const columnCount = Number(columns)
+  const remainder = totalItems % columnCount
+  const baseClass = columns === '2' ? 'col-span-6' : columns === '3' ? 'col-span-4' : 'col-span-3'
+
+  if (incompleteRowAlignment === 'start') return baseClass
+
+  if (remainder === 0 || totalItems <= columnCount) return baseClass
+
+  const lastRowStart = totalItems - remainder
+  if (itemIndex < lastRowStart) return baseClass
+
+  const offset = itemIndex - lastRowStart
+
+  if (columns === '2' && remainder === 1) return `${baseClass} col-start-4`
+
+  if (columns === '3') {
+    if (remainder === 1) return `${baseClass} col-start-5`
+    if (remainder === 2) return offset === 0 ? `${baseClass} col-start-3` : `${baseClass} col-start-7`
+  }
+
+  if (columns === '4') {
+    if (remainder === 1) return `${baseClass} col-start-5`
+    if (remainder === 2) return offset === 0 ? `${baseClass} col-start-3` : `${baseClass} col-start-7`
+    if (remainder === 3) {
+      return offset === 0
+        ? `${baseClass} col-start-2`
+        : offset === 1
+          ? `${baseClass} col-start-5`
+          : `${baseClass} col-start-8`
+    }
+  }
+
+  return baseClass
+}
+
 function getDefaultPatientTypeOptions(locale: string) {
   if (locale === 'uk') return [{ label: 'Новий пацієнт' }, { label: 'Існуючий пацієнт' }]
   if (locale === 'en') return [{ label: 'New patient' }, { label: 'Existing patient' }]
@@ -105,18 +145,44 @@ type ContactData = SiteContact & {
 
 const primaryButtonClass = getButtonStyle('primary')
 
-export default async function ServicePage({
-  params,
+export async function ServiceDetailPageContent({
+  locale,
+  slug,
 }: {
-  params: Promise<{ locale: string; slug: string }>
+  locale: string
+  slug: string
 }) {
-  const { locale, slug } = await params
   const payload = await getPayload({ config: configPromise })
+  const [allPagesResult, allServicesResult] = await Promise.all([
+    payload.find({
+      collection: 'pages',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 200,
+    }),
+    payload.find({
+      collection: 'services',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 200,
+    }),
+  ])
+
+  const pagePaths = Object.fromEntries(
+    allPagesResult.docs
+      .filter((page) => typeof page.slug === 'string' && typeof page.path === 'string')
+      .map((page) => [page.slug, { path: page.slug === 'home' ? '/' : `/${page.path}` }]),
+  )
+  const servicePaths = Object.fromEntries(
+    allServicesResult.docs
+      .filter((service) => typeof service.slug === 'string' && typeof service.path === 'string')
+      .map((service) => [service.slug, { path: service.path }]),
+  )
 
   const { docs } = await payload.find({
     collection: 'services',
     where: {
-      slug: { equals: slug },
+      path: { equals: slug },
     },
     locale: locale as 'es' | 'en' | 'uk',
     fallbackLocale: false,
@@ -126,6 +192,27 @@ export default async function ServicePage({
 
   const service = docs[0]
   if (!service) return notFound()
+  const servicePageResult = await payload.find({
+    collection: 'pages',
+    locale: locale as 'es' | 'en' | 'uk',
+    fallbackLocale: false,
+    where: {
+      slug: {
+        equals: 'services',
+      },
+    },
+    limit: 1,
+  })
+  const servicesPage = servicePageResult.docs[0]
+  const servicesBasePath = `/${servicesPage?.path || 'services'}`
+  const resolveHref = (link: string | null | undefined) =>
+    resolveInternalHref({
+      link,
+      locale,
+      pagePaths,
+      servicePaths,
+      servicesPagePath: servicesBasePath,
+    })
 
   let siteSettings: SiteSetting | null = null
   try {
@@ -192,7 +279,7 @@ export default async function ServicePage({
                     )}
                     {block.buttonText && (
                       <div>
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -254,7 +341,7 @@ export default async function ServicePage({
                   )}
                   {block.buttonText && (
                     <div className="mt-6 text-center">
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -285,9 +372,80 @@ export default async function ServicePage({
                   </div>
                   {block.buttonText && (
                     <div className="mt-4">
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case 'advantages': {
+            const isRowLayout = (block.itemLayout || 'column') === 'row'
+            const compactSpacing = isCompactSpacing(block)
+            const theme = getBlockTheme(block.theme)
+            const buttonClass = getButtonStyle(block.buttonStyle)
+            const desktopColumns = (block as { columns?: '2' | '3' | '4' }).columns || '3'
+            const incompleteRowAlignment =
+              (block as { incompleteRowAlignment?: 'center' | 'start' }).incompleteRowAlignment || 'center'
+            const items = block.items || []
+            return (
+              <section
+                key={block.id || idx}
+                className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
+              >
+                <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                  {block.sectionTitle && (
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] text-[#3c5557]">
+                      {block.sectionTitle}
+                    </h2>
+                  )}
+                  {block.subtitle && (
+                    <div className="prose prose-lg max-w-[760px] mx-auto text-[#505a5e] text-center mb-10">
+                      <RichText data={block.subtitle} />
+                    </div>
+                  )}
+                  <div className="grid grid-cols-12 gap-x-8 gap-y-10 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-8 max-[1200px]:gap-y-8 max-[767px]:grid-cols-1 max-[767px]:gap-y-6">
+                    {items.map((item, itemIndex) => {
+                      const iconUrl = mediaUrl(item.icon)
+                      return (
+                        <div
+                          key={item.id || itemIndex}
+                          className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 max-[767px]:items-start max-[767px]:text-left`}
+                        >
+                          <div className={`flex w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center gap-4 text-left' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'}`}`}>
+                            {iconUrl ? (
+                              <img src={iconUrl} alt={item.title || 'Advantage icon'} className="w-auto h-[50px] shrink-0" />
+                            ) : (
+                              <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
+                                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
+                                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="currentColor"/>
+                                </svg>
+                              </div>
+                            )}
+                            {item.title && <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
+                          </div>
+                          {item.text && (
+                            <div className="text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]">
+                              <RichText data={item.text} />
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {block.buttonText && (
+                    <div className="mt-[50px] text-center">
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
+                        {block.buttonText}
+                      </a>
+                    </div>
+                  )}
+                  {block.bottomText && (
+                    <div className="prose prose-lg max-w-[760px] mx-auto text-[#505a5e] text-center mt-10">
+                      <RichText data={block.bottomText} />
                     </div>
                   )}
                 </div>
@@ -300,38 +458,44 @@ export default async function ServicePage({
             const itemLayout = block.itemLayout || 'column'
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
+            const items = block.items || []
+            const desktopColumns = (block as { columns?: '2' | '3' | '4' }).columns || '4'
+            const incompleteRowAlignment =
+              (block as { incompleteRowAlignment?: 'center' | 'start' }).incompleteRowAlignment || 'center'
             return (
               <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-8 max-[767px]:mb-6">{block.sectionTitle}</h2>}
-                  <div className="grid grid-cols-3 gap-x-8 gap-y-8 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-6 max-[1200px]:gap-y-6 max-[767px]:grid-cols-1 max-[767px]:gap-y-4">
-                    {block.items?.map((item, itemIndex) => {
+                  <div className="grid grid-cols-12 gap-x-6 gap-y-8 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-6 max-[1200px]:gap-y-6 max-[767px]:grid-cols-1 max-[767px]:gap-y-4">
+                    {items.map((item, itemIndex) => {
                       const iconUrl = mediaUrl(item.icon)
                       return (
                         <div
                           key={item.id || itemIndex}
-                          className="relative h-full border-t border-[#3c5557]/[0.16] pt-4 max-[767px]:pt-3"
+                          className={`relative h-full border-t border-[#3c5557]/[0.16] pt-4 max-[767px]:pt-3 ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1`}
                         >
                           {(iconUrl || item.title) && (
-                            <div className={`flex ${itemLayout === 'row' ? 'items-start gap-3' : 'flex-col gap-2'} ${item.title ? 'mb-3' : 'mb-2'}`}>
+                            <div className={`flex ${itemLayout === 'row' ? `items-start ${item.title ? 'gap-3' : 'gap-2'}` : `flex-col ${item.title ? 'gap-2' : 'gap-1'}`} ${item.title ? 'mb-3' : 'mb-2'}`}>
                               {iconUrl && (
-                                <div className="w-[38px] h-[38px] rounded-[12px] bg-[#3c5557]/[0.05] flex items-center justify-center shrink-0 mt-[2px]">
+                                <div className={`w-[38px] h-[38px] rounded-[12px] bg-[#3c5557]/[0.05] flex items-center justify-center shrink-0 ${item.title ? 'mt-[2px]' : 'mt-0'}`}>
                                   <img src={iconUrl} alt={item.title || 'Card icon'} className="w-[20px] h-[20px] object-contain shrink-0" />
                                 </div>
                               )}
-                              {item.title && <h3 className="text-[17px] max-[767px]:text-[15px] font-semibold text-[#2d4447] mb-0 leading-snug tracking-[-0.01em]">{item.title}</h3>}
+                              {item.title && <h3 className="text-[16px] max-[767px]:text-[14px] font-semibold text-[#2d4447] mb-0 leading-snug tracking-[-0.01em]">{item.title}</h3>}
                             </div>
                           )}
-                          <div className="prose max-w-none text-[13.5px] leading-[1.65] text-[#5a666b] prose-p:my-0 prose-p:leading-[1.65] prose-li:my-1 prose-li:text-[13.5px] prose-li:leading-[1.65]">
-                            <RichText data={item.text} />
-                          </div>
+                          {item.text && (
+                            <div className="prose max-w-none text-[13px] leading-[1.6] text-[#5a666b] prose-p:my-0 prose-p:text-[13px] prose-p:leading-[1.6] prose-li:my-1 prose-li:text-[13px] prose-li:leading-[1.6]">
+                              <RichText data={item.text} />
+                            </div>
+                          )}
                         </div>
                       )
                     })}
                   </div>
                   {block.buttonText && (
                     <div className="mt-8 text-center">
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -568,7 +732,7 @@ export default async function ServicePage({
                   )}
                   {block.buttonText && (
                     <div className="mt-8">
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -615,7 +779,10 @@ export default async function ServicePage({
                             <div className="min-w-0 pr-2">
                               {linkedService ? (
                                 <a
-                                  href={`/${locale}/services/${linkedService.slug}`}
+                                  href={buildLocalizedPath(
+                                    locale,
+                                    `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
+                                  )}
                                   className="block mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug hover:text-[#3c5557] transition-colors no-underline"
                                 >
                                   {item.serviceName}
@@ -632,7 +799,10 @@ export default async function ServicePage({
                               )}
                               {linkedService && (
                                 <a
-                                  href={`/${locale}/services/${linkedService.slug}`}
+                                  href={buildLocalizedPath(
+                                    locale,
+                                    `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
+                                  )}
                                   className="inline-flex mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#3c5557] hover:opacity-80 no-underline"
                                 >
                                   {pricingGroup.detailsLinkLabel || copy.detailsLabel}
@@ -718,7 +888,7 @@ export default async function ServicePage({
                     </div>
                   </div>
 
-                  <div className={`w-1/2 max-[991px]:w-full ${theme.card} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
                     {(globalContact?.formTitle || globalContact?.formDescription) && (
                       <div className="mb-6">
                         {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
@@ -771,22 +941,34 @@ export default async function ServicePage({
   )
 }
 
+export default async function ServicePage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>
+}) {
+  const { locale, slug } = await params
+  return ServiceDetailPageContent({ locale, slug })
+}
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
-
-  const services = await payload.find({
-    collection: 'services',
-    limit: 100,
-  })
-
   const locales = ['es', 'en', 'uk']
   const params: { locale: string; slug: string }[] = []
 
-  services.docs.forEach((service) => {
-    locales.forEach((locale) => {
-      params.push({ locale, slug: service.slug as string })
+  for (const locale of locales) {
+    const services = await payload.find({
+      collection: 'services',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 100,
     })
-  })
+
+    services.docs.forEach((service) => {
+      if (typeof service.path === 'string' && service.path) {
+        params.push({ locale, slug: service.path })
+      }
+    })
+  }
 
   return params
 }

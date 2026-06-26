@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { HeaderFooter, SiteContact } from '@/payload-types'
+import { buildLocalizedPath, stripLocalePrefix } from '@/lib/localizedRouting'
 
 type ContactData = Partial<SiteContact> & {
   socialLinks?: SiteContact['socialLinks']
@@ -15,21 +16,32 @@ interface HeaderProps {
   }
   contacts: ContactData
   currentLocale: string
+  servicesPath?: string
 }
 
-export default function Header({ data, contacts, currentLocale }: HeaderProps) {
+export default function Header({ data, contacts, currentLocale, servicesPath = '/services' }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [localeLinks, setLocaleLinks] = useState<Record<string, string> | null>(null)
   const pathname = usePathname()
 
   const locales = ['es', 'en', 'uk']
   const langNames: Record<string, string> = { es: 'ESP', en: 'ENG', uk: 'УКР' }
+  const localizedServicesPath = buildLocalizedPath(currentLocale, servicesPath)
+
+  const resolveMenuLink = (link?: string | null) => {
+    if (!link) return '#'
+    if (link === '/services') return localizedServicesPath
+    if (link.startsWith('#')) return link
+    return buildLocalizedPath(currentLocale, link)
+  }
 
   const switchLanguage = (newLocale: string) => {
-    const segments = pathname.split('/')
-    // Index 1 is always the locale since we're in [locale] dynamic route group
-    segments[1] = newLocale
-    return segments.join('/')
+    if (localeLinks?.[newLocale]) {
+      return localeLinks[newLocale]
+    }
+
+    return buildLocalizedPath(newLocale, stripLocalePrefix(pathname))
   }
 
   // Scroll listener to toggle header background styling
@@ -59,6 +71,32 @@ export default function Header({ data, contacts, currentLocale }: HeaderProps) {
     }
   }, [isMenuOpen])
 
+  useEffect(() => {
+    let cancelled = false
+
+    const loadLocaleLinks = async () => {
+      try {
+        const response = await fetch(`/api/locale-links?path=${encodeURIComponent(pathname)}`)
+        if (!response.ok) return
+
+        const data = (await response.json()) as { links?: Record<string, string> }
+        if (!cancelled && data.links) {
+          setLocaleLinks(data.links)
+        }
+      } catch {
+        if (!cancelled) {
+          setLocaleLinks(null)
+        }
+      }
+    }
+
+    void loadLocaleLinks()
+
+    return () => {
+      cancelled = true
+    }
+  }, [pathname])
+
   // Get active logo URL and alt text
   const logoUrl =
     data?.logo && typeof data.logo === 'object' && data.logo.url
@@ -73,7 +111,7 @@ export default function Header({ data, contacts, currentLocale }: HeaderProps) {
   const fallbackMenus: Record<string, Array<{ label: string; link: string }>> = {
     es: [
       { label: 'Conócenos', link: '/#about_us' },
-      { label: 'Tratamientos', link: '/services' },
+      { label: 'Tratamientos', link: localizedServicesPath },
       { label: 'Filosofía y valores', link: '/#filosofia' },
       { label: 'Promociones', link: '/#offers' },
       { label: 'Equipo', link: '/#team' },
@@ -84,7 +122,7 @@ export default function Header({ data, contacts, currentLocale }: HeaderProps) {
     ],
     en: [
       { label: 'About Us', link: '/#about_us' },
-      { label: 'Services', link: '/services' },
+      { label: 'Services', link: localizedServicesPath },
       { label: 'Philosophy and values', link: '/#filosofia' },
       { label: 'Offers', link: '/#offers' },
       { label: 'Team', link: '/#team' },
@@ -95,7 +133,7 @@ export default function Header({ data, contacts, currentLocale }: HeaderProps) {
     ],
     uk: [
       { label: 'Про нас', link: '/#about_us' },
-      { label: 'Послуги', link: '/services' },
+      { label: 'Послуги', link: localizedServicesPath },
       { label: 'Філософія та цінності', link: '/#filosofia' },
       { label: 'Пропозиції', link: '/#offers' },
       { label: 'Команда', link: '/#team' },
@@ -155,8 +193,7 @@ export default function Header({ data, contacts, currentLocale }: HeaderProps) {
                 </h2>
                 <ul className="list-none p-0 m-0 flex flex-col items-start gap-[8px]">
                   {menuItems.map((item, i) => {
-                    const isAnchor = item.link?.startsWith('#')
-                    const linkHref = isAnchor ? item.link : `/${currentLocale}${item.link}`
+                    const linkHref = resolveMenuLink(item.link)
                     return (
                       <li key={i} className="my-[2px] mx-0">
                         <Link
@@ -195,7 +232,7 @@ export default function Header({ data, contacts, currentLocale }: HeaderProps) {
         </div>
 
         {/* CENTER: Logo */}
-        <Link href={`/${currentLocale}`} className="h-[44px] w-auto flex items-center justify-center max-[767px]:h-[38px]">
+        <Link href={buildLocalizedPath(currentLocale, '/')} className="h-[44px] w-auto flex items-center justify-center max-[767px]:h-[38px]">
           <img src={logoUrl} alt={logoAlt} className="h-[44px] w-auto object-contain max-[767px]:h-[38px]" />
         </Link>
 

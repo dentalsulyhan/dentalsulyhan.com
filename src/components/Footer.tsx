@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { HeaderFooter, Media, SiteContact } from '@/payload-types'
+import { buildLocalizedPath } from '@/lib/localizedRouting'
 
 type ContactData = Partial<SiteContact> & {
   socialLinks?: SiteContact['socialLinks']
@@ -14,10 +15,19 @@ interface FooterProps {
   contacts: ContactData
   headerLogo?: number | Media | null
   currentLocale: string
+  servicesPath?: string
 }
 
-export default function Footer({ data, contacts, headerLogo, currentLocale }: FooterProps) {
+export default function Footer({ data, contacts, headerLogo, currentLocale, servicesPath = '/services' }: FooterProps) {
   const currentYear = new Date().getFullYear()
+  const localizedServicesPath = buildLocalizedPath(currentLocale, servicesPath)
+
+  const resolveMenuLink = (link?: string | null) => {
+    if (!link) return '#'
+    if (link === '/services') return localizedServicesPath
+    if (link.startsWith('#')) return link
+    return buildLocalizedPath(currentLocale, link)
+  }
 
   // Get active logo URL and alt text
   const activeLogo = data.logo || headerLogo
@@ -34,7 +44,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale }: Fo
   const fallbackMenus: Record<string, Array<{ label: string; link: string }>> = {
     es: [
       { label: 'Conócenos', link: '/#about_us' },
-      { label: 'Tratamientos', link: '/services' },
+      { label: 'Tratamientos', link: localizedServicesPath },
       { label: 'Filosofía y valores', link: '/#filosofia' },
       { label: 'Promociones', link: '/#offers' },
       { label: 'Equipo', link: '/#team' },
@@ -45,7 +55,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale }: Fo
     ],
     en: [
       { label: 'About Us', link: '/#about_us' },
-      { label: 'Services', link: '/services' },
+      { label: 'Services', link: localizedServicesPath },
       { label: 'Philosophy and values', link: '/#filosofia' },
       { label: 'Offers', link: '/#offers' },
       { label: 'Team', link: '/#team' },
@@ -56,7 +66,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale }: Fo
     ],
     uk: [
       { label: 'Про нас', link: '/#about_us' },
-      { label: 'Послуги', link: '/services' },
+      { label: 'Послуги', link: localizedServicesPath },
       { label: 'Філософія та цінності', link: '/#filosofia' },
       { label: 'Пропозиції', link: '/#offers' },
       { label: 'Команда', link: '/#team' },
@@ -76,14 +86,13 @@ export default function Footer({ data, contacts, headerLogo, currentLocale }: Fo
     <footer className="bg-[#f4ede7] flex flex-col w-full">
       <div className="w-full py-[40px] px-0 max-[991px]:py-[20px] max-[991px]:px-[30px] border-t border-[#3c5557]">
         <div className="max-w-[1200px] mx-auto flex justify-between items-center gap-[24px] max-[1230px]:mx-[30px] max-[1230px]:w-auto max-[1100px]:mx-[20px] max-[1100px]:gap-[18px] max-[991px]:flex-col max-[991px]:gap-[30px]">
-          <Link href={`/${currentLocale}`} className="h-[50px] w-auto flex items-center justify-center">
+          <Link href={buildLocalizedPath(currentLocale, '/')} className="h-[50px] w-auto flex items-center justify-center">
             <img src={logoUrl} alt={logoAlt} className="h-[50px] w-auto object-contain" />
           </Link>
           <nav>
             <ul className="flex flex-wrap gap-[20px] max-[1100px]:gap-[14px] m-[10px] justify-end max-[991px]:justify-center max-[991px]:flex-col max-[991px]:gap-[10px] max-[991px]:text-center list-none p-0">
               {menuItems.map((item, i) => {
-                const isAnchor = item.link?.startsWith('#')
-                const linkHref = isAnchor ? item.link : `/${currentLocale}${item.link}`
+                const linkHref = resolveMenuLink(item.link)
                 return (
                   <li key={i}>
                     <Link href={linkHref} className="text-[15px] no-underline text-[#22282b] hover:opacity-80 transition-opacity">

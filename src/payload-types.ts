@@ -100,12 +100,14 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('es' | 'en' | 'uk') | ('es' | 'en' | 'uk')[];
   globals: {
+    'design-settings': DesignSetting;
     'site-settings': SiteSetting;
     'home-page': HomePage;
     'header-footer': HeaderFooter;
     'site-contacts': SiteContact;
   };
   globalsSelect: {
+    'design-settings': DesignSettingsSelect<false> | DesignSettingsSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'header-footer': HeaderFooterSelect<false> | HeaderFooterSelect<true>;
@@ -191,9 +193,13 @@ export interface Page {
   id: number;
   title: string;
   /**
-   * Use home for the homepage, 404 for the not found page, or a URL path like about-us
+   * Stable internal identifier. Use values like home, services, 404 or about.
    */
   slug: string;
+  /**
+   * Visible URL segment for this language, for example servicios, about-us or contactos.
+   */
+  path: string;
   layout?:
     | (
         | {
@@ -223,12 +229,13 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             itemLayout?: ('column' | 'row') | null;
+            incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
               icon?: (number | null) | Media;
               title: string;
@@ -311,12 +318,13 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             itemLayout?: ('column' | 'row') | null;
+            incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
               icon?: (number | null) | Media;
               title: string;
@@ -372,12 +380,12 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            position?: ('left' | 'right') | null;
-            title?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            position?: ('left' | 'right') | null;
+            title?: string | null;
             description?: {
               root: {
                 type: string;
@@ -412,11 +420,11 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             description?: {
               root: {
                 type: string;
@@ -450,11 +458,11 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             /**
              * Paste the review widget code or placeholder markup.
              */
@@ -508,8 +516,8 @@ export interface Page {
              */
             theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
             position?: ('left' | 'right') | null;
-            image: number | Media;
             pricingGroup: number | Pricing;
+            image: number | Media;
             id?: string | null;
             blockName?: string | null;
             blockType: 'pricingGroupShowcase';
@@ -523,11 +531,11 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            title?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            title?: string | null;
             /**
              * Supports bold, italic and underline formatting.
              */
@@ -582,11 +590,11 @@ export interface Page {
              * Choose one of the base background color presets for this block.
              */
             theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             sectionDescription?: {
               root: {
                 type: string;
@@ -820,9 +828,13 @@ export interface Service {
   id: number;
   title: string;
   /**
-   * URL path, for example dental-implants
+   * Stable internal identifier for linking and imports.
    */
   slug: string;
+  /**
+   * Visible URL segment for this language, for example dental-implants.
+   */
+  path: string;
   layout?:
     | (
         | {
@@ -852,11 +864,11 @@ export interface Service {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            title?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            title?: string | null;
             content?: {
               root: {
                 type: string;
@@ -924,16 +936,33 @@ export interface Service {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
+            subtitle?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             itemLayout?: ('column' | 'row') | null;
+            columns?: ('2' | '3' | '4') | null;
+            incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
               icon?: (number | null) | Media;
               title?: string | null;
-              text: {
+              text?: {
                 root: {
                   type: string;
                   children: {
@@ -947,7 +976,65 @@ export interface Service {
                   version: number;
                 };
                 [k: string]: unknown;
+              } | null;
+              id?: string | null;
+            }[];
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
               };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'advantages';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
+            itemLayout?: ('column' | 'row') | null;
+            columns?: ('2' | '3' | '4') | null;
+            incompleteRowAlignment?: ('center' | 'start') | null;
+            items: {
+              icon?: (number | null) | Media;
+              title?: string | null;
+              text?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
               id?: string | null;
             }[];
             buttonText?: string | null;
@@ -961,11 +1048,11 @@ export interface Service {
              * Choose one of the base background color presets for this block.
              */
             theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             items: {
               title: string;
               text: {
@@ -994,11 +1081,11 @@ export interface Service {
              * Choose one of the base background color presets for this block.
              */
             theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
             intro?: {
               root: {
                 type: string;
@@ -1043,12 +1130,12 @@ export interface Service {
              * Choose one of the base background color presets for this block.
              */
             theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
-            layoutStyle?: ('cards' | 'split') | null;
-            sectionTitle?: string | null;
             /**
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            layoutStyle?: ('cards' | 'split') | null;
+            sectionTitle?: string | null;
             intro?: {
               root: {
                 type: string;
@@ -1182,8 +1269,8 @@ export interface Service {
              */
             theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
             position?: ('left' | 'right') | null;
-            image: number | Media;
             pricingGroup: number | Pricing;
+            image: number | Media;
             id?: string | null;
             blockName?: string | null;
             blockType: 'pricingGroupShowcase';
@@ -1367,6 +1454,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  path?: T;
   layout?:
     | T
     | {
@@ -1388,9 +1476,10 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               itemLayout?: T;
+              incompleteRowAlignment?: T;
               items?:
                 | T
                 | {
@@ -1430,9 +1519,10 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               itemLayout?: T;
+              incompleteRowAlignment?: T;
               items?:
                 | T
                 | {
@@ -1463,9 +1553,9 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
+              compactSpacing?: T;
               position?: T;
               title?: T;
-              compactSpacing?: T;
               description?: T;
               images?:
                 | T
@@ -1483,8 +1573,8 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               description?: T;
               source?: T;
               selectedMembers?: T;
@@ -1499,8 +1589,8 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               embedCode?: T;
               buttonText?: T;
               buttonLink?: T;
@@ -1527,8 +1617,8 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               position?: T;
-              image?: T;
               pricingGroup?: T;
+              image?: T;
               id?: T;
               blockName?: T;
             };
@@ -1537,8 +1627,8 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
-              title?: T;
               compactSpacing?: T;
+              title?: T;
               content?: T;
               backgroundImage?: T;
               overlayColor?: T;
@@ -1560,8 +1650,8 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               theme?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               sectionDescription?: T;
               formTitle?: T;
               formDescription?: T;
@@ -1656,6 +1746,7 @@ export interface PromotionsSelect<T extends boolean = true> {
 export interface ServicesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  path?: T;
   layout?:
     | T
     | {
@@ -1677,8 +1768,8 @@ export interface ServicesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
-              title?: T;
               compactSpacing?: T;
+              title?: T;
               content?: T;
               backgroundImage?: T;
               overlayColor?: T;
@@ -1703,14 +1794,41 @@ export interface ServicesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        advantages?:
+          | T
+          | {
+              theme?: T;
+              buttonStyle?: T;
+              compactSpacing?: T;
+              sectionTitle?: T;
+              subtitle?: T;
+              itemLayout?: T;
+              columns?: T;
+              incompleteRowAlignment?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
+              buttonLink?: T;
+              bottomText?: T;
+              id?: T;
+              blockName?: T;
+            };
         cards?:
           | T
           | {
               theme?: T;
               buttonStyle?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               itemLayout?: T;
+              columns?: T;
+              incompleteRowAlignment?: T;
               items?:
                 | T
                 | {
@@ -1728,8 +1846,8 @@ export interface ServicesSelect<T extends boolean = true> {
           | T
           | {
               theme?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               items?:
                 | T
                 | {
@@ -1744,8 +1862,8 @@ export interface ServicesSelect<T extends boolean = true> {
           | T
           | {
               theme?: T;
-              sectionTitle?: T;
               compactSpacing?: T;
+              sectionTitle?: T;
               intro?: T;
               columns?: T;
               items?:
@@ -1762,9 +1880,9 @@ export interface ServicesSelect<T extends boolean = true> {
           | T
           | {
               theme?: T;
+              compactSpacing?: T;
               layoutStyle?: T;
               sectionTitle?: T;
-              compactSpacing?: T;
               intro?: T;
               backgroundImage?: T;
               overlayColor?: T;
@@ -1825,8 +1943,8 @@ export interface ServicesSelect<T extends boolean = true> {
           | {
               theme?: T;
               position?: T;
-              image?: T;
               pricingGroup?: T;
+              image?: T;
               id?: T;
               blockName?: T;
             };
@@ -1910,6 +2028,258 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "design-settings".
+ */
+export interface DesignSetting {
+  id: number;
+  colors?: {
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    mainBackground?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    mainText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    mutedText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    accent?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    accentHover?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    placeholderBackground?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    placeholderText?: string | null;
+  };
+  typography?: {
+    h1DesktopSize?: string | null;
+    h1DesktopLineHeight?: string | null;
+    h1MobileSize?: string | null;
+    h1MobileLineHeight?: string | null;
+    h1Weight?: string | null;
+    h2DesktopSize?: string | null;
+    h2DesktopLineHeight?: string | null;
+    h2MobileSize?: string | null;
+    h2MobileLineHeight?: string | null;
+    h2Weight?: string | null;
+    h3DesktopSize?: string | null;
+    h3DesktopLineHeight?: string | null;
+    h3MobileSize?: string | null;
+    h3MobileLineHeight?: string | null;
+    h3Weight?: string | null;
+    bodyDesktopSize?: string | null;
+    bodyDesktopLineHeight?: string | null;
+    bodyMobileSize?: string | null;
+    bodyMobileLineHeight?: string | null;
+    bodyWeight?: string | null;
+  };
+  buttons?: {
+    minHeightDesktop?: string | null;
+    paddingYDesktop?: string | null;
+    paddingXDesktop?: string | null;
+    fontSizeDesktop?: string | null;
+    minHeightMobile?: string | null;
+    paddingYMobile?: string | null;
+    paddingXMobile?: string | null;
+    fontSizeMobile?: string | null;
+    radius?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    primaryBg?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    primaryBorder?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    primaryText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    primaryHoverBg?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    primaryHoverBorder?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    primaryHoverText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    outlineBg?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    outlineBorder?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    outlineText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    outlineHoverBg?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    outlineHoverBorder?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    outlineHoverText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    lightBg?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    lightBorder?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    lightText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    lightHoverBg?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    lightHoverBorder?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    lightHoverText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    textText?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    textHoverText?: string | null;
+    textFontSizeDesktop?: string | null;
+    textFontSizeMobile?: string | null;
+  };
+  themes?: {
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    whiteSection?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    whiteSectionAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    whitePanel?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    whitePanelAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    whiteCard?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    whiteCardAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    softSection?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    softSectionAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    softPanel?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    softPanelAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    softCard?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    softCardAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sandSection?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sandSectionAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sandPanel?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sandPanelAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sandCard?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sandCardAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sageSection?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sageSectionAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sagePanel?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sagePanelAlt?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sageCard?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
+    sageCardAlt?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2010,20 +2380,20 @@ export interface SiteSetting {
     phonePlaceholder?: string | null;
     emailPlaceholder?: string | null;
     patientTypePlaceholder?: string | null;
+    referralSourcePlaceholder?: string | null;
+    commentPlaceholder?: string | null;
     patientTypes?:
       | {
           label: string;
           id?: string | null;
         }[]
       | null;
-    referralSourcePlaceholder?: string | null;
     refSources?:
       | {
           label: string;
           id?: string | null;
         }[]
       | null;
-    commentPlaceholder?: string | null;
     successMessage?: string | null;
     errorMessage?: string | null;
   };
@@ -2279,6 +2649,113 @@ export interface SiteContact {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "design-settings_select".
+ */
+export interface DesignSettingsSelect<T extends boolean = true> {
+  colors?:
+    | T
+    | {
+        mainBackground?: T;
+        mainText?: T;
+        mutedText?: T;
+        accent?: T;
+        accentHover?: T;
+        placeholderBackground?: T;
+        placeholderText?: T;
+      };
+  typography?:
+    | T
+    | {
+        h1DesktopSize?: T;
+        h1DesktopLineHeight?: T;
+        h1MobileSize?: T;
+        h1MobileLineHeight?: T;
+        h1Weight?: T;
+        h2DesktopSize?: T;
+        h2DesktopLineHeight?: T;
+        h2MobileSize?: T;
+        h2MobileLineHeight?: T;
+        h2Weight?: T;
+        h3DesktopSize?: T;
+        h3DesktopLineHeight?: T;
+        h3MobileSize?: T;
+        h3MobileLineHeight?: T;
+        h3Weight?: T;
+        bodyDesktopSize?: T;
+        bodyDesktopLineHeight?: T;
+        bodyMobileSize?: T;
+        bodyMobileLineHeight?: T;
+        bodyWeight?: T;
+      };
+  buttons?:
+    | T
+    | {
+        minHeightDesktop?: T;
+        paddingYDesktop?: T;
+        paddingXDesktop?: T;
+        fontSizeDesktop?: T;
+        minHeightMobile?: T;
+        paddingYMobile?: T;
+        paddingXMobile?: T;
+        fontSizeMobile?: T;
+        radius?: T;
+        primaryBg?: T;
+        primaryBorder?: T;
+        primaryText?: T;
+        primaryHoverBg?: T;
+        primaryHoverBorder?: T;
+        primaryHoverText?: T;
+        outlineBg?: T;
+        outlineBorder?: T;
+        outlineText?: T;
+        outlineHoverBg?: T;
+        outlineHoverBorder?: T;
+        outlineHoverText?: T;
+        lightBg?: T;
+        lightBorder?: T;
+        lightText?: T;
+        lightHoverBg?: T;
+        lightHoverBorder?: T;
+        lightHoverText?: T;
+        textText?: T;
+        textHoverText?: T;
+        textFontSizeDesktop?: T;
+        textFontSizeMobile?: T;
+      };
+  themes?:
+    | T
+    | {
+        whiteSection?: T;
+        whiteSectionAlt?: T;
+        whitePanel?: T;
+        whitePanelAlt?: T;
+        whiteCard?: T;
+        whiteCardAlt?: T;
+        softSection?: T;
+        softSectionAlt?: T;
+        softPanel?: T;
+        softPanelAlt?: T;
+        softCard?: T;
+        softCardAlt?: T;
+        sandSection?: T;
+        sandSectionAlt?: T;
+        sandPanel?: T;
+        sandPanelAlt?: T;
+        sandCard?: T;
+        sandCardAlt?: T;
+        sageSection?: T;
+        sageSectionAlt?: T;
+        sagePanel?: T;
+        sagePanelAlt?: T;
+        sageCard?: T;
+        sageCardAlt?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -2338,20 +2815,20 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         phonePlaceholder?: T;
         emailPlaceholder?: T;
         patientTypePlaceholder?: T;
+        referralSourcePlaceholder?: T;
+        commentPlaceholder?: T;
         patientTypes?:
           | T
           | {
               label?: T;
               id?: T;
             };
-        referralSourcePlaceholder?: T;
         refSources?:
           | T
           | {
               label?: T;
               id?: T;
             };
-        commentPlaceholder?: T;
         successMessage?: T;
         errorMessage?: T;
       };

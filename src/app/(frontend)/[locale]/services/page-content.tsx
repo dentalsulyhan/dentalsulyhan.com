@@ -5,6 +5,8 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import ContactForm from '../../../../components/ContactForm'
 import type { Media, Page, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
 import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
+import { buildLocalizedPath } from '@/lib/localizedRouting'
+import { resolveInternalHref } from '@/lib/internalLinkResolver'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -12,13 +14,6 @@ function mediaUrl(field: unknown): string | null {
     return (field as Media).url ?? null
   }
   return null
-}
-
-function resolveHref(link: string | null | undefined, locale: string) {
-  if (!link) return '#'
-  if (link.startsWith('#')) return link
-  if (link.startsWith('/')) return `/${locale}${link}`
-  return `/${locale}/${link}`
 }
 
 function isPricingDoc(value: number | Pricing): value is Pricing {
@@ -73,13 +68,37 @@ type ContactData = SiteContact & {
 
 const primaryButtonClass = getButtonStyle('primary')
 
-export default async function ServicesPage({
-  params,
+export async function ServicesListingPageContent({
+  locale,
 }: {
-  params: Promise<{ locale: string }>
+  locale: string
 }) {
-  const { locale } = await params
   const payload = await getPayload({ config: configPromise })
+  const [allPagesResult, allServicesResult] = await Promise.all([
+    payload.find({
+      collection: 'pages',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 200,
+    }),
+    payload.find({
+      collection: 'services',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 200,
+    }),
+  ])
+
+  const pagePaths = Object.fromEntries(
+    allPagesResult.docs
+      .filter((page) => typeof page.slug === 'string' && typeof page.path === 'string')
+      .map((page) => [page.slug, { path: page.slug === 'home' ? '/' : `/${page.path}` }]),
+  )
+  const servicePaths = Object.fromEntries(
+    allServicesResult.docs
+      .filter((service) => typeof service.slug === 'string' && typeof service.path === 'string')
+      .map((service) => [service.slug, { path: service.path }]),
+  )
 
   const pagesResult = await payload.find({
     collection: 'pages',
@@ -96,6 +115,15 @@ export default async function ServicesPage({
 
   const pageData = (pagesResult.docs[0] as Page | undefined) || null
   if (!pageData) return notFound()
+  const servicesBasePath = `/${pageData.path || 'services'}`
+  const resolveHref = (link: string | null | undefined) =>
+    resolveInternalHref({
+      link,
+      locale,
+      pagePaths,
+      servicePaths,
+      servicesPagePath: servicesBasePath,
+    })
 
   let siteSettings: SiteSetting | null = null
   try {
@@ -162,7 +190,7 @@ export default async function ServicesPage({
                     )}
                     {block.buttonText && (
                       <div>
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -196,7 +224,7 @@ export default async function ServicesPage({
                   </div>
                   {block.buttonText && (
                     <div className="mt-4">
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -252,7 +280,7 @@ export default async function ServicesPage({
                   )}
                   {block.buttonText && (
                     <div className="mt-6 text-center">
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -299,7 +327,10 @@ export default async function ServicesPage({
                               <div className="min-w-0 pr-2">
                                 {linkedService ? (
                                   <a
-                                    href={`/${locale}/services/${linkedService.slug}`}
+                                    href={buildLocalizedPath(
+                                      locale,
+                                      `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
+                                    )}
                                     className="block mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug hover:text-[#3c5557] transition-colors no-underline"
                                   >
                                     {item.serviceName}
@@ -316,7 +347,10 @@ export default async function ServicesPage({
                                 )}
                                 {linkedService && (
                                   <a
-                                    href={`/${locale}/services/${linkedService.slug}`}
+                                    href={buildLocalizedPath(
+                                      locale,
+                                      `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
+                                    )}
                                     className="inline-flex mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#3c5557] hover:opacity-80 no-underline"
                                   >
                                     {pricingGroup.detailsLinkLabel || copy.detailsLabel}
@@ -453,4 +487,13 @@ export default async function ServicesPage({
       })}
     </main>
   )
+}
+
+export default async function ServicesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  return ServicesListingPageContent({ locale })
 }

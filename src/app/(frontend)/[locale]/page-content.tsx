@@ -7,6 +7,8 @@ import TeamSlider from '../../../components/TeamSlider'
 import GallerySlider from '../../../components/GallerySlider'
 import ContactForm from '../../../components/ContactForm'
 import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
+import { buildLocalizedPath } from '@/lib/localizedRouting'
+import { resolveInternalHref } from '@/lib/internalLinkResolver'
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {
@@ -35,13 +37,6 @@ function ImagePlaceholder({ label, className }: { label: string; className?: str
   )
 }
 
-function resolveHref(link: string | null | undefined, locale: string) {
-  if (!link) return '#'
-  if (link.startsWith('#')) return link
-  if (link.startsWith('/')) return `/${locale}${link}`
-  return `/${locale}/${link}`
-}
-
 function isPromotionDoc(value: number | Promotion): value is Promotion {
   return typeof value === 'object' && value !== null
 }
@@ -52,6 +47,14 @@ function isTeamMemberDoc(value: number | TeamMember): value is TeamMember {
 
 function isCompactSpacing(block: unknown): boolean {
   return typeof block === 'object' && block !== null && Boolean((block as { compactSpacing?: boolean }).compactSpacing)
+}
+
+function getIncompleteRowJustifyClass(block: unknown) {
+  return typeof block === 'object' &&
+    block !== null &&
+    (block as { incompleteRowAlignment?: 'center' | 'start' }).incompleteRowAlignment === 'start'
+    ? 'justify-start'
+    : 'justify-center'
 }
 
 function SocialIcon({ platform }: { platform: string }) {
@@ -129,13 +132,50 @@ function getDefaultReferralSourceOptions(locale: string) {
   ]
 }
 
-export default async function HomePage({
-  params,
+export async function PageContent({
+  locale,
+  slug = 'home',
+  path,
 }: {
-  params: Promise<{ locale: string }>
+  locale: string
+  slug?: string
+  path?: string
 }) {
-  const { locale } = await params
   const payload = await getPayload({ config: configPromise })
+  const [allPagesResult, allServicesResult] = await Promise.all([
+    payload.find({
+      collection: 'pages',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 200,
+    }),
+    payload.find({
+      collection: 'services',
+      locale: locale as 'es' | 'en' | 'uk',
+      fallbackLocale: false,
+      limit: 200,
+    }),
+  ])
+
+  const pagePaths = Object.fromEntries(
+    allPagesResult.docs
+      .filter((page) => typeof page.slug === 'string' && typeof page.path === 'string')
+      .map((page) => [page.slug, { path: page.slug === 'home' ? '/' : `/${page.path}` }]),
+  )
+  const servicesPagePath = pagePaths.services?.path || '/services'
+  const servicePaths = Object.fromEntries(
+    allServicesResult.docs
+      .filter((service) => typeof service.slug === 'string' && typeof service.path === 'string')
+      .map((service) => [service.slug, { path: service.path }]),
+  )
+  const resolveHref = (link: string | null | undefined) =>
+    resolveInternalHref({
+      link,
+      locale,
+      pagePaths,
+      servicePaths,
+      servicesPagePath,
+    })
 
   let pageData: Page | null = null
   try {
@@ -144,9 +184,17 @@ export default async function HomePage({
       depth: 2,
       locale: locale as 'es' | 'en' | 'uk',
       where: {
-        slug: {
-          equals: 'home',
-        },
+        ...(path
+          ? {
+              path: {
+                equals: path,
+              },
+            }
+          : {
+              slug: {
+                equals: slug,
+              },
+            }),
       },
       limit: 1,
     })
@@ -210,6 +258,7 @@ export default async function HomePage({
     ...(siteSettings?.contacts || {}),
     socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
   }
+  const globalContact = siteSettings?.globalContactSection
 
   let activePromos: Promotion[] = []
   try {
@@ -360,7 +409,7 @@ export default async function HomePage({
                       {block.buttonText && (
                         <div>
                           <a
-                            href={resolveHref(buttonLink, locale)}
+                            href={resolveHref(buttonLink)}
                             className={buttonClass}
                           >
                             {block.buttonText}
@@ -389,6 +438,7 @@ export default async function HomePage({
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
+              const incompleteRowJustifyClass = getIncompleteRowJustifyClass(block)
               return (
                 <section
                   key={block.id || idx}
@@ -401,15 +451,15 @@ export default async function HomePage({
                         {block.sectionTitle}
                       </h2>
                     )}
-                    <div className="flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] justify-center max-[767px]:flex-col max-[767px]:items-center">
+                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
                       {block.items.map((item, itemIndex) => {
                         const iconUrl = mediaUrl(item.icon)
                         return (
                           <div
                             key={item.id || itemIndex}
-                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
+                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
                           >
-                            <div className={`flex w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center gap-4 text-left' : 'flex-col items-center gap-5 text-center'}`}>
+                            <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-center max-[767px]:gap-4 max-[767px]:text-center ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
                               {iconUrl ? (
                                 <img src={iconUrl} alt={item.title} className="w-auto h-[50px] shrink-0" />
                               ) : (
@@ -430,7 +480,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-[50px] text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -492,7 +542,7 @@ export default async function HomePage({
                           {item.buttonText && (
                             <div className="mt-4">
                               <a
-                                href={resolveHref(buttonLink, locale)}
+                                href={resolveHref(buttonLink)}
                                 className={buttonClass}
                               >
                                 {item.buttonText}
@@ -505,7 +555,7 @@ export default async function HomePage({
                   })}
                   {block.buttonText && (
                     <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px] text-center`}>
-                      <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                      <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
                     </div>
@@ -519,6 +569,7 @@ export default async function HomePage({
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
+              const incompleteRowJustifyClass = getIncompleteRowJustifyClass(block)
               return (
                 <section
                   key={block.id || idx}
@@ -531,15 +582,15 @@ export default async function HomePage({
                         {block.sectionTitle}
                       </h2>
                     )}
-                    <div className="flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] justify-center max-[767px]:flex-col max-[767px]:items-center">
+                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
                       {block.items.map((item, itemIndex) => {
                         const iconUrl = mediaUrl(item.icon)
                         return (
                           <div
                             key={item.id || itemIndex}
-                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
+                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
                           >
-                            <div className={`flex w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center gap-4 text-left' : 'flex-col items-center gap-5 text-center'}`}>
+                            <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-center max-[767px]:gap-4 max-[767px]:text-center ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
                               {iconUrl ? (
                                 <img src={iconUrl} alt={item.title} className="w-auto h-[50px] shrink-0" />
                               ) : (
@@ -560,7 +611,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-[50px] text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -612,7 +663,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-2">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -688,7 +739,7 @@ export default async function HomePage({
                     </div>
                     {block.buttonText && (
                       <div className="mt-[40px] text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -730,7 +781,7 @@ export default async function HomePage({
                     )}
                     {block.buttonText && (
                       <div className="mt-6 text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -766,7 +817,7 @@ export default async function HomePage({
                     )}
                     {block.buttonText && (
                       <div className="mt-6">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
@@ -822,11 +873,139 @@ export default async function HomePage({
                     )}
                     {block.buttonText && (
                       <div className="mt-6 text-center">
-                        <a href={resolveHref(block.buttonLink, locale)} className={buttonClass}>
+                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
                       </div>
                     )}
+                  </div>
+                </section>
+              )
+            }
+
+            case 'globalContactSection': {
+              const compactSpacing = isCompactSpacing(block)
+              const theme = getBlockTheme(block.theme)
+              return (
+                <section
+                  key={block.id || idx}
+                  id="contact_us"
+                  className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
+                >
+                  <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
+                    <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
+                      <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-6 text-[#22282b]">
+                        {siteSettings?.contacts?.sectionTitle || (locale === 'uk' ? 'Контакти' : locale === 'en' ? 'Contact' : 'Contacto')}
+                      </h2>
+                      {siteSettings?.contacts?.sectionDescription && (
+                        <div className="text-[15px] text-[#909da2] leading-relaxed mb-8 prose max-w-none">
+                          {typeof siteSettings.contacts.sectionDescription === 'string' ? (
+                            <p>{siteSettings.contacts.sectionDescription}</p>
+                          ) : (
+                            <RichText data={siteSettings.contacts.sectionDescription} />
+                          )}
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-6 text-[#22282b]">
+                        {contacts.email && (
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{emailLabel}</span>
+                            <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">
+                              {contacts.email}
+                            </a>
+                          </div>
+                        )}
+                        {contacts.phone && (
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{phoneLabel}</span>
+                            <div className="flex items-center gap-4 flex-wrap">
+                              <div className="flex items-center gap-3">
+                                {contacts.telegram && (
+                                  <a href={contacts.telegram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title="Telegram">
+                                    <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
+                                  </a>
+                                )}
+                                {contacts.whatsapp && (
+                                  <a href={contacts.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title="WhatsApp">
+                                    <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-[18px] h-[18px]" />
+                                  </a>
+                                )}
+                              </div>
+                              <div className="h-[18px] w-px bg-[#22282b]/15" />
+                              <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity">
+                                <img src="/icons/phone.svg" alt="Phone" className="w-[16px] h-[16px] opacity-85" />
+                                <span>{contacts.phone}</span>
+                              </a>
+                            </div>
+                          </div>
+                        )}
+                        {contacts.address && (
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{addressLabel}</span>
+                            <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                          </div>
+                        )}
+                        {contacts.transport && (
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{transportLabel}</span>
+                            <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                          </div>
+                        )}
+                        {contacts.socialLinks && contacts.socialLinks.length > 0 && (
+                          <div className="flex flex-col gap-2 mt-2">
+                            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{socialLabel}</span>
+                            <div className="flex items-center gap-3 flex-wrap">
+                              {contacts.socialLinks.map((link, linkIndex) => (
+                                <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-medium text-[#3c5557] hover:opacity-80 no-underline">
+                                  {link.platform}
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                      {(globalContact?.formTitle || globalContact?.formDescription) && (
+                        <div className="mb-6">
+                          {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
+                          {globalContact?.formDescription && (
+                            <div className="text-[#909da2] prose max-w-none">
+                              <RichText data={globalContact.formDescription} />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      <ContactForm
+                        locale={locale}
+                        fullNamePlaceholder={globalContact?.fullNamePlaceholder || (locale === 'uk' ? 'ПІБ' : locale === 'en' ? 'Full name' : 'Nombre completo')}
+                        phonePlaceholder={globalContact?.phonePlaceholder || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono')}
+                        emailPlaceholder={globalContact?.emailPlaceholder || 'Email'}
+                        patientTypePlaceholder={globalContact?.patientTypePlaceholder || (locale === 'uk' ? 'Я:' : locale === 'en' ? 'I am:' : 'Soy:')}
+                        referralSourcePlaceholder={globalContact?.referralSourcePlaceholder || (locale === 'uk' ? 'Дізнався про вас:' : locale === 'en' ? 'How did you hear about us:' : 'Como nos conociste:')}
+                        commentPlaceholder={globalContact?.commentPlaceholder || (locale === 'uk' ? 'Коментар' : locale === 'en' ? 'Comment' : 'Comentario')}
+                        submitButtonLabel={globalContact?.submitButtonLabel || (locale === 'uk' ? 'Надіслати' : locale === 'en' ? 'Send' : 'Enviar')}
+                        successMessage={globalContact?.successMessage || (locale === 'uk' ? 'Дякуємо! Ваше повідомлення успішно надіслано.' : locale === 'en' ? 'Thank you. Your message has been sent successfully.' : 'Gracias. Su mensaje ha sido enviado correctamente.')}
+                        errorMessage={globalContact?.errorMessage || (locale === 'uk' ? 'Не вдалося надіслати форму. Спробуйте ще раз.' : locale === 'en' ? 'The form could not be submitted. Please try again.' : 'No se pudo enviar el formulario. Intentelo de nuevo.')}
+                        patientTypeOptions={
+                          (globalContact as { patientTypes?: Array<{ id?: string | null; label: string }> } | undefined)
+                            ?.patientTypes?.length
+                            ? (
+                                globalContact as { patientTypes?: Array<{ id?: string | null; label: string }> }
+                              ).patientTypes!.map((option) => ({ id: option.id, label: option.label }))
+                            : getDefaultPatientTypeOptions(locale)
+                        }
+                        referralSourceOptions={
+                          (globalContact as { refSources?: Array<{ id?: string | null; label: string }> } | undefined)
+                            ?.refSources?.length
+                            ? (
+                                globalContact as { refSources?: Array<{ id?: string | null; label: string }> }
+                              ).refSources!.map((option) => ({ id: option.id, label: option.label }))
+                            : getDefaultReferralSourceOptions(locale)
+                        }
+                      />
+                    </div>
                   </div>
                 </section>
               )
@@ -861,7 +1040,7 @@ export default async function HomePage({
                     {block.buttonText && (
                       <div className="mt-4">
                         <a
-                          href={resolveHref(buttonLink, locale)}
+                          href={resolveHref(buttonLink)}
                           className={buttonClass}
                         >
                           {block.buttonText}
@@ -994,7 +1173,7 @@ export default async function HomePage({
                       </div>
                     </div>
 
-                    <div className={`w-1/2 max-[991px]:w-full ${theme.card} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
                       {(block.formTitle || block.formDescription) && (
                         <div className="mb-6">
                           {block.formTitle && (
@@ -1095,7 +1274,7 @@ export default async function HomePage({
                     )}
                     <div>
                       <a
-                        href={heroButtonLink.startsWith('#') ? heroButtonLink : `/${locale}${heroButtonLink}`}
+                        href={resolveHref(heroButtonLink)}
                         className={primaryButtonClass}
                       >
                         {heroButtonText}
@@ -1122,7 +1301,7 @@ export default async function HomePage({
           case 'advantages':
             return (
               <section key={`sec-${idx}`} id="advantages" className={`${legacyPrimaryTheme.section} py-[100px]`}>
-                <div className="px-[max(30px,calc((100vw-1200px)/2))] flex flex-wrap gap-[50px] justify-center max-[767px]:flex-col max-[767px]:items-center">
+                <div className={`px-[max(30px,calc((100vw-1200px)/2))] flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.advantages)} max-[767px]:flex-col max-[767px]:items-center`}>
                   {advantages.length > 0 ? (
                     advantages.map((adv, i) => {
                       const iconUrl = mediaUrl(adv.icon)
@@ -1214,7 +1393,7 @@ export default async function HomePage({
                           {block.buttonText && block.buttonLink && (
                             <div className="mt-4">
                               <a
-                                href={block.buttonLink.startsWith('#') ? block.buttonLink : `/${locale}${block.buttonLink}`}
+                                href={resolveHref(block.buttonLink)}
                                 className={primaryButtonClass}
                               >
                                 {block.buttonText}
@@ -1264,7 +1443,7 @@ export default async function HomePage({
                   {philTitle && (
                     <h2 className="text-[32px] font-semibold text-center mb-[60px] text-[#3c5557]">{philTitle}</h2>
                   )}
-                  <div className="flex flex-wrap gap-[50px] justify-center max-[767px]:flex-col max-[767px]:items-center">
+                  <div className={`flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.philosophy)} max-[767px]:flex-col max-[767px]:items-center`}>
                     {homeData.philosophy?.cards && homeData.philosophy.cards.length > 0 ? (
                       homeData.philosophy.cards.map((card, i) => {
                         const iconUrl = mediaUrl(card.icon)
@@ -1293,7 +1472,7 @@ export default async function HomePage({
                       <div className="max-w-[800px] mx-auto text-center">
                         <p className="text-[18px] text-[#22282b] leading-relaxed mb-10">{philText}</p>
                         <a
-                          href={`/${locale}${philLink}`}
+                          href={resolveHref(philLink)}
                           className={primaryButtonClass}
                         >
                           {philButton}
@@ -1615,4 +1794,13 @@ export default async function HomePage({
       })}
     </>
   )
+}
+
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  return PageContent({ locale, slug: 'home' })
 }

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Field } from 'payload'
 import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
 
 const sectionSpacingField = {
@@ -18,6 +18,50 @@ const sectionSpacingField = {
     },
   },
 } as const
+
+const incompleteRowAlignmentField: Field = {
+  name: 'incompleteRowAlignment',
+  type: 'select',
+  defaultValue: 'center',
+  options: [
+    {
+      label: {
+        en: 'Center incomplete last row',
+        uk: 'Центрувати неповний останній ряд',
+        es: 'Centrar la ultima fila incompleta',
+      },
+      value: 'center',
+    },
+    {
+      label: {
+        en: 'Align incomplete last row to start',
+        uk: 'Притиснути неповний останній ряд вліво',
+        es: 'Alinear la ultima fila incompleta al inicio',
+      },
+      value: 'start',
+    },
+  ],
+  label: {
+    en: 'Incomplete Last Row Alignment',
+    uk: 'Вирівнювання неповного останнього ряду',
+    es: 'Alineacion de la ultima fila incompleta',
+  },
+}
+
+function collapsibleField(
+  label: { en: string; uk: string; es: string },
+  fields: Field[],
+  initCollapsed = true,
+): Field {
+  return {
+    type: 'collapsible',
+    label,
+    admin: {
+      initCollapsed,
+    },
+    fields,
+  }
+}
 
 export const Services: CollectionConfig = {
   slug: 'services',
@@ -62,15 +106,33 @@ export const Services: CollectionConfig = {
       required: true,
       unique: true,
       label: {
-        en: 'Slug',
-        uk: 'Slug',
-        es: 'Slug',
+        en: 'Internal Key',
+        uk: 'Внутрішній ключ',
+        es: 'Clave interna',
       },
       admin: {
         description: {
-          en: 'URL path, for example dental-implants',
-          uk: 'Шлях URL, наприклад dental-implants',
-          es: 'Ruta URL, por ejemplo dental-implants',
+          en: 'Stable internal identifier for linking and imports.',
+          uk: 'Стабільний внутрішній ідентифікатор для звʼязків та імпорту.',
+          es: 'Identificador interno estable para enlaces e importaciones.',
+        },
+      },
+    },
+    {
+      name: 'path',
+      type: 'text',
+      required: true,
+      localized: true,
+      label: {
+        en: 'Public URL Slug',
+        uk: 'Публічний slug URL',
+        es: 'Slug publico de URL',
+      },
+      admin: {
+        description: {
+          en: 'Visible URL segment for this language, for example dental-implants.',
+          uk: 'Видимий сегмент URL для цієї мови, наприклад dental-implants.',
+          es: 'Segmento visible de URL para este idioma, por ejemplo implantes-dentales.',
         },
       },
     },
@@ -99,55 +161,74 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            buttonStyleField,
-            {
-              name: 'title',
-              type: 'textarea',
-              required: true,
-              label: {
-                en: 'Title',
-                uk: 'Заголовок',
-                es: 'Titulo',
-              },
-            },
-            {
-              name: 'subtitle',
-              type: 'textarea',
-              label: {
-                en: 'Subtitle',
-                uk: 'Підзаголовок',
-                es: 'Subtitulo',
-              },
-            },
-            {
-              name: 'buttonText',
-              type: 'text',
-              label: {
-                en: 'Button Text',
-                uk: 'Текст кнопки',
-                es: 'Texto del boton',
-              },
-            },
-            {
-              name: 'buttonLink',
-              type: 'text',
-              label: {
-                en: 'Button Link',
-                uk: 'Посилання кнопки',
-                es: 'Enlace del boton',
-              },
-            },
-            {
-              name: 'image',
-              type: 'upload',
-              relationTo: 'media',
-              label: {
-                en: 'Right-side Image',
-                uk: 'Зображення справа',
-                es: 'Imagen a la derecha',
-              },
-            },
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, buttonStyleField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Content', uk: 'Контент', es: 'Contenido' },
+              [
+                {
+                  name: 'title',
+                  type: 'textarea',
+                  required: true,
+                  label: {
+                    en: 'Title',
+                    uk: 'Заголовок',
+                    es: 'Titulo',
+                  },
+                },
+                {
+                  name: 'subtitle',
+                  type: 'textarea',
+                  label: {
+                    en: 'Subtitle',
+                    uk: 'Підзаголовок',
+                    es: 'Subtitulo',
+                  },
+                },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Button', uk: 'Кнопка', es: 'Boton' },
+              [
+                {
+                  name: 'buttonText',
+                  type: 'text',
+                  label: {
+                    en: 'Button Text',
+                    uk: 'Текст кнопки',
+                    es: 'Texto del boton',
+                  },
+                },
+                {
+                  name: 'buttonLink',
+                  type: 'text',
+                  label: {
+                    en: 'Button Link',
+                    uk: 'Посилання кнопки',
+                    es: 'Enlace del boton',
+                  },
+                },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Media', uk: 'Медіа', es: 'Media' },
+              [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: {
+                    en: 'Right-side Image',
+                    uk: 'Зображення справа',
+                    es: 'Imagen a la derecha',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -165,77 +246,95 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            buttonStyleField,
-            {
-              name: 'title',
-              type: 'text',
-              label: {
-                en: 'Title',
-                uk: 'Заголовок',
-                es: 'Titulo',
-              },
-            },
-            sectionSpacingField,
-            {
-              name: 'content',
-              type: 'richText',
-              label: {
-                en: 'Content',
-                uk: 'Контент',
-                es: 'Contenido',
-              },
-            },
-            {
-              name: 'backgroundImage',
-              type: 'upload',
-              relationTo: 'media',
-              label: {
-                en: 'Background Image',
-                uk: 'Фонове зображення',
-                es: 'Imagen de fondo',
-              },
-            },
-            {
-              name: 'overlayColor',
-              type: 'text',
-              defaultValue: '#000000',
-              label: {
-                en: 'Overlay Color',
-                uk: 'Колір оверлею',
-                es: 'Color de superposicion',
-              },
-            },
-            {
-              name: 'overlayOpacity',
-              type: 'number',
-              defaultValue: 35,
-              min: 0,
-              max: 100,
-              label: {
-                en: 'Overlay Opacity',
-                uk: 'Прозорість оверлею',
-                es: 'Opacidad de superposicion',
-              },
-            },
-            {
-              name: 'buttonText',
-              type: 'text',
-              label: {
-                en: 'Button Text',
-                uk: 'Текст кнопки',
-                es: 'Texto del boton',
-              },
-            },
-            {
-              name: 'buttonLink',
-              type: 'text',
-              label: {
-                en: 'Button Link',
-                uk: 'Посилання кнопки',
-                es: 'Enlace del boton',
-              },
-            },
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, buttonStyleField, sectionSpacingField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Content', uk: 'Контент', es: 'Contenido' },
+              [
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: {
+                    en: 'Title',
+                    uk: 'Заголовок',
+                    es: 'Titulo',
+                  },
+                },
+                {
+                  name: 'content',
+                  type: 'richText',
+                  label: {
+                    en: 'Content',
+                    uk: 'Контент',
+                    es: 'Contenido',
+                  },
+                },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Background', uk: 'Фон', es: 'Fondo' },
+              [
+                {
+                  name: 'backgroundImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: {
+                    en: 'Background Image',
+                    uk: 'Фонове зображення',
+                    es: 'Imagen de fondo',
+                  },
+                },
+                {
+                  name: 'overlayColor',
+                  type: 'text',
+                  defaultValue: '#000000',
+                  label: {
+                    en: 'Overlay Color',
+                    uk: 'Колір оверлею',
+                    es: 'Color de superposicion',
+                  },
+                },
+                {
+                  name: 'overlayOpacity',
+                  type: 'number',
+                  defaultValue: 35,
+                  min: 0,
+                  max: 100,
+                  label: {
+                    en: 'Overlay Opacity',
+                    uk: 'Прозорість оверлею',
+                    es: 'Opacidad de superposicion',
+                  },
+                },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Button', uk: 'Кнопка', es: 'Boton' },
+              [
+                {
+                  name: 'buttonText',
+                  type: 'text',
+                  label: {
+                    en: 'Button Text',
+                    uk: 'Текст кнопки',
+                    es: 'Texto del boton',
+                  },
+                },
+                {
+                  name: 'buttonLink',
+                  type: 'text',
+                  label: {
+                    en: 'Button Link',
+                    uk: 'Посилання кнопки',
+                    es: 'Enlace del boton',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -253,112 +352,331 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            buttonStyleField,
-            {
-              name: 'position',
-              type: 'select',
-              defaultValue: 'left',
-              options: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, buttonStyleField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout', uk: 'Розкладка', es: 'Disposicion' },
+              [
                 {
+                  name: 'position',
+                  type: 'select',
+                  defaultValue: 'left',
+                  options: [
+                    {
+                      label: {
+                        en: 'Image on Left',
+                        uk: 'Зображення зліва',
+                        es: 'Imagen a la izquierda',
+                      },
+                      value: 'left',
+                    },
+                    {
+                      label: {
+                        en: 'Image on Right',
+                        uk: 'Зображення справа',
+                        es: 'Imagen a la derecha',
+                      },
+                      value: 'right',
+                    },
+                  ],
                   label: {
-                    en: 'Image on Left',
-                    uk: 'Зображення зліва',
-                    es: 'Imagen a la izquierda',
+                    en: 'Image Position',
+                    uk: 'Позиція зображення',
+                    es: 'Posicion de la imagen',
                   },
-                  value: 'left',
                 },
                 {
+                  name: 'imageWidth',
+                  type: 'select',
+                  defaultValue: 'full',
+                  options: [
+                    {
+                      label: {
+                        en: 'Full width',
+                        uk: 'На всю ширину',
+                        es: 'Ancho completo',
+                      },
+                      value: 'full',
+                    },
+                    {
+                      label: {
+                        en: 'Contained',
+                        uk: 'У контейнері',
+                        es: 'Contenido en contenedor',
+                      },
+                      value: 'contained',
+                    },
+                  ],
                   label: {
-                    en: 'Image on Right',
-                    uk: 'Зображення справа',
-                    es: 'Imagen a la derecha',
+                    en: 'Image Width',
+                    uk: 'Ширина фото',
+                    es: 'Ancho de la imagen',
                   },
-                  value: 'right',
                 },
               ],
-              label: {
-                en: 'Image Position',
-                uk: 'Позиція зображення',
-                es: 'Posicion de la imagen',
-              },
-            },
-            {
-              name: 'imageWidth',
-              type: 'select',
-              defaultValue: 'full',
-              options: [
+            ),
+            collapsibleField(
+              { en: 'Content', uk: 'Контент', es: 'Contenido' },
+              [
                 {
+                  name: 'title',
+                  type: 'text',
                   label: {
-                    en: 'Full width',
-                    uk: 'На всю ширину',
-                    es: 'Ancho completo',
+                    en: 'Title',
+                    uk: 'Заголовок',
+                    es: 'Titulo',
                   },
-                  value: 'full',
                 },
                 {
+                  name: 'text',
+                  type: 'richText',
+                  required: true,
                   label: {
-                    en: 'Contained',
-                    uk: 'У контейнері',
-                    es: 'Contenido en contenedor',
+                    en: 'Text',
+                    uk: 'Текст',
+                    es: 'Texto',
                   },
-                  value: 'contained',
                 },
               ],
-              label: {
-                en: 'Image Width',
-                uk: 'Ширина фото',
-                es: 'Ancho de la imagen',
-              },
+              false,
+            ),
+            collapsibleField(
+              { en: 'Button', uk: 'Кнопка', es: 'Boton' },
+              [
+                {
+                  name: 'buttonText',
+                  type: 'text',
+                  label: {
+                    en: 'Button Text',
+                    uk: 'Текст кнопки',
+                    es: 'Texto del boton',
+                  },
+                },
+                {
+                  name: 'buttonLink',
+                  type: 'text',
+                  label: {
+                    en: 'Button Link',
+                    uk: 'Посилання кнопки',
+                    es: 'Enlace del boton',
+                  },
+                },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Media', uk: 'Медіа', es: 'Media' },
+              [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                  label: {
+                    en: 'Image',
+                    uk: 'Зображення',
+                    es: 'Imagen',
+                  },
+                },
+              ],
+            ),
+          ],
+        },
+        {
+          slug: 'advantages',
+          labels: {
+            singular: {
+              en: 'Advantages',
+              uk: 'Переваги',
+              es: 'Ventajas',
             },
-            {
-              name: 'title',
-              type: 'text',
-              label: {
-                en: 'Title',
-                uk: 'Заголовок',
-                es: 'Titulo',
-              },
+            plural: {
+              en: 'Advantages Blocks',
+              uk: 'Блоки переваг',
+              es: 'Bloques de ventajas',
             },
+          },
+          fields: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, buttonStyleField, sectionSpacingField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout & Intro', uk: 'Розкладка і вступ', es: 'Disposicion e introduccion' },
+              [
+                {
+                  name: 'sectionTitle',
+                  type: 'text',
+                  label: {
+                    en: 'Section Title',
+                    uk: 'Заголовок секції',
+                    es: 'Titulo de la seccion',
+                  },
+                },
+                {
+                  name: 'subtitle',
+                  type: 'richText',
+                  label: {
+                    en: 'Intro Text',
+                    uk: 'Вступний текст',
+                    es: 'Texto introductorio',
+                  },
+                },
+                {
+                  name: 'itemLayout',
+                  type: 'select',
+                  defaultValue: 'column',
+                  options: [
+                    {
+                      label: {
+                        en: 'Icon and title in column',
+                        uk: 'Іконка і заголовок в колонку',
+                        es: 'Icono y titulo en columna',
+                      },
+                      value: 'column',
+                    },
+                    {
+                      label: {
+                        en: 'Icon and title in row',
+                        uk: 'Іконка і заголовок в ряд',
+                        es: 'Icono y titulo en fila',
+                      },
+                      value: 'row',
+                    },
+                  ],
+                  label: {
+                    en: 'Items Heading Layout',
+                    uk: 'Розкладка іконки та заголовка',
+                    es: 'Disposicion de icono y titulo',
+                  },
+                },
+                {
+                  name: 'columns',
+                  type: 'select',
+                  defaultValue: '3',
+                  options: [
+                    {
+                      label: {
+                        en: '2 columns',
+                        uk: '2 колонки',
+                        es: '2 columnas',
+                      },
+                      value: '2',
+                    },
+                    {
+                      label: {
+                        en: '3 columns',
+                        uk: '3 колонки',
+                        es: '3 columnas',
+                      },
+                      value: '3',
+                    },
+                    {
+                      label: {
+                        en: '4 columns',
+                        uk: '4 колонки',
+                        es: '4 columnas',
+                      },
+                      value: '4',
+                    },
+                  ],
+                  label: {
+                    en: 'Desktop Columns',
+                    uk: 'Кількість колонок на десктопі',
+                    es: 'Columnas en desktop',
+                  },
+                },
+                incompleteRowAlignmentField,
+              ],
+            ),
             {
-              name: 'text',
-              type: 'richText',
+              name: 'items',
+              type: 'array',
               required: true,
-              label: {
-                en: 'Text',
-                uk: 'Текст',
-                es: 'Texto',
+              minRows: 1,
+              admin: {
+                components: {
+                  RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+                },
               },
-            },
-            {
-              name: 'buttonText',
-              type: 'text',
-              label: {
-                en: 'Button Text',
-                uk: 'Текст кнопки',
-                es: 'Texto del boton',
+              labels: {
+                singular: {
+                  en: 'Advantage',
+                  uk: 'Перевага',
+                  es: 'Ventaja',
+                },
+                plural: {
+                  en: 'Advantages',
+                  uk: 'Переваги',
+                  es: 'Ventajas',
+                },
               },
+              fields: [
+                {
+                  name: 'icon',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: {
+                    en: 'Icon',
+                    uk: 'Іконка',
+                    es: 'Icono',
+                  },
+                },
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: {
+                    en: 'Title',
+                    uk: 'Заголовок',
+                    es: 'Titulo',
+                  },
+                },
+                {
+                  name: 'text',
+                  type: 'richText',
+                  label: {
+                    en: 'Text',
+                    uk: 'Текст',
+                    es: 'Texto',
+                  },
+                },
+              ],
             },
-            {
-              name: 'buttonLink',
-              type: 'text',
-              label: {
-                en: 'Button Link',
-                uk: 'Посилання кнопки',
-                es: 'Enlace del boton',
-              },
-            },
-            {
-              name: 'image',
-              type: 'upload',
-              relationTo: 'media',
-              required: true,
-              label: {
-                en: 'Image',
-                uk: 'Зображення',
-                es: 'Imagen',
-              },
-            },
+            collapsibleField(
+              { en: 'Bottom Content & Button', uk: 'Нижній контент і кнопка', es: 'Contenido inferior y boton' },
+              [
+                {
+                  name: 'buttonText',
+                  type: 'text',
+                  label: {
+                    en: 'Section Button Text',
+                    uk: 'Текст кнопки секції',
+                    es: 'Texto del boton de la seccion',
+                  },
+                },
+                {
+                  name: 'buttonLink',
+                  type: 'text',
+                  label: {
+                    en: 'Section Button Link',
+                    uk: 'Посилання кнопки секції',
+                    es: 'Enlace del boton de la seccion',
+                  },
+                },
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -376,10 +694,16 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            buttonStyleField,
-            {
-              name: 'sectionTitle',
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, buttonStyleField, sectionSpacingField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout', uk: 'Розкладка', es: 'Disposicion' },
+              [
+                {
+                  name: 'sectionTitle',
               type: 'text',
               label: {
                 en: 'Section Title',
@@ -387,9 +711,8 @@ export const Services: CollectionConfig = {
                 es: 'Titulo de la seccion',
               },
             },
-            sectionSpacingField,
-            {
-              name: 'itemLayout',
+                {
+                  name: 'itemLayout',
               type: 'select',
               defaultValue: 'column',
               options: [
@@ -416,6 +739,46 @@ export const Services: CollectionConfig = {
                 es: 'Disposicion de icono y titulo',
               },
             },
+                {
+                  name: 'columns',
+              type: 'select',
+              defaultValue: '4',
+              options: [
+                {
+                  label: {
+                    en: '2 columns',
+                    uk: '2 колонки',
+                    es: '2 columnas',
+                  },
+                  value: '2',
+                },
+                {
+                  label: {
+                    en: '3 columns',
+                    uk: '3 колонки',
+                    es: '3 columnas',
+                  },
+                  value: '3',
+                },
+                {
+                  label: {
+                    en: '4 columns',
+                    uk: '4 колонки',
+                    es: '4 columnas',
+                  },
+                  value: '4',
+                },
+              ],
+              label: {
+                en: 'Desktop Columns',
+                uk: 'Кількість колонок на десктопі',
+                es: 'Columnas en desktop',
+              },
+            },
+                incompleteRowAlignmentField,
+              ],
+              false,
+            ),
             {
               name: 'items',
               type: 'array',
@@ -461,7 +824,6 @@ export const Services: CollectionConfig = {
                 {
                   name: 'text',
                   type: 'richText',
-                  required: true,
                   label: {
                     en: 'Text',
                     uk: 'Текст',
@@ -470,24 +832,29 @@ export const Services: CollectionConfig = {
                 },
               ],
             },
-            {
-              name: 'buttonText',
-              type: 'text',
-              label: {
-                en: 'Section Button Text',
-                uk: 'Текст кнопки секції',
-                es: 'Texto del boton de la seccion',
-              },
-            },
-            {
-              name: 'buttonLink',
-              type: 'text',
-              label: {
-                en: 'Section Button Link',
-                uk: 'Посилання кнопки секції',
-                es: 'Enlace del boton de la seccion',
-              },
-            },
+            collapsibleField(
+              { en: 'Button', uk: 'Кнопка', es: 'Boton' },
+              [
+                {
+                  name: 'buttonText',
+                  type: 'text',
+                  label: {
+                    en: 'Section Button Text',
+                    uk: 'Текст кнопки секції',
+                    es: 'Texto del boton de la seccion',
+                  },
+                },
+                {
+                  name: 'buttonLink',
+                  type: 'text',
+                  label: {
+                    en: 'Section Button Link',
+                    uk: 'Посилання кнопки секції',
+                    es: 'Enlace del boton de la seccion',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -505,17 +872,26 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            {
-              name: 'sectionTitle',
-              type: 'text',
-              label: {
-                en: 'Section Title',
-                uk: 'Заголовок секції',
-                es: 'Titulo de la seccion',
-              },
-            },
-            sectionSpacingField,
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, sectionSpacingField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Content', uk: 'Контент', es: 'Contenido' },
+              [
+                {
+                  name: 'sectionTitle',
+                  type: 'text',
+                  label: {
+                    en: 'Section Title',
+                    uk: 'Заголовок секції',
+                    es: 'Titulo de la seccion',
+                  },
+                },
+              ],
+              false,
+            ),
             {
               name: 'items',
               type: 'array',
@@ -578,54 +954,63 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            {
-              name: 'sectionTitle',
-              type: 'text',
-              label: {
-                en: 'Section Title',
-                uk: 'Заголовок секції',
-                es: 'Titulo de la seccion',
-              },
-            },
-            sectionSpacingField,
-            {
-              name: 'intro',
-              type: 'richText',
-              label: {
-                en: 'Intro Text',
-                uk: 'Вступний текст',
-                es: 'Texto introductorio',
-              },
-            },
-            {
-              name: 'columns',
-              type: 'select',
-              defaultValue: 'one',
-              options: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, sectionSpacingField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout & Intro', uk: 'Розкладка і вступ', es: 'Disposicion e introduccion' },
+              [
                 {
+                  name: 'sectionTitle',
+                  type: 'text',
                   label: {
-                    en: 'One column',
-                    uk: 'Одна колонка',
-                    es: 'Una columna',
+                    en: 'Section Title',
+                    uk: 'Заголовок секції',
+                    es: 'Titulo de la seccion',
                   },
-                  value: 'one',
                 },
                 {
+                  name: 'intro',
+                  type: 'richText',
                   label: {
-                    en: 'Two columns',
-                    uk: 'Дві колонки',
-                    es: 'Dos columnas',
+                    en: 'Intro Text',
+                    uk: 'Вступний текст',
+                    es: 'Texto introductorio',
                   },
-                  value: 'two',
+                },
+                {
+                  name: 'columns',
+                  type: 'select',
+                  defaultValue: 'one',
+                  options: [
+                    {
+                      label: {
+                        en: 'One column',
+                        uk: 'Одна колонка',
+                        es: 'Una columna',
+                      },
+                      value: 'one',
+                    },
+                    {
+                      label: {
+                        en: 'Two columns',
+                        uk: 'Дві колонки',
+                        es: 'Dos columnas',
+                      },
+                      value: 'two',
+                    },
+                  ],
+                  label: {
+                    en: 'Layout',
+                    uk: 'Розкладка',
+                    es: 'Disposicion',
+                  },
                 },
               ],
-              label: {
-                en: 'Layout',
-                uk: 'Розкладка',
-                es: 'Disposicion',
-              },
-            },
+              false,
+            ),
             {
               name: 'items',
               type: 'array',
@@ -688,184 +1073,209 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            {
-              name: 'layoutStyle',
-              type: 'select',
-              defaultValue: 'cards',
-              options: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, sectionSpacingField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout & Intro', uk: 'Розкладка і вступ', es: 'Disposicion e introduccion' },
+              [
                 {
+                  name: 'layoutStyle',
+                  type: 'select',
+                  defaultValue: 'cards',
+                  options: [
+                    {
+                      label: {
+                        en: 'Cards',
+                        uk: 'Картки',
+                        es: 'Tarjetas',
+                      },
+                      value: 'cards',
+                    },
+                    {
+                      label: {
+                        en: 'Split columns on background',
+                        uk: 'Колонки на фоні',
+                        es: 'Columnas sobre fondo',
+                      },
+                      value: 'split',
+                    },
+                  ],
                   label: {
-                    en: 'Cards',
-                    uk: 'Картки',
-                    es: 'Tarjetas',
+                    en: 'Style',
+                    uk: 'Стиль',
+                    es: 'Estilo',
                   },
-                  value: 'cards',
                 },
                 {
+                  name: 'sectionTitle',
+                  type: 'text',
                   label: {
-                    en: 'Split columns on background',
-                    uk: 'Колонки на фоні',
-                    es: 'Columnas sobre fondo',
+                    en: 'Section Title',
+                    uk: 'Заголовок секції',
+                    es: 'Titulo de la seccion',
                   },
-                  value: 'split',
+                },
+                {
+                  name: 'intro',
+                  type: 'richText',
+                  label: {
+                    en: 'Intro Text',
+                    uk: 'Вступний текст',
+                    es: 'Texto introductorio',
+                  },
                 },
               ],
-              label: {
-                en: 'Style',
-                uk: 'Стиль',
-                es: 'Estilo',
-              },
-            },
-            {
-              name: 'sectionTitle',
-              type: 'text',
-              label: {
-                en: 'Section Title',
-                uk: 'Заголовок секції',
-                es: 'Titulo de la seccion',
-              },
-            },
-            sectionSpacingField,
-            {
-              name: 'intro',
-              type: 'richText',
-              label: {
-                en: 'Intro Text',
-                uk: 'Вступний текст',
-                es: 'Texto introductorio',
-              },
-            },
-            {
-              name: 'backgroundImage',
-              type: 'upload',
-              relationTo: 'media',
-              label: {
-                en: 'Background Image',
-                uk: 'Фонове зображення',
-                es: 'Imagen de fondo',
-              },
-              admin: {
-                condition: (_, siblingData) => siblingData.layoutStyle === 'split',
-              },
-            },
-            {
-              name: 'overlayColor',
-              type: 'text',
-              defaultValue: '#000000',
-              label: {
-                en: 'Overlay Color',
-                uk: 'Колір оверлею',
-                es: 'Color de superposicion',
-              },
-              admin: {
-                condition: (_, siblingData) => siblingData.layoutStyle === 'split',
-              },
-            },
-            {
-              name: 'overlayOpacity',
-              type: 'number',
-              defaultValue: 35,
-              min: 0,
-              max: 100,
-              label: {
-                en: 'Overlay Opacity',
-                uk: 'Прозорість оверлею',
-                es: 'Opacidad de superposicion',
-              },
-              admin: {
-                condition: (_, siblingData) => siblingData.layoutStyle === 'split',
-              },
-            },
-            {
-              name: 'leftColumnTitle',
-              type: 'text',
-              required: true,
-              label: {
-                en: 'Left Column Title',
-                uk: 'Заголовок лівої колонки',
-                es: 'Titulo de la columna izquierda',
-              },
-            },
-            {
-              name: 'leftItems',
-              type: 'array',
-              required: true,
-              minRows: 1,
-              labels: {
-                singular: {
-                  en: 'Left Item',
-                  uk: 'Пункт зліва',
-                  es: 'Elemento izquierdo',
-                },
-                plural: {
-                  en: 'Left Items',
-                  uk: 'Пункти зліва',
-                  es: 'Elementos izquierdos',
-                },
-              },
-              fields: [
+              false,
+            ),
+            collapsibleField(
+              { en: 'Background Overlay', uk: 'Фон і оверлей', es: 'Fondo y overlay' },
+              [
                 {
-                  name: 'text',
-                  type: 'textarea',
+                  name: 'backgroundImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: {
+                    en: 'Background Image',
+                    uk: 'Фонове зображення',
+                    es: 'Imagen de fondo',
+                  },
+                  admin: {
+                    condition: (_, siblingData) => siblingData.layoutStyle === 'split',
+                  },
+                },
+                {
+                  name: 'overlayColor',
+                  type: 'text',
+                  defaultValue: '#000000',
+                  label: {
+                    en: 'Overlay Color',
+                    uk: 'Колір оверлею',
+                    es: 'Color de superposicion',
+                  },
+                  admin: {
+                    condition: (_, siblingData) => siblingData.layoutStyle === 'split',
+                  },
+                },
+                {
+                  name: 'overlayOpacity',
+                  type: 'number',
+                  defaultValue: 35,
+                  min: 0,
+                  max: 100,
+                  label: {
+                    en: 'Overlay Opacity',
+                    uk: 'Прозорість оверлею',
+                    es: 'Opacidad de superposicion',
+                  },
+                  admin: {
+                    condition: (_, siblingData) => siblingData.layoutStyle === 'split',
+                  },
+                },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Columns Content', uk: 'Контент колонок', es: 'Contenido de columnas' },
+              [
+                {
+                  name: 'leftColumnTitle',
+                  type: 'text',
                   required: true,
                   label: {
-                    en: 'Text',
-                    uk: 'Текст',
-                    es: 'Texto',
+                    en: 'Left Column Title',
+                    uk: 'Заголовок лівої колонки',
+                    es: 'Titulo de la columna izquierda',
                   },
                 },
-              ],
-            },
-            {
-              name: 'rightColumnTitle',
-              type: 'text',
-              required: true,
-              label: {
-                en: 'Right Column Title',
-                uk: 'Заголовок правої колонки',
-                es: 'Titulo de la columna derecha',
-              },
-            },
-            {
-              name: 'rightItems',
-              type: 'array',
-              required: true,
-              minRows: 1,
-              labels: {
-                singular: {
-                  en: 'Right Item',
-                  uk: 'Пункт справа',
-                  es: 'Elemento derecho',
-                },
-                plural: {
-                  en: 'Right Items',
-                  uk: 'Пункти справа',
-                  es: 'Elementos derechos',
-                },
-              },
-              fields: [
                 {
-                  name: 'text',
-                  type: 'textarea',
+                  name: 'leftItems',
+                  type: 'array',
+                  required: true,
+                  minRows: 1,
+                  labels: {
+                    singular: {
+                      en: 'Left Item',
+                      uk: 'Пункт зліва',
+                      es: 'Elemento izquierdo',
+                    },
+                    plural: {
+                      en: 'Left Items',
+                      uk: 'Пункти зліва',
+                      es: 'Elementos izquierdos',
+                    },
+                  },
+                  fields: [
+                    {
+                      name: 'text',
+                      type: 'textarea',
+                      required: true,
+                      label: {
+                        en: 'Text',
+                        uk: 'Текст',
+                        es: 'Texto',
+                      },
+                    },
+                  ],
+                },
+                {
+                  name: 'rightColumnTitle',
+                  type: 'text',
                   required: true,
                   label: {
-                    en: 'Text',
-                    uk: 'Текст',
-                    es: 'Texto',
+                    en: 'Right Column Title',
+                    uk: 'Заголовок правої колонки',
+                    es: 'Titulo de la columna derecha',
+                  },
+                },
+                {
+                  name: 'rightItems',
+                  type: 'array',
+                  required: true,
+                  minRows: 1,
+                  labels: {
+                    singular: {
+                      en: 'Right Item',
+                      uk: 'Пункт справа',
+                      es: 'Elemento derecho',
+                    },
+                    plural: {
+                      en: 'Right Items',
+                      uk: 'Пункти справа',
+                      es: 'Elementos derechos',
+                    },
+                  },
+                  fields: [
+                    {
+                      name: 'text',
+                      type: 'textarea',
+                      required: true,
+                      label: {
+                        en: 'Text',
+                        uk: 'Текст',
+                        es: 'Texto',
+                      },
+                    },
+                  ],
+                },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Conclusion', uk: 'Висновок', es: 'Conclusion' },
+              [
+                {
+                  name: 'conclusion',
+                  type: 'richText',
+                  label: {
+                    en: 'Conclusion',
+                    uk: 'Висновок',
+                    es: 'Conclusion',
                   },
                 },
               ],
-            },
-            {
-              name: 'conclusion',
-              type: 'richText',
-              label: {
-                en: 'Conclusion',
-                uk: 'Висновок',
-                es: 'Conclusion',
-              },
-            },
+            ),
           ],
         },
         {
@@ -883,64 +1293,65 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            {
-              name: 'position',
-              type: 'select',
-              defaultValue: 'left',
-              options: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout & Intro', uk: 'Розкладка і вступ', es: 'Disposicion e introduccion' },
+              [
                 {
+                  name: 'position',
+                  type: 'select',
+                  defaultValue: 'left',
+                  options: [
+                    { label: { en: 'Image on Left', uk: 'Зображення зліва', es: 'Imagen a la izquierda' }, value: 'left' },
+                    { label: { en: 'Image on Right', uk: 'Зображення справа', es: 'Imagen a la derecha' }, value: 'right' },
+                  ],
                   label: {
-                    en: 'Image on Left',
-                    uk: 'Зображення зліва',
-                    es: 'Imagen a la izquierda',
+                    en: 'Image Position',
+                    uk: 'Позиція зображення',
+                    es: 'Posicion de la imagen',
                   },
-                  value: 'left',
                 },
                 {
+                  name: 'title',
+                  type: 'text',
                   label: {
-                    en: 'Image on Right',
-                    uk: 'Зображення справа',
-                    es: 'Imagen a la derecha',
+                    en: 'Title',
+                    uk: 'Заголовок',
+                    es: 'Titulo',
                   },
-                  value: 'right',
+                },
+                {
+                  name: 'intro',
+                  type: 'richText',
+                  label: {
+                    en: 'Intro Text',
+                    uk: 'Вступний текст',
+                    es: 'Texto introductorio',
+                  },
                 },
               ],
-              label: {
-                en: 'Image Position',
-                uk: 'Позиція зображення',
-                es: 'Posicion de la imagen',
-              },
-            },
-            {
-              name: 'title',
-              type: 'text',
-              label: {
-                en: 'Title',
-                uk: 'Заголовок',
-                es: 'Titulo',
-              },
-            },
-            {
-              name: 'intro',
-              type: 'richText',
-              label: {
-                en: 'Intro Text',
-                uk: 'Вступний текст',
-                es: 'Texto introductorio',
-              },
-            },
-            {
-              name: 'image',
-              type: 'upload',
-              relationTo: 'media',
-              required: true,
-              label: {
-                en: 'Image',
-                uk: 'Зображення',
-                es: 'Imagen',
-              },
-            },
+              false,
+            ),
+            collapsibleField(
+              { en: 'Media', uk: 'Медіа', es: 'Media' },
+              [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                  label: {
+                    en: 'Image',
+                    uk: 'Зображення',
+                    es: 'Imagen',
+                  },
+                },
+              ],
+            ),
             {
               name: 'items',
               type: 'array',
@@ -1003,76 +1414,95 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            buttonStyleField,
-            {
-              name: 'title',
-              type: 'text',
-              label: {
-                en: 'Title',
-                uk: 'Заголовок',
-                es: 'Titulo',
-              },
-            },
-            {
-              name: 'content',
-              type: 'richText',
-              label: {
-                en: 'Content',
-                uk: 'Контент',
-                es: 'Contenido',
-              },
-            },
-            {
-              name: 'backgroundImage',
-              type: 'upload',
-              relationTo: 'media',
-              label: {
-                en: 'Background Image',
-                uk: 'Фонове зображення',
-                es: 'Imagen de fondo',
-              },
-            },
-            {
-              name: 'overlayColor',
-              type: 'text',
-              defaultValue: '#000000',
-              label: {
-                en: 'Overlay Color',
-                uk: 'Колір оверлею',
-                es: 'Color de superposicion',
-              },
-            },
-            {
-              name: 'overlayOpacity',
-              type: 'number',
-              defaultValue: 35,
-              min: 0,
-              max: 100,
-              label: {
-                en: 'Overlay Opacity',
-                uk: 'Прозорість оверлею',
-                es: 'Opacidad de superposicion',
-              },
-            },
-            {
-              name: 'buttonText',
-              type: 'text',
-              label: {
-                en: 'Button Text',
-                uk: 'Текст кнопки',
-                es: 'Texto del boton',
-              },
-            },
-            {
-              name: 'buttonLink',
-              type: 'text',
-              label: {
-                en: 'Button Link',
-                uk: 'Посилання кнопки',
-                es: 'Enlace del boton',
-              },
-            },
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, buttonStyleField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Content', uk: 'Контент', es: 'Contenido' },
+              [
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: {
+                    en: 'Title',
+                    uk: 'Заголовок',
+                    es: 'Titulo',
+                  },
+                },
+                {
+                  name: 'content',
+                  type: 'richText',
+                  label: {
+                    en: 'Content',
+                    uk: 'Контент',
+                    es: 'Contenido',
+                  },
+                },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Background', uk: 'Фон', es: 'Fondo' },
+              [
+                {
+                  name: 'backgroundImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: {
+                    en: 'Background Image',
+                    uk: 'Фонове зображення',
+                    es: 'Imagen de fondo',
+                  },
+                },
+                {
+                  name: 'overlayColor',
+                  type: 'text',
+                  defaultValue: '#000000',
+                  label: {
+                    en: 'Overlay Color',
+                    uk: 'Колір оверлею',
+                    es: 'Color de superposicion',
+                  },
+                },
+                {
+                  name: 'overlayOpacity',
+                  type: 'number',
+                  defaultValue: 35,
+                  min: 0,
+                  max: 100,
+                  label: {
+                    en: 'Overlay Opacity',
+                    uk: 'Прозорість оверлею',
+                    es: 'Opacidad de superposicion',
+                  },
+                },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Button', uk: 'Кнопка', es: 'Boton' },
+              [
+                {
+                  name: 'buttonText',
+                  type: 'text',
+                  label: {
+                    en: 'Button Text',
+                    uk: 'Текст кнопки',
+                    es: 'Texto del boton',
+                  },
+                },
+                {
+                  name: 'buttonLink',
+                  type: 'text',
+                  label: {
+                    en: 'Button Link',
+                    uk: 'Посилання кнопки',
+                    es: 'Enlace del boton',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -1090,57 +1520,58 @@ export const Services: CollectionConfig = {
             },
           },
           fields: [
-            blockThemeField,
-            {
-              name: 'position',
-              type: 'select',
-              defaultValue: 'left',
-              options: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Layout & Source', uk: 'Розкладка і джерело', es: 'Disposicion y fuente' },
+              [
                 {
+                  name: 'position',
+                  type: 'select',
+                  defaultValue: 'left',
+                  options: [
+                    { label: { en: 'Image on Left', uk: 'Зображення зліва', es: 'Imagen a la izquierda' }, value: 'left' },
+                    { label: { en: 'Image on Right', uk: 'Зображення справа', es: 'Imagen a la derecha' }, value: 'right' },
+                  ],
                   label: {
-                    en: 'Image on Left',
-                    uk: 'Зображення зліва',
-                    es: 'Imagen a la izquierda',
+                    en: 'Image Position',
+                    uk: 'Позиція зображення',
+                    es: 'Posicion de la imagen',
                   },
-                  value: 'left',
                 },
                 {
+                  name: 'pricingGroup',
+                  type: 'relationship',
+                  relationTo: 'pricing',
+                  required: true,
                   label: {
-                    en: 'Image on Right',
-                    uk: 'Зображення справа',
-                    es: 'Imagen a la derecha',
+                    en: 'Pricing Group',
+                    uk: 'Група послуг',
+                    es: 'Grupo de precios',
                   },
-                  value: 'right',
                 },
               ],
-              label: {
-                en: 'Image Position',
-                uk: 'Позиція зображення',
-                es: 'Posicion de la imagen',
-              },
-            },
-            {
-              name: 'image',
-              type: 'upload',
-              relationTo: 'media',
-              required: true,
-              label: {
-                en: 'Image',
-                uk: 'Зображення',
-                es: 'Imagen',
-              },
-            },
-            {
-              name: 'pricingGroup',
-              type: 'relationship',
-              relationTo: 'pricing',
-              required: true,
-              label: {
-                en: 'Pricing Group',
-                uk: 'Група послуг',
-                es: 'Grupo de precios',
-              },
-            },
+              false,
+            ),
+            collapsibleField(
+              { en: 'Media', uk: 'Медіа', es: 'Media' },
+              [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                  label: {
+                    en: 'Image',
+                    uk: 'Зображення',
+                    es: 'Imagen',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -1157,7 +1588,13 @@ export const Services: CollectionConfig = {
               es: 'Bloques globales de contacto',
             },
           },
-          fields: [blockThemeField, sectionSpacingField],
+          fields: [
+            collapsibleField(
+              { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
+              [blockThemeField, sectionSpacingField],
+              false,
+            ),
+          ],
         },
       ],
     },
