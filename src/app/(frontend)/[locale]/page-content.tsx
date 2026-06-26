@@ -6,6 +6,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import TeamSlider from '../../../components/TeamSlider'
 import GallerySlider from '../../../components/GallerySlider'
 import ContactForm from '../../../components/ContactForm'
+import GoogleReviews from '../../../components/GoogleReviews'
 import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
@@ -757,7 +758,7 @@ export async function PageContent({
                 <section
                   key={block.id || idx}
                   id="reviews"
-                  className={compactSpacing ? `py-[72px] max-[767px]:py-[48px] relative ${theme.section}` : `py-[120px] max-[767px]:py-[80px] relative ${theme.section}`}
+                  className={compactSpacing ? `py-[64px] max-[767px]:py-[44px] relative ${theme.section}` : `py-[96px] max-[767px]:py-[64px] relative ${theme.section}`}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] flex flex-col gap-5">
                     <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-6">
@@ -769,15 +770,7 @@ export async function PageContent({
                         dangerouslySetInnerHTML={{ __html: block.embedCode }}
                       />
                     ) : (
-                      <div className="bg-white p-10 rounded-lg text-center text-[#909da2]">
-                        <p className="text-[16px]">
-                          {locale === 'uk'
-                            ? 'Відгуки зʼявляться тут. Встав код віджета через адмінку.'
-                            : locale === 'en'
-                              ? 'Reviews will appear here. Insert the widget code in admin.'
-                              : 'Las resenas apareceran aqui. Inserte el codigo del widget en el admin.'}
-                        </p>
-                      </div>
+                      <GoogleReviews locale={locale as 'es' | 'en' | 'uk'} desktopSlides={parseInt(block.desktopSlides || '2')} />
                     )}
                     {block.buttonText && (
                       <div className="mt-6 text-center">
