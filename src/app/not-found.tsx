@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FrontendNotFound from '@/components/FrontendNotFound'
 import { getNotFoundPageBlock } from '@/lib/not-found-page'
+import { getDesignSettingsVars } from '@/lib/designSettings'
 import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
 
 async function detectLocaleFromHeaders() {
@@ -41,6 +42,7 @@ export default async function NotFound() {
   let siteSettings: SiteSetting | null = null
   let headerFooter: HeaderFooter | null = null
   let siteContacts: SiteContact | null = null
+  let designSettings: Record<string, unknown> | null = null
 
   try {
     siteSettings = (await payload.findGlobal({ slug: 'site-settings', locale })) as SiteSetting
@@ -58,6 +60,12 @@ export default async function NotFound() {
     siteContacts = (await payload.findGlobal({ slug: 'site-contacts', locale })) as SiteContact
   } catch (error) {
     console.error('Error fetching site-contacts global for 404:', error)
+  }
+
+  try {
+    designSettings = (await payload.findGlobal({ slug: 'design-settings', locale })) as unknown as Record<string, unknown>
+  } catch (error) {
+    console.error('Error fetching design-settings global for 404:', error)
   }
 
   const sharedMenuItems = siteSettings?.menuItems?.length
@@ -82,7 +90,7 @@ export default async function NotFound() {
   const { contentImageBlock } = await getNotFoundPageBlock(locale)
 
   return (
-    <>
+    <div style={getDesignSettingsVars(designSettings)}>
       <Header data={headerData} contacts={contactsData} currentLocale={locale} />
 
       {contentImageBlock ? (
@@ -108,6 +116,6 @@ export default async function NotFound() {
         headerLogo={headerData.logo}
         currentLocale={locale}
       />
-    </>
+    </div>
   )
 }

@@ -1,6 +1,21 @@
 import type { GlobalConfig } from 'payload'
 import { normalizeLexicalValue } from '@/lib/lexical'
 
+function collapsibleField(
+  label: { en: string; uk: string; es: string },
+  fields: any[],
+  initCollapsed = true,
+) {
+  return {
+    type: 'collapsible' as const,
+    label,
+    admin: {
+      initCollapsed,
+    },
+    fields,
+  }
+}
+
 function normalizeFormNotificationEditors<T extends Record<string, unknown> | null | undefined>(doc: T): T {
   if (!doc || typeof doc !== 'object') return doc
 
@@ -59,123 +74,161 @@ export const SiteSettings: GlobalConfig = {
     ],
   },
   fields: [
-    {
-      name: 'menuItems',
-      type: 'array',
-      admin: {
-        components: {
-          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
-        },
+    collapsibleField(
+      {
+        en: 'Shared Menu',
+        uk: 'Спільне меню',
+        es: 'Menu compartido',
       },
-      label: {
-        en: 'Shared Menu Items',
-        uk: 'Спільні пункти меню',
-        es: 'Elementos compartidos del menu',
-      },
-      fields: [
+      [
         {
-          name: 'label',
-          type: 'text',
-          required: true,
-          localized: true,
-          label: {
-            en: 'Label',
-            uk: 'Назва',
-            es: 'Etiqueta',
-          },
-        },
-        {
-          name: 'link',
-          type: 'text',
-          required: true,
-          label: {
-            en: 'Link',
-            uk: 'Посилання',
-            es: 'Enlace',
-          },
+          name: 'menuItems',
+          type: 'array',
           admin: {
-            description: {
-              en: 'Use /services for pages or #contact_us for anchors',
-              uk: 'Використовуйте /services для сторінок або #contact_us для якорів',
-              es: 'Use /services para paginas o #contact_us para anclas',
+            components: {
+              RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
             },
           },
+          label: {
+            en: 'Shared Menu Items',
+            uk: 'Спільні пункти меню',
+            es: 'Elementos compartidos del menu',
+          },
+          fields: [
+            {
+              name: 'label',
+              type: 'text',
+              required: true,
+              localized: true,
+              label: {
+                en: 'Label',
+                uk: 'Назва',
+                es: 'Etiqueta',
+              },
+            },
+            {
+              name: 'link',
+              type: 'text',
+              required: true,
+              label: {
+                en: 'Link',
+                uk: 'Посилання',
+                es: 'Enlace',
+              },
+              admin: {
+                description: {
+                  en: 'Use /services for pages or #contact_us for anchors',
+                  uk: 'Використовуйте /services для сторінок або #contact_us для якорів',
+                  es: 'Use /services para paginas o #contact_us para anclas',
+                },
+              },
+            },
+          ],
         },
       ],
-    },
-    {
-      name: 'header',
-      type: 'group',
-      label: {
+      false,
+    ),
+    collapsibleField(
+      {
         en: 'Header Settings',
         uk: 'Налаштування хедера',
         es: 'Configuracion del header',
       },
-      fields: [
+      [
         {
-          name: 'logo',
-          type: 'upload',
-          relationTo: 'media',
+          name: 'header',
+          type: 'group',
           label: {
-            en: 'Header Logo',
-            uk: 'Логотип хедера',
-            es: 'Logo del header',
+            en: 'Header Settings',
+            uk: 'Налаштування хедера',
+            es: 'Configuracion del header',
           },
-        },
-        {
-          name: 'menuButtonLabel',
-          type: 'text',
-          localized: true,
-          defaultValue: 'Menu',
-          label: {
-            en: 'Menu Button Label',
-            uk: 'Текст кнопки меню',
-            es: 'Texto del boton menu',
-          },
+          fields: [
+            {
+              name: 'logo',
+              type: 'upload',
+              relationTo: 'media',
+              label: {
+                en: 'Header Logo',
+                uk: 'Логотип хедера',
+                es: 'Logo del header',
+              },
+            },
+            {
+              name: 'menuButtonLabel',
+              type: 'text',
+              localized: true,
+              defaultValue: 'Menu',
+              label: {
+                en: 'Menu Button Label',
+                uk: 'Текст кнопки меню',
+                es: 'Texto del boton menu',
+              },
+            },
+          ],
         },
       ],
-    },
-    {
-      name: 'footer',
-      type: 'group',
-      label: {
+    ),
+    collapsibleField(
+      {
         en: 'Footer Settings',
         uk: 'Налаштування футера',
         es: 'Configuracion del footer',
       },
-      fields: [
+      [
         {
-          name: 'logo',
-          type: 'upload',
-          relationTo: 'media',
+          name: 'footer',
+          type: 'group',
           label: {
-            en: 'Footer Logo',
-            uk: 'Логотип футера',
-            es: 'Logo del footer',
+            en: 'Footer Settings',
+            uk: 'Налаштування футера',
+            es: 'Configuracion del footer',
           },
-        },
-        {
-          name: 'copyright',
-          type: 'text',
-          localized: true,
-          defaultValue: '©2024 - All right reserved',
-          label: {
-            en: 'Copyright Text',
-            uk: 'Копірайт',
-            es: 'Texto de copyright',
-          },
+          fields: [
+            {
+              name: 'logo',
+              type: 'upload',
+              relationTo: 'media',
+              label: {
+                en: 'Footer Logo',
+                uk: 'Логотип футера',
+                es: 'Logo del footer',
+              },
+            },
+            {
+              name: 'copyright',
+              type: 'text',
+              localized: true,
+              defaultValue: '©2024 - All right reserved',
+              label: {
+                en: 'Copyright Text',
+                uk: 'Копірайт',
+                es: 'Texto de copyright',
+              },
+            },
+          ],
         },
       ],
-    },
-    {
-      name: 'contacts',
-      type: 'group',
-      label: {
+    ),
+    collapsibleField(
+      {
         en: 'Contact Block',
         uk: 'Блок контактів',
         es: 'Bloque de contacto',
       },
-      fields: [
+      [
+        {
+          name: 'contacts',
+          type: 'group',
+          label: {
+            en: 'Contact Block',
+            uk: 'Блок контактів',
+            es: 'Bloque de contacto',
+          },
+          fields: [
+            collapsibleField(
+              { en: 'Titles & Labels', uk: 'Заголовки і підписи', es: 'Titulos y etiquetas' },
+              [
         {
           name: 'sectionTitle',
           type: 'text',
@@ -246,6 +299,12 @@ export const SiteSettings: GlobalConfig = {
             es: 'Etiqueta de redes sociales',
           },
         },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Contact Data', uk: 'Контактні дані', es: 'Datos de contacto' },
+              [
         {
           name: 'email',
           type: 'text',
@@ -317,22 +376,33 @@ export const SiteSettings: GlobalConfig = {
             es: 'URL de Google Maps para insertar',
           },
         },
-      ],
-    },
-    {
-      name: 'socialLinks',
-      type: 'array',
-      admin: {
-        components: {
-          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+              ],
+            ),
+          ],
         },
-      },
-      label: {
+      ],
+    ),
+    collapsibleField(
+      {
         en: 'Social Media Links',
         uk: 'Соціальні мережі',
         es: 'Redes sociales',
       },
-      fields: [
+      [
+        {
+          name: 'socialLinks',
+          type: 'array',
+          admin: {
+            components: {
+              RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+            },
+          },
+          label: {
+            en: 'Social Media Links',
+            uk: 'Соціальні мережі',
+            es: 'Redes sociales',
+          },
+          fields: [
         {
           name: 'platform',
           type: 'select',
@@ -360,17 +430,29 @@ export const SiteSettings: GlobalConfig = {
             es: 'Enlace',
           },
         },
+          ],
+        },
       ],
-    },
-    {
-      name: 'globalContactSection',
-      type: 'group',
-      label: {
+    ),
+    collapsibleField(
+      {
         en: 'Contact Form',
         uk: 'Форма контактів',
         es: 'Formulario de contacto',
       },
-      fields: [
+      [
+        {
+          name: 'globalContactSection',
+          type: 'group',
+          label: {
+            en: 'Contact Form',
+            uk: 'Форма контактів',
+            es: 'Formulario de contacto',
+          },
+          fields: [
+            collapsibleField(
+              { en: 'Form Intro', uk: 'Вступ форми', es: 'Introduccion del formulario' },
+              [
         {
           name: 'sectionTitle',
           type: 'text',
@@ -427,6 +509,12 @@ export const SiteSettings: GlobalConfig = {
             es: 'Texto del boton enviar',
           },
         },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Placeholders', uk: 'Плейсхолдери', es: 'Placeholders' },
+              [
         {
           name: 'fullNamePlaceholder',
           type: 'text',
@@ -468,6 +556,31 @@ export const SiteSettings: GlobalConfig = {
           },
         },
         {
+          name: 'referralSourcePlaceholder',
+          type: 'text',
+          localized: true,
+          label: {
+            en: 'Referral Source Placeholder',
+            uk: 'Плейсхолдер звідки дізнався',
+            es: 'Placeholder como nos conocio',
+          },
+        },
+        {
+          name: 'commentPlaceholder',
+          type: 'text',
+          localized: true,
+          label: {
+            en: 'Comment Placeholder',
+            uk: 'Плейсхолдер коментаря',
+            es: 'Placeholder comentario',
+          },
+        },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Select Options', uk: 'Варіанти селектів', es: 'Opciones de selects' },
+              [
+        {
           name: 'patientTypes',
           type: 'array',
           labels: {
@@ -495,16 +608,6 @@ export const SiteSettings: GlobalConfig = {
               },
             },
           ],
-        },
-        {
-          name: 'referralSourcePlaceholder',
-          type: 'text',
-          localized: true,
-          label: {
-            en: 'Referral Source Placeholder',
-            uk: 'Плейсхолдер звідки дізнався',
-            es: 'Placeholder como nos conocio',
-          },
         },
         {
           name: 'refSources',
@@ -535,16 +638,11 @@ export const SiteSettings: GlobalConfig = {
             },
           ],
         },
-        {
-          name: 'commentPlaceholder',
-          type: 'text',
-          localized: true,
-          label: {
-            en: 'Comment Placeholder',
-            uk: 'Плейсхолдер коментаря',
-            es: 'Placeholder comentario',
-          },
-        },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Form Messages', uk: 'Повідомлення форми', es: 'Mensajes del formulario' },
+              [
         {
           name: 'successMessage',
           type: 'textarea',
@@ -565,17 +663,31 @@ export const SiteSettings: GlobalConfig = {
             es: 'Mensaje de error',
           },
         },
+              ],
+            ),
+          ],
+        },
       ],
-    },
-    {
-      name: 'formNotifications',
-      type: 'group',
-      label: {
+    ),
+    collapsibleField(
+      {
         en: 'Form Notifications',
         uk: 'Сповіщення форми',
         es: 'Notificaciones del formulario',
       },
-      fields: [
+      [
+        {
+          name: 'formNotifications',
+          type: 'group',
+          label: {
+            en: 'Form Notifications',
+            uk: 'Сповіщення форми',
+            es: 'Notificaciones del formulario',
+          },
+          fields: [
+            collapsibleField(
+              { en: 'Delivery Settings', uk: 'Налаштування відправки', es: 'Ajustes de envio' },
+              [
         {
           name: 'recipientEmail',
           type: 'text',
@@ -602,6 +714,12 @@ export const SiteSettings: GlobalConfig = {
             es: 'Enviar confirmacion al usuario',
           },
         },
+              ],
+              false,
+            ),
+            collapsibleField(
+              { en: 'Placeholders Help', uk: 'Підказка по змінних', es: 'Ayuda de placeholders' },
+              [
         {
           name: 'availablePlaceholdersNote',
           type: 'ui',
@@ -611,6 +729,11 @@ export const SiteSettings: GlobalConfig = {
             },
           },
         },
+              ],
+            ),
+            collapsibleField(
+              { en: 'Admin Email', uk: 'Лист адміну', es: 'Email al administrador' },
+              [
         {
           name: 'adminSubject',
           type: 'text',
@@ -638,6 +761,11 @@ export const SiteSettings: GlobalConfig = {
             es: 'Mensaje del email al administrador',
           },
         },
+              ],
+            ),
+            collapsibleField(
+              { en: 'User Email', uk: 'Лист користувачу', es: 'Email al usuario' },
+              [
         {
           name: 'userSubject',
           type: 'text',
@@ -665,7 +793,11 @@ export const SiteSettings: GlobalConfig = {
             es: 'Mensaje del email al usuario',
           },
         },
+              ],
+            ),
+          ],
+        },
       ],
-    },
+    ),
   ],
 }
