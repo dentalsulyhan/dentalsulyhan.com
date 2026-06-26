@@ -2,10 +2,9 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination } from 'swiper/modules'
+import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
-import 'swiper/css/pagination'
 
 type Locale = 'es' | 'en' | 'uk'
 
@@ -91,7 +90,7 @@ const GoogleLogo = () => (
 )
 
 const StarRating = ({ rating }: { rating: number }) => (
-  <div className="flex gap-1">
+  <div className="flex gap-[2px]">
     {[...Array(5)].map((_, i) => (
       <svg
         key={i}
@@ -155,6 +154,8 @@ export default function GoogleReviews({
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const t = copy[locale]
+  const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null)
+  const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -216,21 +217,32 @@ export default function GoogleReviews({
   }
 
   return (
-    <div className="w-full flex flex-col gap-6">
-      <div className="rounded-[24px] border border-[#22282b]/8 bg-[#fbf7f2] px-5 py-5 md:px-7 md:py-6">
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-[54px] w-[54px] items-center justify-center rounded-[18px] bg-white shadow-[0_8px_20px_rgba(34,40,43,0.05)]">
+    <div className="google-reviews-widget grid w-full gap-5 md:gap-6 lg:grid-cols-[minmax(0,0.26fr)_minmax(0,0.74fr)] lg:items-stretch rounded-none bg-transparent p-0 border-none shadow-none md:rounded-[32px] md:bg-[#fcfaf8] md:p-8 md:border-solid md:border md:border-[#eae4dd] md:shadow-sm max-[767px]:-mx-[20px] max-[767px]:w-[calc(100%+40px)]">
+      <div className="relative flex flex-col justify-between h-full px-[20px] py-2 md:px-4 md:py-6">
+        <div className="relative z-10 flex flex-col gap-2.5">
+          <div className="flex flex-col gap-1.5">
+            <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#22282b]/8 bg-white/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7a7a72]">
               <GoogleLogo />
+              Google
             </div>
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-3">
-                <span className="text-[26px] font-semibold leading-none text-[#22282b]">
+
+            <div className="flex items-end gap-2">
+              <div className="flex items-end gap-1">
+                <span className="text-[32px] font-semibold leading-none tracking-[-0.04em] text-[#22282b]">
                   {summary.rating?.toFixed(1)}
                 </span>
+                <span className="pb-[3px] text-[13px] text-[#8b8c84]">/ 5</span>
+              </div>
+              <div className="pb-[4px]">
                 <StarRating rating={Math.round(summary.rating || 5)} />
               </div>
-              <p className="text-[14px] leading-relaxed text-[#727c80]">
+            </div>
+
+            <div className="space-y-0.5">
+              <p className="text-[16px] font-medium leading-tight text-[#22282b]">
+                {data?.config?.title || 'Patient reviews'}
+              </p>
+              <p className="text-[13px] leading-relaxed text-[#72756f]">
                 {summary.reviewsCount} {t.googleReviews}
               </p>
             </div>
@@ -241,7 +253,7 @@ export default function GoogleReviews({
               href={summary.writeAReviewUri}
               target="_blank"
               rel="noopener noreferrer"
-              className="site-button site-button--primary text-center"
+              className="site-button site-button--primary min-w-0 w-full text-center mt-1"
             >
               {t.writeReview}
             </a>
@@ -249,28 +261,24 @@ export default function GoogleReviews({
         </div>
       </div>
 
-      <div className="relative px-0 md:px-10">
+      <div className="relative min-w-0 px-0 md:px-3 z-20">
         <Swiper
-          modules={[Navigation, Pagination]}
+          className="max-[767px]:!px-[12vw] pb-6"
+          modules={[Navigation]}
           direction="horizontal"
           loop={reviews.length > desktopSlides}
           speed={600}
           slidesPerView={1}
-          spaceBetween={20}
-          pagination={{
-            el: '.reviews-pagination',
-            clickable: true,
-          }}
+          spaceBetween={16}
           navigation={{
-            nextEl: '.reviews-btn-next',
-            prevEl: '.reviews-btn-prev',
+            prevEl,
+            nextEl,
           }}
           breakpoints={{
-            640: { slidesPerView: Math.min(2, desktopSlides), spaceBetween: 20 },
+            768: { slidesPerView: Math.min(2, desktopSlides), spaceBetween: 20 },
             1024: { slidesPerView: Math.min(3, desktopSlides), spaceBetween: 24 },
             1280: { slidesPerView: desktopSlides, spaceBetween: 24 },
           }}
-          className="pb-8"
         >
           {reviews.map((review, index) => {
             const authorName = review.author?.name?.trim() || t.anonymous
@@ -280,19 +288,20 @@ export default function GoogleReviews({
             const publishedAt = formatRelativeDate(review.publishedAt, locale)
 
             return (
-              <SwiperSlide key={review.id || index} className="h-auto">
-                <article className="flex h-full flex-col gap-4 rounded-[22px] border border-[#22282b]/8 bg-[#fffdfb] p-5 shadow-[0_10px_24px_rgba(34,40,43,0.04)]">
+              <SwiperSlide key={review.id || index} className="!h-auto">
+                <article className="relative flex h-full flex-col gap-3 md:gap-4 overflow-hidden rounded-[20px] border border-[#22282b]/8 bg-[#fffdfa] p-4 md:p-5 shadow-[0_10px_24px_rgba(34,40,43,0.04)]">
+                  <div className="absolute left-0 top-0 h-full w-[3px] bg-[linear-gradient(180deg,#d5b481_0%,#efe3d3_100%)]" />
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
                       {photoUrl ? (
                         <img
                           src={photoUrl}
                           alt={authorName}
-                          className="h-12 w-12 shrink-0 rounded-full object-cover"
+                          className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-[#22282b]/8"
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e8e0d8] text-[14px] font-semibold text-[#3c5557]">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee2d5] text-[14px] font-semibold text-[#5f5d57] ring-1 ring-[#22282b]/5">
                           {getInitials(authorName)}
                         </div>
                       )}
@@ -310,17 +319,10 @@ export default function GoogleReviews({
                       </div>
                     </div>
 
-                    <GoogleLogo />
+                    <span className="text-[34px] font-serif leading-none text-[#dcc2a0]">"</span>
                   </div>
 
-                  <p
-                    className="flex-grow whitespace-pre-line text-[14px] leading-[1.68] text-[#586265] overflow-hidden"
-                    style={{
-                      display: '-webkit-box',
-                      WebkitLineClamp: 7,
-                      WebkitBoxOrient: 'vertical',
-                    }}
-                  >
+                  <p className="flex-grow text-[14px] leading-[1.6] text-[#5c6668] overflow-hidden line-clamp-6">
                     {comment}
                   </p>
                 </article>
@@ -329,16 +331,20 @@ export default function GoogleReviews({
           })}
         </Swiper>
 
-        <div className="reviews-pagination flex justify-center mt-1" />
-
-        <button className="reviews-btn-prev absolute left-[-4px] top-[42%] z-[9] flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full border border-[#22282b]/10 bg-white shadow-[0_8px_18px_rgba(34,40,43,0.06)] transition-colors hover:bg-[#f3ece4] max-[767px]:left-[-8px]">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#5f696d]">
+        <button
+          ref={setPrevEl}
+          className="reviews-btn-prev absolute left-[calc(12vw-24px)] md:left-[-12px] top-[50%] z-[50] flex h-[32px] w-[32px] -translate-y-1/2 items-center justify-center rounded-full border border-[#22282b]/8 bg-white/95 shadow-[0_8px_18px_rgba(34,40,43,0.06)] transition-colors hover:bg-[#f5ede4] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f696d]">
             <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
 
-        <button className="reviews-btn-next absolute right-[-4px] top-[42%] z-[9] flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full border border-[#22282b]/10 bg-white shadow-[0_8px_18px_rgba(34,40,43,0.06)] transition-colors hover:bg-[#f3ece4] max-[767px]:right-[-8px]">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#5f696d]">
+        <button
+          ref={setNextEl}
+          className="reviews-btn-next absolute right-[calc(12vw-24px)] md:right-[-12px] top-[50%] z-[50] flex h-[32px] w-[32px] -translate-y-1/2 items-center justify-center rounded-full border border-[#22282b]/8 bg-white/95 shadow-[0_8px_18px_rgba(34,40,43,0.06)] transition-colors hover:bg-[#f5ede4] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f696d]">
             <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
