@@ -1037,10 +1037,29 @@ export const Pages: CollectionConfig = {
                   },
                   admin: {
                     description: {
-                      en: 'Paste the review widget code or placeholder markup.',
-                      uk: 'Встав код віджета відгуків або тимчасову розмітку.',
-                      es: 'Pegue el codigo del widget de resenas o un marcador temporal.',
+                      en: 'Paste the review widget code or placeholder markup. Leave empty to use default Google Reviews component.',
+                      uk: 'Встав код віджета відгуків або тимчасову розмітку. Залиште порожнім, щоб використати стандартний компонент Google Reviews.',
+                      es: 'Pegue el codigo del widget de resenas o un marcador temporal. Dejar en blanco para usar el componente de Google Reviews.',
                     },
+                  },
+                },
+                {
+                  name: 'desktopSlides',
+                  type: 'select',
+                  defaultValue: '2',
+                  options: [
+                    { label: '1', value: '1' },
+                    { label: '2', value: '2' },
+                    { label: '3', value: '3' },
+                    { label: '4', value: '4' },
+                  ],
+                  label: {
+                    en: 'Slides per view (Desktop)',
+                    uk: 'Кількість відгуків на ПК',
+                    es: 'Reseñas por vista (Escritorio)',
+                  },
+                  admin: {
+                    condition: (_, siblingData) => !siblingData?.embedCode,
                   },
                 },
               ],

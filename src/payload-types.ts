@@ -464,9 +464,10 @@ export interface Page {
             compactSpacing?: boolean | null;
             sectionTitle?: string | null;
             /**
-             * Paste the review widget code or placeholder markup.
+             * Paste the review widget code or placeholder markup. Leave empty to use default Google Reviews component.
              */
             embedCode?: string | null;
+            desktopSlides?: ('1' | '2' | '3' | '4') | null;
             buttonText?: string | null;
             buttonLink?: string | null;
             id?: string | null;
@@ -1592,6 +1593,7 @@ export interface PagesSelect<T extends boolean = true> {
               compactSpacing?: T;
               sectionTitle?: T;
               embedCode?: T;
+              desktopSlides?: T;
               buttonText?: T;
               buttonLink?: T;
               id?: T;
