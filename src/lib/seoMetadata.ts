@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import type { Media, SeoSetting } from '@/payload-types'
-import { type SupportedLocale } from '@/lib/localizedRouting'
+import { DEFAULT_LOCALE, type SupportedLocale } from '@/lib/localizedRouting'
 import { buildAbsoluteUrl, buildLocalizedAbsoluteUrl } from '@/lib/seo'
 
 export type SeoTarget = {
@@ -201,12 +201,21 @@ export function buildSeoMetadata({
     description,
     alternates: {
       canonical,
-        languages: Object.fromEntries(
-          Object.entries(alternates || {}).flatMap(([altLocale, altPath]) => {
-            if (!altPath) return []
-            return [[altLocale, buildLocalizedAbsoluteUrl(altLocale as SupportedLocale, altPath)]]
-          }),
-        ),
+      languages: Object.fromEntries(
+        Object.entries(alternates || {}).flatMap(([altLocale, altPath]) => {
+          if (!altPath) return []
+          return [[altLocale, buildLocalizedAbsoluteUrl(altLocale as SupportedLocale, altPath)]]
+        }),
+      ),
+      ...(alternates?.es
+        ? {
+            'x-default': buildLocalizedAbsoluteUrl(DEFAULT_LOCALE, alternates.es),
+          }
+        : canonical
+          ? {
+              'x-default': canonical,
+            }
+          : {}),
     },
     openGraph: {
       type: 'website',

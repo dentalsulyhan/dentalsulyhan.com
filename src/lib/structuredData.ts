@@ -149,6 +149,25 @@ export function buildBreadcrumbStructuredData(items: Array<{ name: string; path:
   }
 }
 
+export function buildItemListStructuredData(items: Array<{ name: string; path: string }>) {
+  const mappedItems = items
+    .filter((item) => item.name && item.path)
+    .map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      url: buildAbsoluteUrl(item.path),
+    }))
+
+  if (!mappedItems.length) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: mappedItems,
+  }
+}
+
 export function buildFaqStructuredData(
   items: Array<{ heading?: unknown; content?: unknown }> | null | undefined,
 ) {

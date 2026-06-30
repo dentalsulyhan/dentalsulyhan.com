@@ -7,6 +7,7 @@ import type { Media, Page, Pricing, Service, SiteContact, SiteSetting } from '@/
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { buildBreadcrumbStructuredData, buildItemListStructuredData } from '@/lib/structuredData'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -153,6 +154,24 @@ export async function ServicesListingPageContent({
 
   const pageLayout = pageData.layout || []
   const globalContact = siteSettings?.globalContactSection
+  const itemListStructuredData = buildItemListStructuredData(
+    allServicesResult.docs
+      .filter((service) => typeof service.title === 'string' && Boolean(service.path))
+      .map((service) => ({
+        name: service.title as string,
+        path: buildLocalizedPath(locale, `${servicesBasePath}/${service.path}`),
+      })),
+  )
+  const breadcrumbStructuredData = buildBreadcrumbStructuredData([
+    {
+      name: locale === 'uk' ? 'Головна' : locale === 'en' ? 'Home' : 'Inicio',
+      path: locale === 'es' ? '/' : `/${locale}`,
+    },
+    {
+      name: pageData.title,
+      path: servicesBasePath,
+    },
+  ])
 
   const copy = {
     phoneLabel: siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono'),
@@ -169,7 +188,20 @@ export async function ServicesListingPageContent({
   }
 
   return (
-    <main>
+    <>
+      {breadcrumbStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+        />
+      )}
+      {itemListStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListStructuredData) }}
+        />
+      )}
+      <main>
       {pageLayout.map((block, idx) => {
         switch (block.blockType) {
           case 'hero': {
@@ -536,7 +568,8 @@ export async function ServicesListingPageContent({
             return null
         }
       })}
-    </main>
+      </main>
+    </>
   )
 }
 
