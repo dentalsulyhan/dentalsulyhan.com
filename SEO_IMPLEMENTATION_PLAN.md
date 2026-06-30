@@ -13,13 +13,14 @@ Already started:
 - initial `sitemap.xml` scaffold
 - `seo-settings` global added to Payload
 - reusable SEO fields added to `Pages` and `Services`
+- route-level `generateMetadata()` started for localized public pages
 
 Next to do:
 
-- `generateMetadata()` for all public routes
-- canonical and hreflang support
 - structured data
 - sitemap expansion for all public pages
+- 404 metadata and noindex handling
+- review whether home/services/service-detail metadata needs deeper content-based fallbacks
 
 ## Goal
 
@@ -48,9 +49,8 @@ What is still missing or incomplete:
 
 - centralized SEO model in the CMS
 - per-page SEO fields
-- proper `generateMetadata` usage per route
-- canonical URLs
-- hreflang alternate links
+- deeper content-based metadata fallbacks for page descriptions
+- 404 metadata
 - sitemap.xml
 - robots.txt
 - JSON-LD structured data
