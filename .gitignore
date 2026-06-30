@@ -41,6 +41,12 @@ next-env.d.ts
 .env
 
 /media
+/public/media/
+/public/media.zip
+/WP_SulyhanDC/
+/dentalsulyhan.com.xlsx
+/tmp/
+/widget.js
 
 # Playwright
 node_modules/

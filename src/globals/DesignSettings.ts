@@ -10,6 +10,21 @@ function textField(name: string, label: { en: string; uk: string; es: string }, 
   }
 }
 
+function selectField(
+  name: string,
+  label: { en: string; uk: string; es: string },
+  defaultValue: string,
+  options: Array<{ label: { en: string; uk: string; es: string }; value: string }>,
+): Field {
+  return {
+    name,
+    type: 'select',
+    defaultValue,
+    label,
+    options,
+  }
+}
+
 function colorField(name: string, label: { en: string; uk: string; es: string }, defaultValue: string): Field {
   return {
     name,
@@ -21,6 +36,27 @@ function colorField(name: string, label: { en: string; uk: string; es: string },
         en: 'Use HEX, rgb(), rgba(), or any valid CSS color value.',
         uk: 'Використовуйте HEX, rgb(), rgba() або будь-яке валідне CSS-значення кольору.',
         es: 'Use HEX, rgb(), rgba() o cualquier valor de color CSS válido.',
+      },
+    },
+  }
+}
+
+function themeColorField(
+  name: string,
+  label: { en: string; uk: string; es: string },
+  defaultValue: string,
+  usage: { en: string; uk: string; es: string },
+): Field {
+  return {
+    name,
+    type: 'text',
+    defaultValue,
+    label,
+    admin: {
+      description: {
+        en: `Used in: ${usage.en}. Accepts HEX, rgb(), rgba(), or any valid CSS color.`,
+        uk: `Використовується в: ${usage.uk}. Підтримує HEX, rgb(), rgba() або будь-який валідний CSS-колір.`,
+        es: `Se usa en: ${usage.es}. Acepta HEX, rgb(), rgba() o cualquier color CSS válido.`,
       },
     },
   }
@@ -76,6 +112,7 @@ export const DesignSettings: GlobalConfig = {
           },
           fields: [
             colorField('mainBackground', { en: 'Main Background', uk: 'Основний фон', es: 'Fondo principal' }, defaultDesignSettings.colors.mainBackground),
+            colorField('footerBackground', { en: 'Footer Background', uk: 'Фон футера', es: 'Fondo del footer' }, defaultDesignSettings.colors.footerBackground),
             colorField('mainText', { en: 'Main Text', uk: 'Основний текст', es: 'Texto principal' }, defaultDesignSettings.colors.mainText),
             colorField('mutedText', { en: 'Muted Text', uk: 'Другорядний текст', es: 'Texto secundario' }, defaultDesignSettings.colors.mutedText),
             colorField('accent', { en: 'Accent Color', uk: 'Акцентний колір', es: 'Color de acento' }, defaultDesignSettings.colors.accent),
@@ -103,6 +140,49 @@ export const DesignSettings: GlobalConfig = {
             es: 'Tipografia',
           },
           fields: [
+            collapsibleField(
+              { en: 'Font Families', uk: 'Сімейства шрифтів', es: 'Familias tipograficas' },
+              [
+                selectField(
+                  'mainFontFamily',
+                  { en: 'Main Font', uk: 'Основний шрифт', es: 'Fuente principal' },
+                  defaultDesignSettings.typography.mainFontFamily,
+                  [
+                    {
+                      label: { en: 'Raleway', uk: 'Raleway', es: 'Raleway' },
+                      value: '"Raleway", sans-serif',
+                    },
+                    {
+                      label: { en: 'Avenir Next', uk: 'Avenir Next', es: 'Avenir Next' },
+                      value: '"AvenirNextLTPro", sans-serif',
+                    },
+                    {
+                      label: { en: 'Inter', uk: 'Inter', es: 'Inter' },
+                      value: '"Inter", sans-serif',
+                    },
+                  ],
+                ),
+                selectField(
+                  'secondFontFamily',
+                  { en: 'Secondary Font', uk: 'Другий шрифт', es: 'Fuente secundaria' },
+                  defaultDesignSettings.typography.secondFontFamily,
+                  [
+                    {
+                      label: { en: 'Avenir Next', uk: 'Avenir Next', es: 'Avenir Next' },
+                      value: '"AvenirNextLTPro", sans-serif',
+                    },
+                    {
+                      label: { en: 'Raleway', uk: 'Raleway', es: 'Raleway' },
+                      value: '"Raleway", sans-serif',
+                    },
+                    {
+                      label: { en: 'Inter', uk: 'Inter', es: 'Inter' },
+                      value: '"Inter", sans-serif',
+                    },
+                  ],
+                ),
+              ],
+            ),
             collapsibleField(
               { en: 'H1 Settings', uk: 'Налаштування H1', es: 'Ajustes de H1' },
               [
@@ -242,45 +322,45 @@ export const DesignSettings: GlobalConfig = {
             collapsibleField(
               { en: 'White Theme', uk: 'Біла тема', es: 'Tema blanco' },
               [
-        colorField('whiteSection', { en: 'White Section', uk: 'White section', es: 'White section' }, defaultDesignSettings.themes.whiteSection),
-        colorField('whiteSectionAlt', { en: 'White Section Alt', uk: 'White section alt', es: 'White section alt' }, defaultDesignSettings.themes.whiteSectionAlt),
-        colorField('whitePanel', { en: 'White Panel', uk: 'White panel', es: 'White panel' }, defaultDesignSettings.themes.whitePanel),
-        colorField('whitePanelAlt', { en: 'White Panel Alt', uk: 'White panel alt', es: 'White panel alt' }, defaultDesignSettings.themes.whitePanelAlt),
-        colorField('whiteCard', { en: 'White Card', uk: 'White card', es: 'White card' }, defaultDesignSettings.themes.whiteCard),
-        colorField('whiteCardAlt', { en: 'White Card Alt', uk: 'White card alt', es: 'White card alt' }, defaultDesignSettings.themes.whiteCardAlt),
+        themeColorField('whiteSection', { en: 'Main block background', uk: 'Фон основного блоку', es: 'Fondo del bloque principal' }, defaultDesignSettings.themes.whiteSection, { en: 'hero blocks, text sections, reviews section backgrounds', uk: 'hero-блоки, текстові секції, фони секцій відгуків', es: 'bloques hero, secciones de texto, fondos de secciones de reseñas' }),
+        themeColorField('whiteSectionAlt', { en: 'Alternative block background', uk: 'Альтернативний фон блоку', es: 'Fondo alternativo del bloque' }, defaultDesignSettings.themes.whiteSectionAlt, { en: 'secondary full-width section backgrounds', uk: 'другорядні повноширинні фони секцій', es: 'fondos secundarios de secciones de ancho completo' }),
+        themeColorField('whitePanel', { en: 'Split block text side', uk: 'Текстова частина шахматки', es: 'Lado de texto del bloque dividido' }, defaultDesignSettings.themes.whitePanel, { en: 'gallery text side, image + text blocks, contact sections', uk: 'текстова частина галереї, фото+текст блоки, контакти', es: 'lado de texto de galería, bloques imagen+texto, contactos' }),
+        themeColorField('whitePanelAlt', { en: 'Alternative split side', uk: 'Альтернативна частина шахматки', es: 'Lado alternativo del bloque dividido' }, defaultDesignSettings.themes.whitePanelAlt, { en: 'alternating split blocks and form wrappers', uk: 'чергування шахматних блоків і обгортки форм', es: 'bloques divididos alternos y contenedores de formularios' }),
+        themeColorField('whiteCard', { en: 'Card / accordion background', uk: 'Фон картки / акордеону', es: 'Fondo de tarjeta / acordeón' }, defaultDesignSettings.themes.whiteCard, { en: 'FAQ items, accordion items, compact cards', uk: 'FAQ елементи, елементи акордеону, компактні картки', es: 'items FAQ, items de acordeón, tarjetas compactas' }),
+        themeColorField('whiteCardAlt', { en: 'Alternative card background', uk: 'Альтернативний фон картки', es: 'Fondo alternativo de tarjeta' }, defaultDesignSettings.themes.whiteCardAlt, { en: 'steps cards, comparison cards, secondary cards', uk: 'картки кроків, картки порівняння, другорядні картки', es: 'tarjetas de pasos, tarjetas de comparación, tarjetas secundarias' }),
               ],
             ),
             collapsibleField(
               { en: 'Soft Theme', uk: 'Світла тема', es: 'Tema suave' },
               [
-        colorField('softSection', { en: 'Soft Section', uk: 'Soft section', es: 'Soft section' }, defaultDesignSettings.themes.softSection),
-        colorField('softSectionAlt', { en: 'Soft Section Alt', uk: 'Soft section alt', es: 'Soft section alt' }, defaultDesignSettings.themes.softSectionAlt),
-        colorField('softPanel', { en: 'Soft Panel', uk: 'Soft panel', es: 'Soft panel' }, defaultDesignSettings.themes.softPanel),
-        colorField('softPanelAlt', { en: 'Soft Panel Alt', uk: 'Soft panel alt', es: 'Soft panel alt' }, defaultDesignSettings.themes.softPanelAlt),
-        colorField('softCard', { en: 'Soft Card', uk: 'Soft card', es: 'Soft card' }, defaultDesignSettings.themes.softCard),
-        colorField('softCardAlt', { en: 'Soft Card Alt', uk: 'Soft card alt', es: 'Soft card alt' }, defaultDesignSettings.themes.softCardAlt),
+        themeColorField('softSection', { en: 'Main block background', uk: 'Фон основного блоку', es: 'Fondo del bloque principal' }, defaultDesignSettings.themes.softSection, { en: 'hero blocks, text sections, reviews section backgrounds', uk: 'hero-блоки, текстові секції, фони секцій відгуків', es: 'bloques hero, secciones de texto, fondos de secciones de reseñas' }),
+        themeColorField('softSectionAlt', { en: 'Alternative block background', uk: 'Альтернативний фон блоку', es: 'Fondo alternativo del bloque' }, defaultDesignSettings.themes.softSectionAlt, { en: 'secondary full-width section backgrounds', uk: 'другорядні повноширинні фони секцій', es: 'fondos secundarios de secciones de ancho completo' }),
+        themeColorField('softPanel', { en: 'Split block text side', uk: 'Текстова частина шахматки', es: 'Lado de texto del bloque dividido' }, defaultDesignSettings.themes.softPanel, { en: 'gallery text side, image + text blocks, contact sections', uk: 'текстова частина галереї, фото+текст блоки, контакти', es: 'lado de texto de galería, bloques imagen+texto, contactos' }),
+        themeColorField('softPanelAlt', { en: 'Alternative split side', uk: 'Альтернативна частина шахматки', es: 'Lado alternativo del bloque dividido' }, defaultDesignSettings.themes.softPanelAlt, { en: 'alternating split blocks and form wrappers', uk: 'чергування шахматних блоків і обгортки форм', es: 'bloques divididos alternos y contenedores de formularios' }),
+        themeColorField('softCard', { en: 'Card / accordion background', uk: 'Фон картки / акордеону', es: 'Fondo de tarjeta / acordeón' }, defaultDesignSettings.themes.softCard, { en: 'FAQ items, accordion items, compact cards', uk: 'FAQ елементи, елементи акордеону, компактні картки', es: 'items FAQ, items de acordeón, tarjetas compactas' }),
+        themeColorField('softCardAlt', { en: 'Alternative card background', uk: 'Альтернативний фон картки', es: 'Fondo alternativo de tarjeta' }, defaultDesignSettings.themes.softCardAlt, { en: 'steps cards, comparison cards, secondary cards', uk: 'картки кроків, картки порівняння, другорядні картки', es: 'tarjetas de pasos, tarjetas de comparación, tarjetas secundarias' }),
               ],
             ),
             collapsibleField(
               { en: 'Sand Theme', uk: 'Пісочна тема', es: 'Tema arena' },
               [
-        colorField('sandSection', { en: 'Sand Section', uk: 'Sand section', es: 'Sand section' }, defaultDesignSettings.themes.sandSection),
-        colorField('sandSectionAlt', { en: 'Sand Section Alt', uk: 'Sand section alt', es: 'Sand section alt' }, defaultDesignSettings.themes.sandSectionAlt),
-        colorField('sandPanel', { en: 'Sand Panel', uk: 'Sand panel', es: 'Sand panel' }, defaultDesignSettings.themes.sandPanel),
-        colorField('sandPanelAlt', { en: 'Sand Panel Alt', uk: 'Sand panel alt', es: 'Sand panel alt' }, defaultDesignSettings.themes.sandPanelAlt),
-        colorField('sandCard', { en: 'Sand Card', uk: 'Sand card', es: 'Sand card' }, defaultDesignSettings.themes.sandCard),
-        colorField('sandCardAlt', { en: 'Sand Card Alt', uk: 'Sand card alt', es: 'Sand card alt' }, defaultDesignSettings.themes.sandCardAlt),
+        themeColorField('sandSection', { en: 'Main block background', uk: 'Фон основного блоку', es: 'Fondo del bloque principal' }, defaultDesignSettings.themes.sandSection, { en: 'hero blocks, text sections, reviews section backgrounds', uk: 'hero-блоки, текстові секції, фони секцій відгуків', es: 'bloques hero, secciones de texto, fondos de secciones de reseñas' }),
+        themeColorField('sandSectionAlt', { en: 'Alternative block background', uk: 'Альтернативний фон блоку', es: 'Fondo alternativo del bloque' }, defaultDesignSettings.themes.sandSectionAlt, { en: 'secondary full-width section backgrounds', uk: 'другорядні повноширинні фони секцій', es: 'fondos secundarios de secciones de ancho completo' }),
+        themeColorField('sandPanel', { en: 'Split block text side', uk: 'Текстова частина шахматки', es: 'Lado de texto del bloque dividido' }, defaultDesignSettings.themes.sandPanel, { en: 'gallery text side, image + text blocks, contact sections', uk: 'текстова частина галереї, фото+текст блоки, контакти', es: 'lado de texto de galería, bloques imagen+texto, contactos' }),
+        themeColorField('sandPanelAlt', { en: 'Alternative split side', uk: 'Альтернативна частина шахматки', es: 'Lado alternativo del bloque dividido' }, defaultDesignSettings.themes.sandPanelAlt, { en: 'alternating split blocks and form wrappers', uk: 'чергування шахматних блоків і обгортки форм', es: 'bloques divididos alternos y contenedores de formularios' }),
+        themeColorField('sandCard', { en: 'Card / accordion background', uk: 'Фон картки / акордеону', es: 'Fondo de tarjeta / acordeón' }, defaultDesignSettings.themes.sandCard, { en: 'FAQ items, accordion items, compact cards', uk: 'FAQ елементи, елементи акордеону, компактні картки', es: 'items FAQ, items de acordeón, tarjetas compactas' }),
+        themeColorField('sandCardAlt', { en: 'Alternative card background', uk: 'Альтернативний фон картки', es: 'Fondo alternativo de tarjeta' }, defaultDesignSettings.themes.sandCardAlt, { en: 'steps cards, comparison cards, secondary cards', uk: 'картки кроків, картки порівняння, другорядні картки', es: 'tarjetas de pasos, tarjetas de comparación, tarjetas secundarias' }),
               ],
             ),
             collapsibleField(
               { en: 'Sage Theme', uk: 'Шавлієва тема', es: 'Tema salvia' },
               [
-        colorField('sageSection', { en: 'Sage Section', uk: 'Sage section', es: 'Sage section' }, defaultDesignSettings.themes.sageSection),
-        colorField('sageSectionAlt', { en: 'Sage Section Alt', uk: 'Sage section alt', es: 'Sage section alt' }, defaultDesignSettings.themes.sageSectionAlt),
-        colorField('sagePanel', { en: 'Sage Panel', uk: 'Sage panel', es: 'Sage panel' }, defaultDesignSettings.themes.sagePanel),
-        colorField('sagePanelAlt', { en: 'Sage Panel Alt', uk: 'Sage panel alt', es: 'Sage panel alt' }, defaultDesignSettings.themes.sagePanelAlt),
-        colorField('sageCard', { en: 'Sage Card', uk: 'Sage card', es: 'Sage card' }, defaultDesignSettings.themes.sageCard),
-        colorField('sageCardAlt', { en: 'Sage Card Alt', uk: 'Sage card alt', es: 'Sage card alt' }, defaultDesignSettings.themes.sageCardAlt),
+        themeColorField('sageSection', { en: 'Main block background', uk: 'Фон основного блоку', es: 'Fondo del bloque principal' }, defaultDesignSettings.themes.sageSection, { en: 'hero blocks, text sections, reviews section backgrounds', uk: 'hero-блоки, текстові секції, фони секцій відгуків', es: 'bloques hero, secciones de texto, fondos de secciones de reseñas' }),
+        themeColorField('sageSectionAlt', { en: 'Alternative block background', uk: 'Альтернативний фон блоку', es: 'Fondo alternativo del bloque' }, defaultDesignSettings.themes.sageSectionAlt, { en: 'secondary full-width section backgrounds', uk: 'другорядні повноширинні фони секцій', es: 'fondos secundarios de secciones de ancho completo' }),
+        themeColorField('sagePanel', { en: 'Split block text side', uk: 'Текстова частина шахматки', es: 'Lado de texto del bloque dividido' }, defaultDesignSettings.themes.sagePanel, { en: 'gallery text side, image + text blocks, contact sections', uk: 'текстова частина галереї, фото+текст блоки, контакти', es: 'lado de texto de galería, bloques imagen+texto, contactos' }),
+        themeColorField('sagePanelAlt', { en: 'Alternative split side', uk: 'Альтернативна частина шахматки', es: 'Lado alternativo del bloque dividido' }, defaultDesignSettings.themes.sagePanelAlt, { en: 'alternating split blocks and form wrappers', uk: 'чергування шахматних блоків і обгортки форм', es: 'bloques divididos alternos y contenedores de formularios' }),
+        themeColorField('sageCard', { en: 'Card / accordion background', uk: 'Фон картки / акордеону', es: 'Fondo de tarjeta / acordeón' }, defaultDesignSettings.themes.sageCard, { en: 'FAQ items, accordion items, compact cards', uk: 'FAQ елементи, елементи акордеону, компактні картки', es: 'items FAQ, items de acordeón, tarjetas compactas' }),
+        themeColorField('sageCardAlt', { en: 'Alternative card background', uk: 'Альтернативний фон картки', es: 'Fondo alternativo de tarjeta' }, defaultDesignSettings.themes.sageCardAlt, { en: 'steps cards, comparison cards, secondary cards', uk: 'картки кроків, картки порівняння, другорядні картки', es: 'tarjetas de pasos, tarjetas de comparación, tarjetas secundarias' }),
               ],
             ),
           ],

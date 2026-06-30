@@ -24,6 +24,15 @@ import {
 } from '@payloadcms/db-postgres/drizzle/pg-core'
 import { sql, relations } from '@payloadcms/db-postgres/drizzle'
 export const enum__locales = pgEnum('enum__locales', ['es', 'en', 'uk'])
+export const enum_media_media_category = pgEnum('enum_media_media_category', [
+  'general',
+  'site',
+  'services',
+  'team',
+  'promotions',
+  'blog',
+  'branding',
+])
 export const enum_pages_blocks_hero_theme = pgEnum('enum_pages_blocks_hero_theme', [
   'white',
   'soft',
@@ -133,6 +142,10 @@ export const enum_pages_blocks_reviews_theme = pgEnum('enum_pages_blocks_reviews
 export const enum_pages_blocks_reviews_button_style = pgEnum(
   'enum_pages_blocks_reviews_button_style',
   ['primary', 'outline', 'light', 'text'],
+)
+export const enum_pages_blocks_reviews_desktop_slides = pgEnum(
+  'enum_pages_blocks_reviews_desktop_slides',
+  ['1', '2', '3', '4'],
 )
 export const enum_pages_blocks_content_image_theme = pgEnum(
   'enum_pages_blocks_content_image_theme',
@@ -318,6 +331,14 @@ export const enum_contact_submissions_locale = pgEnum('enum_contact_submissions_
   'en',
   'uk',
 ])
+export const enum_design_settings_typography_main_font_family = pgEnum(
+  'enum_design_settings_typography_main_font_family',
+  ['"Raleway", sans-serif', '"AvenirNextLTPro", sans-serif', '"Inter", sans-serif'],
+)
+export const enum_design_settings_typography_second_font_family = pgEnum(
+  'enum_design_settings_typography_second_font_family',
+  ['"AvenirNextLTPro", sans-serif', '"Raleway", sans-serif', '"Inter", sans-serif'],
+)
 export const enum_site_settings_social_links_platform = pgEnum(
   'enum_site_settings_social_links_platform',
   ['instagram', 'facebook', 'twitter', 'youtube', 'tiktok'],
@@ -396,6 +417,8 @@ export const media = pgTable(
   'media',
   {
     id: serial('id').primaryKey(),
+    mediaCategory: enum_media_media_category('media_category').default('general'),
+    prefix: varchar('prefix'),
     alt: varchar('alt').notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
@@ -764,7 +787,12 @@ export const pages_blocks_reviews = pgTable(
     buttonStyle: enum_pages_blocks_reviews_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
+    intro: jsonb('intro'),
+    splitHeaderLayout: boolean('split_header_layout').default(false),
+    summaryTitle: varchar('summary_title'),
+    reviewsLabel: varchar('reviews_label'),
     embedCode: varchar('embed_code'),
+    desktopSlides: enum_pages_blocks_reviews_desktop_slides('desktop_slides').default('2'),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
     blockName: varchar('block_name'),
@@ -869,6 +897,8 @@ export const pages_blocks_content = pgTable(
     compactSpacing: boolean('compact_spacing').default(false),
     title: varchar('title'),
     content: jsonb('content'),
+    fullWidthContent: boolean('full_width_content').default(false),
+    bottomText: jsonb('bottom_text'),
     backgroundImage: integer('background_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
@@ -1311,6 +1341,8 @@ export const services_blocks_content = pgTable(
     compactSpacing: boolean('compact_spacing').default(false),
     title: varchar('title'),
     content: jsonb('content'),
+    fullWidthContent: boolean('full_width_content').default(false),
+    bottomText: jsonb('bottom_text'),
     backgroundImage: integer('background_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
@@ -1410,6 +1442,7 @@ export const services_blocks_advantages = pgTable(
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
     subtitle: jsonb('subtitle'),
+    fullWidthText: boolean('full_width_text').default(false),
     itemLayout: enum_services_blocks_advantages_item_layout('item_layout').default('column'),
     columns: enum_services_blocks_advantages_columns('columns').default('3'),
     incompleteRowAlignment: enum_services_blocks_advantages_incomplete_row_alignment(
@@ -1417,7 +1450,6 @@ export const services_blocks_advantages = pgTable(
     ).default('center'),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
-    bottomText: jsonb('bottom_text'),
     blockName: varchar('block_name'),
   },
   (columns) => [
@@ -1476,8 +1508,10 @@ export const services_blocks_cards = pgTable(
     incompleteRowAlignment: enum_services_blocks_cards_incomplete_row_alignment(
       'incomplete_row_alignment',
     ).default('center'),
+    intro: jsonb('intro'),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
+    bottomText: jsonb('bottom_text'),
     blockName: varchar('block_name'),
   },
   (columns) => [
@@ -1526,6 +1560,8 @@ export const services_blocks_steps = pgTable(
     theme: enum_services_blocks_steps_theme('theme').default('white'),
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
+    fullWidthText: boolean('full_width_text').default(false),
+    bottomText: jsonb('bottom_text'),
     blockName: varchar('block_name'),
   },
   (columns) => [
@@ -1576,6 +1612,7 @@ export const services_blocks_faq = pgTable(
     sectionTitle: varchar('section_title'),
     intro: jsonb('intro'),
     columns: enum_services_blocks_faq_columns('columns').default('one'),
+    bottomText: jsonb('bottom_text'),
     blockName: varchar('block_name'),
   },
   (columns) => [
@@ -1587,48 +1624,6 @@ export const services_blocks_faq = pgTable(
       columns: [columns['_parentID']],
       foreignColumns: [services.id],
       name: 'services_blocks_faq_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const services_blocks_comparison_left_items = pgTable(
-  'services_blocks_comparison_left_items',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    _locale: enum__locales('_locale').notNull(),
-    id: varchar('id').primaryKey(),
-    text: varchar('text').notNull(),
-  },
-  (columns) => [
-    index('services_blocks_comparison_left_items_order_idx').on(columns._order),
-    index('services_blocks_comparison_left_items_parent_id_idx').on(columns._parentID),
-    index('services_blocks_comparison_left_items_locale_idx').on(columns._locale),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [services_blocks_comparison.id],
-      name: 'services_blocks_comparison_left_items_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const services_blocks_comparison_right_items = pgTable(
-  'services_blocks_comparison_right_items',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    _locale: enum__locales('_locale').notNull(),
-    id: varchar('id').primaryKey(),
-    text: varchar('text').notNull(),
-  },
-  (columns) => [
-    index('services_blocks_comparison_right_items_order_idx').on(columns._order),
-    index('services_blocks_comparison_right_items_parent_id_idx').on(columns._parentID),
-    index('services_blocks_comparison_right_items_locale_idx').on(columns._locale),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [services_blocks_comparison.id],
-      name: 'services_blocks_comparison_right_items_parent_id_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -1652,7 +1647,9 @@ export const services_blocks_comparison = pgTable(
     overlayColor: varchar('overlay_color').default('#000000'),
     overlayOpacity: numeric('overlay_opacity', { mode: 'number' }).default(35),
     leftColumnTitle: varchar('left_column_title').notNull(),
+    leftContent: jsonb('left_content').notNull(),
     rightColumnTitle: varchar('right_column_title').notNull(),
+    rightContent: jsonb('right_content').notNull(),
     conclusion: jsonb('conclusion'),
     blockName: varchar('block_name'),
   },
@@ -1709,6 +1706,7 @@ export const services_blocks_content_accordion = pgTable(
       .references(() => media.id, {
         onDelete: 'set null',
       }),
+    bottomText: jsonb('bottom_text'),
     blockName: varchar('block_name'),
   },
   (columns) => [
@@ -2111,12 +2109,19 @@ export const payload_migrations = pgTable(
 export const design_settings = pgTable('design_settings', {
   id: serial('id').primaryKey(),
   colors_mainBackground: varchar('colors_main_background').default('#fafafa'),
+  colors_footerBackground: varchar('colors_footer_background').default('#f4ede7'),
   colors_mainText: varchar('colors_main_text').default('#22282b'),
   colors_mutedText: varchar('colors_muted_text').default('#909da2'),
   colors_accent: varchar('colors_accent').default('#3c5557'),
   colors_accentHover: varchar('colors_accent_hover').default('#34494a'),
   colors_placeholderBackground: varchar('colors_placeholder_background').default('#e8e0d8'),
   colors_placeholderText: varchar('colors_placeholder_text').default('#909da2'),
+  typography_mainFontFamily: enum_design_settings_typography_main_font_family(
+    'typography_main_font_family',
+  ).default('"Raleway", sans-serif'),
+  typography_secondFontFamily: enum_design_settings_typography_second_font_family(
+    'typography_second_font_family',
+  ).default('"AvenirNextLTPro", sans-serif'),
   typography_h1DesktopSize: varchar('typography_h1_desktop_size').default('clamp(2rem, 3vw, 3rem)'),
   typography_h1DesktopLineHeight: varchar('typography_h1_desktop_line_height').default('1.1'),
   typography_h1MobileSize: varchar('typography_h1_mobile_size').default('1.5rem'),
@@ -2344,10 +2349,16 @@ export const site_settings = pgTable(
   'site_settings',
   {
     id: serial('id').primaryKey(),
-    header_logo: integer('header_logo_id').references(() => media.id, {
+    branding_favicon: integer('branding_favicon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    footer_logo: integer('footer_logo_id').references(() => media.id, {
+    branding_logo: integer('branding_logo_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    branding_logoLight: integer('branding_logo_light_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    branding_logoDark: integer('branding_logo_dark_id').references(() => media.id, {
       onDelete: 'set null',
     }),
     contacts_email: varchar('contacts_email').default('clinica@dentalsulyhan.com'),
@@ -2363,8 +2374,10 @@ export const site_settings = pgTable(
     createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
   },
   (columns) => [
-    index('site_settings_header_header_logo_idx').on(columns.header_logo),
-    index('site_settings_footer_footer_logo_idx').on(columns.footer_logo),
+    index('site_settings_branding_branding_favicon_idx').on(columns.branding_favicon),
+    index('site_settings_branding_branding_logo_idx').on(columns.branding_logo),
+    index('site_settings_branding_branding_logo_light_idx').on(columns.branding_logoLight),
+    index('site_settings_branding_branding_logo_dark_idx').on(columns.branding_logoDark),
   ],
 )
 
@@ -3290,29 +3303,9 @@ export const relations_services_blocks_faq = relations(services_blocks_faq, ({ o
     relationName: 'items',
   }),
 }))
-export const relations_services_blocks_comparison_left_items = relations(
-  services_blocks_comparison_left_items,
-  ({ one }) => ({
-    _parentID: one(services_blocks_comparison, {
-      fields: [services_blocks_comparison_left_items._parentID],
-      references: [services_blocks_comparison.id],
-      relationName: 'leftItems',
-    }),
-  }),
-)
-export const relations_services_blocks_comparison_right_items = relations(
-  services_blocks_comparison_right_items,
-  ({ one }) => ({
-    _parentID: one(services_blocks_comparison, {
-      fields: [services_blocks_comparison_right_items._parentID],
-      references: [services_blocks_comparison.id],
-      relationName: 'rightItems',
-    }),
-  }),
-)
 export const relations_services_blocks_comparison = relations(
   services_blocks_comparison,
-  ({ one, many }) => ({
+  ({ one }) => ({
     _parentID: one(services, {
       fields: [services_blocks_comparison._parentID],
       references: [services.id],
@@ -3322,12 +3315,6 @@ export const relations_services_blocks_comparison = relations(
       fields: [services_blocks_comparison.backgroundImage],
       references: [media.id],
       relationName: 'backgroundImage',
-    }),
-    leftItems: many(services_blocks_comparison_left_items, {
-      relationName: 'leftItems',
-    }),
-    rightItems: many(services_blocks_comparison_right_items, {
-      relationName: 'rightItems',
     }),
   }),
 )
@@ -3643,15 +3630,25 @@ export const relations_site_settings = relations(site_settings, ({ one, many }) 
   menuItems: many(site_settings_menu_items, {
     relationName: 'menuItems',
   }),
-  header_logo: one(media, {
-    fields: [site_settings.header_logo],
+  branding_favicon: one(media, {
+    fields: [site_settings.branding_favicon],
     references: [media.id],
-    relationName: 'header_logo',
+    relationName: 'branding_favicon',
   }),
-  footer_logo: one(media, {
-    fields: [site_settings.footer_logo],
+  branding_logo: one(media, {
+    fields: [site_settings.branding_logo],
     references: [media.id],
-    relationName: 'footer_logo',
+    relationName: 'branding_logo',
+  }),
+  branding_logoLight: one(media, {
+    fields: [site_settings.branding_logoLight],
+    references: [media.id],
+    relationName: 'branding_logoLight',
+  }),
+  branding_logoDark: one(media, {
+    fields: [site_settings.branding_logoDark],
+    references: [media.id],
+    relationName: 'branding_logoDark',
   }),
   socialLinks: many(site_settings_social_links, {
     relationName: 'socialLinks',
@@ -3851,6 +3848,7 @@ export const relations_site_contacts = relations(site_contacts, ({ many }) => ({
 
 type DatabaseSchema = {
   enum__locales: typeof enum__locales
+  enum_media_media_category: typeof enum_media_media_category
   enum_pages_blocks_hero_theme: typeof enum_pages_blocks_hero_theme
   enum_pages_blocks_hero_button_style: typeof enum_pages_blocks_hero_button_style
   enum_pages_blocks_advantages_theme: typeof enum_pages_blocks_advantages_theme
@@ -3874,6 +3872,7 @@ type DatabaseSchema = {
   enum_pages_blocks_team_source: typeof enum_pages_blocks_team_source
   enum_pages_blocks_reviews_theme: typeof enum_pages_blocks_reviews_theme
   enum_pages_blocks_reviews_button_style: typeof enum_pages_blocks_reviews_button_style
+  enum_pages_blocks_reviews_desktop_slides: typeof enum_pages_blocks_reviews_desktop_slides
   enum_pages_blocks_content_image_theme: typeof enum_pages_blocks_content_image_theme
   enum_pages_blocks_content_image_button_style: typeof enum_pages_blocks_content_image_button_style
   enum_pages_blocks_content_image_position: typeof enum_pages_blocks_content_image_position
@@ -3916,6 +3915,8 @@ type DatabaseSchema = {
   enum_services_blocks_pricing_group_showcase_position: typeof enum_services_blocks_pricing_group_showcase_position
   enum_services_blocks_global_contact_section_theme: typeof enum_services_blocks_global_contact_section_theme
   enum_contact_submissions_locale: typeof enum_contact_submissions_locale
+  enum_design_settings_typography_main_font_family: typeof enum_design_settings_typography_main_font_family
+  enum_design_settings_typography_second_font_family: typeof enum_design_settings_typography_second_font_family
   enum_site_settings_social_links_platform: typeof enum_site_settings_social_links_platform
   enum_home_page_section_order_section: typeof enum_home_page_section_order_section
   enum_site_contacts_social_links_platform: typeof enum_site_contacts_social_links_platform
@@ -3964,8 +3965,6 @@ type DatabaseSchema = {
   services_blocks_steps: typeof services_blocks_steps
   services_blocks_faq_items: typeof services_blocks_faq_items
   services_blocks_faq: typeof services_blocks_faq
-  services_blocks_comparison_left_items: typeof services_blocks_comparison_left_items
-  services_blocks_comparison_right_items: typeof services_blocks_comparison_right_items
   services_blocks_comparison: typeof services_blocks_comparison
   services_blocks_content_accordion_items: typeof services_blocks_content_accordion_items
   services_blocks_content_accordion: typeof services_blocks_content_accordion
@@ -4053,8 +4052,6 @@ type DatabaseSchema = {
   relations_services_blocks_steps: typeof relations_services_blocks_steps
   relations_services_blocks_faq_items: typeof relations_services_blocks_faq_items
   relations_services_blocks_faq: typeof relations_services_blocks_faq
-  relations_services_blocks_comparison_left_items: typeof relations_services_blocks_comparison_left_items
-  relations_services_blocks_comparison_right_items: typeof relations_services_blocks_comparison_right_items
   relations_services_blocks_comparison: typeof relations_services_blocks_comparison
   relations_services_blocks_content_accordion_items: typeof relations_services_blocks_content_accordion_items
   relations_services_blocks_content_accordion: typeof relations_services_blocks_content_accordion

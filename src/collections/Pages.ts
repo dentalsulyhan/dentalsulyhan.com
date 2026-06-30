@@ -1028,6 +1028,43 @@ export const Pages: CollectionConfig = {
                   },
                 },
                 {
+                  name: 'intro',
+                  type: 'richText',
+                  label: {
+                    en: 'Intro Text',
+                    uk: 'Вступний текст',
+                    es: 'Texto introductorio',
+                  },
+                },
+                {
+                  name: 'splitHeaderLayout',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Split header layout (40/60)',
+                    uk: 'Розділений header (40/60)',
+                    es: 'Encabezado dividido (40/60)',
+                  },
+                },
+                {
+                  name: 'summaryTitle',
+                  type: 'text',
+                  label: {
+                    en: 'Reviews Summary Title',
+                    uk: 'Заголовок блоку рейтингу',
+                    es: 'Titulo del bloque de reseñas',
+                  },
+                },
+                {
+                  name: 'reviewsLabel',
+                  type: 'text',
+                  label: {
+                    en: 'Reviews Count Label',
+                    uk: 'Підпис до кількості відгуків',
+                    es: 'Texto junto a la cantidad de reseñas',
+                  },
+                },
+                {
                   name: 'embedCode',
                   type: 'textarea',
                   label: {
@@ -1334,8 +1371,32 @@ export const Pages: CollectionConfig = {
                     },
                   },
                 },
+                {
+                  name: 'fullWidthContent',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Stretch content to container width',
+                    uk: 'Розтягнути контент на всю ширину контейнера',
+                    es: 'Extender el contenido al ancho del contenedor',
+                  },
+                },
               ],
               false,
+            ),
+            collapsibleField(
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
+              [
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
             ),
             collapsibleField(
               { en: 'Background', uk: 'Фон', es: 'Fondo' },

@@ -272,8 +272,32 @@ export const Services: CollectionConfig = {
                     es: 'Contenido',
                   },
                 },
+                {
+                  name: 'fullWidthContent',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Stretch content to container width',
+                    uk: 'Розтягнути контент на всю ширину контейнера',
+                    es: 'Extender el contenido al ancho del contenedor',
+                  },
+                },
               ],
               false,
+            ),
+            collapsibleField(
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
+              [
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
             ),
             collapsibleField(
               { en: 'Background', uk: 'Фон', es: 'Fondo' },
@@ -526,6 +550,16 @@ export const Services: CollectionConfig = {
                   },
                 },
                 {
+                  name: 'fullWidthText',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Stretch intro and bottom text to container width',
+                    uk: 'Розтягнути верхній і нижній текст на всю ширину контейнера',
+                    es: 'Extender el texto superior e inferior al ancho del contenedor',
+                  },
+                },
+                {
                   name: 'itemLayout',
                   type: 'select',
                   defaultValue: 'column',
@@ -666,15 +700,6 @@ export const Services: CollectionConfig = {
                     es: 'Enlace del boton de la seccion',
                   },
                 },
-                {
-                  name: 'bottomText',
-                  type: 'richText',
-                  label: {
-                    en: 'Bottom Text',
-                    uk: 'Нижній текст',
-                    es: 'Texto inferior',
-                  },
-                },
               ],
             ),
           ],
@@ -776,6 +801,15 @@ export const Services: CollectionConfig = {
               },
             },
                 incompleteRowAlignmentField,
+                {
+                  name: 'intro',
+                  type: 'richText',
+                  label: {
+                    en: 'Intro Text',
+                    uk: 'Вступний текст',
+                    es: 'Texto introductorio',
+                  },
+                },
               ],
               false,
             ),
@@ -855,6 +889,20 @@ export const Services: CollectionConfig = {
                 },
               ],
             ),
+            collapsibleField(
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
+              [
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {
@@ -889,8 +937,32 @@ export const Services: CollectionConfig = {
                     es: 'Titulo de la seccion',
                   },
                 },
+                {
+                  name: 'fullWidthText',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Stretch intro and bottom text to container width',
+                    uk: 'Розтягнути верхній і нижній текст на всю ширину контейнера',
+                    es: 'Extender el texto superior e inferior al ancho del contenedor',
+                  },
+                },
               ],
               false,
+            ),
+            collapsibleField(
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
+              [
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
             ),
             {
               name: 'items',
@@ -1010,6 +1082,20 @@ export const Services: CollectionConfig = {
                 },
               ],
               false,
+            ),
+            collapsibleField(
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
+              [
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
             ),
             {
               name: 'items',
@@ -1142,9 +1228,6 @@ export const Services: CollectionConfig = {
                     uk: 'Фонове зображення',
                     es: 'Imagen de fondo',
                   },
-                  admin: {
-                    condition: (_, siblingData) => siblingData.layoutStyle === 'split',
-                  },
                 },
                 {
                   name: 'overlayColor',
@@ -1154,9 +1237,6 @@ export const Services: CollectionConfig = {
                     en: 'Overlay Color',
                     uk: 'Колір оверлею',
                     es: 'Color de superposicion',
-                  },
-                  admin: {
-                    condition: (_, siblingData) => siblingData.layoutStyle === 'split',
                   },
                 },
                 {
@@ -1169,9 +1249,6 @@ export const Services: CollectionConfig = {
                     en: 'Overlay Opacity',
                     uk: 'Прозорість оверлею',
                     es: 'Opacidad de superposicion',
-                  },
-                  admin: {
-                    condition: (_, siblingData) => siblingData.layoutStyle === 'split',
                   },
                 },
               ],
@@ -1190,34 +1267,14 @@ export const Services: CollectionConfig = {
                   },
                 },
                 {
-                  name: 'leftItems',
-                  type: 'array',
+                  name: 'leftContent',
+                  type: 'richText',
                   required: true,
-                  minRows: 1,
-                  labels: {
-                    singular: {
-                      en: 'Left Item',
-                      uk: 'Пункт зліва',
-                      es: 'Elemento izquierdo',
-                    },
-                    plural: {
-                      en: 'Left Items',
-                      uk: 'Пункти зліва',
-                      es: 'Elementos izquierdos',
-                    },
+                  label: {
+                    en: 'Left Column Content',
+                    uk: 'Контент лівої колонки',
+                    es: 'Contenido de la columna izquierda',
                   },
-                  fields: [
-                    {
-                      name: 'text',
-                      type: 'textarea',
-                      required: true,
-                      label: {
-                        en: 'Text',
-                        uk: 'Текст',
-                        es: 'Texto',
-                      },
-                    },
-                  ],
                 },
                 {
                   name: 'rightColumnTitle',
@@ -1230,48 +1287,28 @@ export const Services: CollectionConfig = {
                   },
                 },
                 {
-                  name: 'rightItems',
-                  type: 'array',
+                  name: 'rightContent',
+                  type: 'richText',
                   required: true,
-                  minRows: 1,
-                  labels: {
-                    singular: {
-                      en: 'Right Item',
-                      uk: 'Пункт справа',
-                      es: 'Elemento derecho',
-                    },
-                    plural: {
-                      en: 'Right Items',
-                      uk: 'Пункти справа',
-                      es: 'Elementos derechos',
-                    },
+                  label: {
+                    en: 'Right Column Content',
+                    uk: 'Контент правої колонки',
+                    es: 'Contenido de la columna derecha',
                   },
-                  fields: [
-                    {
-                      name: 'text',
-                      type: 'textarea',
-                      required: true,
-                      label: {
-                        en: 'Text',
-                        uk: 'Текст',
-                        es: 'Texto',
-                      },
-                    },
-                  ],
                 },
               ],
               false,
             ),
             collapsibleField(
-              { en: 'Conclusion', uk: 'Висновок', es: 'Conclusion' },
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
               [
                 {
                   name: 'conclusion',
                   type: 'richText',
                   label: {
-                    en: 'Conclusion',
-                    uk: 'Висновок',
-                    es: 'Conclusion',
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
                   },
                 },
               ],
@@ -1397,6 +1434,20 @@ export const Services: CollectionConfig = {
                 },
               ],
             },
+            collapsibleField(
+              { en: 'Bottom Content', uk: 'Нижній контент', es: 'Contenido inferior' },
+              [
+                {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+              ],
+            ),
           ],
         },
         {

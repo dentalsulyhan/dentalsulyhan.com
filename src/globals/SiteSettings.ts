@@ -130,6 +130,81 @@ export const SiteSettings: GlobalConfig = {
     ),
     collapsibleField(
       {
+        en: 'Branding',
+        uk: 'Брендинг',
+        es: 'Branding',
+      },
+      [
+        {
+          name: 'branding',
+          type: 'group',
+          label: {
+            en: 'Branding',
+            uk: 'Брендинг',
+            es: 'Branding',
+          },
+          fields: [
+            {
+              name: 'favicon',
+              type: 'upload',
+              relationTo: 'media',
+              label: {
+                en: 'Favicon',
+                uk: 'Favicon',
+                es: 'Favicon',
+              },
+            },
+            {
+              name: 'logo',
+              type: 'upload',
+              relationTo: 'media',
+              label: {
+                en: 'Primary Logo',
+                uk: 'Основний логотип',
+                es: 'Logo principal',
+              },
+            },
+            {
+              name: 'logoLight',
+              type: 'upload',
+              relationTo: 'media',
+              label: {
+                en: 'Light Logo',
+                uk: 'Світлий логотип',
+                es: 'Logo claro',
+              },
+              admin: {
+                description: {
+                  en: 'Use on dark backgrounds, such as the footer.',
+                  uk: 'Використовуйте на темному фоні, наприклад у футері.',
+                  es: 'Uselo sobre fondos oscuros, por ejemplo en el footer.',
+                },
+              },
+            },
+            {
+              name: 'logoDark',
+              type: 'upload',
+              relationTo: 'media',
+              label: {
+                en: 'Dark Logo',
+                uk: 'Темний логотип',
+                es: 'Logo oscuro',
+              },
+              admin: {
+                description: {
+                  en: 'Use on light backgrounds, such as the header.',
+                  uk: 'Використовуйте на світлому фоні, наприклад у хедері.',
+                  es: 'Uselo sobre fondos claros, por ejemplo en el header.',
+                },
+              },
+            },
+          ],
+        },
+      ],
+      false,
+    ),
+    collapsibleField(
+      {
         en: 'Header Settings',
         uk: 'Налаштування хедера',
         es: 'Configuracion del header',
@@ -144,16 +219,6 @@ export const SiteSettings: GlobalConfig = {
             es: 'Configuracion del header',
           },
           fields: [
-            {
-              name: 'logo',
-              type: 'upload',
-              relationTo: 'media',
-              label: {
-                en: 'Header Logo',
-                uk: 'Логотип хедера',
-                es: 'Logo del header',
-              },
-            },
             {
               name: 'menuButtonLabel',
               type: 'text',
@@ -185,16 +250,6 @@ export const SiteSettings: GlobalConfig = {
             es: 'Configuracion del footer',
           },
           fields: [
-            {
-              name: 'logo',
-              type: 'upload',
-              relationTo: 'media',
-              label: {
-                en: 'Footer Logo',
-                uk: 'Логотип футера',
-                es: 'Logo del footer',
-              },
-            },
             {
               name: 'copyright',
               type: 'text',

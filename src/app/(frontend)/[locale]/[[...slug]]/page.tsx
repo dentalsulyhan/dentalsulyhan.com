@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { PageContent } from '../page-content'
 import { ServiceDetailPageContent } from '../services/[slug]/page-content'
 import { ServicesListingPageContent } from '../services/page-content'
+import { isSupportedLocale } from '@/lib/localizedRouting'
 
 export default async function LocalizedPageRouter({
   params,
@@ -11,6 +12,10 @@ export default async function LocalizedPageRouter({
   params: Promise<{ locale: string; slug?: string[] }>
 }) {
   const { locale, slug = [] } = await params
+
+  if (!isSupportedLocale(locale)) {
+    return notFound()
+  }
 
   if (slug.length === 0) {
     return PageContent({ locale, slug: 'home' })

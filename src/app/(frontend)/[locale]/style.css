@@ -878,6 +878,7 @@ form {
   border-radius: 50%;
   background: #22282b;
   color: #fff;
+  font-family: var(--second-font);
   font-weight: bold;
   text-align: center;
   font-size: 0.9em;

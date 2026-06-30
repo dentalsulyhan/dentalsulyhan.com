@@ -7,7 +7,7 @@ import TeamSlider from '../../../components/TeamSlider'
 import GallerySlider from '../../../components/GallerySlider'
 import ContactForm from '../../../components/ContactForm'
 import GoogleReviews from '../../../components/GoogleReviews'
-import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
+import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 
@@ -398,9 +398,9 @@ export async function PageContent({
               const theme = getBlockTheme(block.theme)
 
               return (
-                <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className={`pt-[10px] ${theme.section}`}>
+                <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className={`pt-[10px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                   <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
-                    <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`}>
+                    <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                       <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
                         {block.title}
                       </h1>
@@ -445,10 +445,11 @@ export async function PageContent({
                   key={block.id || idx}
                   id="advantages"
                   className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
+                  style={getThemeBackgroundStyle(theme, 'section')}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
-                      <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] text-[#3c5557]">
+                      <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] max-[767px]:mb-8 text-[#3c5557]">
                         {block.sectionTitle}
                       </h2>
                     )}
@@ -458,9 +459,9 @@ export async function PageContent({
                         return (
                           <div
                             key={item.id || itemIndex}
-                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
+                            className={`flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full ${isRowLayout ? 'max-[767px]:items-center max-[767px]:text-center' : 'max-[767px]:items-start max-[767px]:text-left'}`}
                           >
-                            <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-center max-[767px]:gap-4 max-[767px]:text-center ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
+                            <div className={`flex max-[767px]:w-full ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : 'w-full flex-col items-center gap-5 text-center max-[767px]:justify-start max-[767px]:text-left'}`}>
                               {iconUrl ? (
                                 <img src={iconUrl} alt={item.title} className="w-auto h-[50px] shrink-0" />
                               ) : (
@@ -472,7 +473,7 @@ export async function PageContent({
                               )}
                               <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
                             </div>
-                            <div className="text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0">
+                            <div className={`${isRowLayout ? 'text-center' : 'mobile-richtext-left max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'} text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0`}>
                               <RichText data={item.text} />
                             </div>
                           </div>
@@ -497,7 +498,7 @@ export async function PageContent({
               return (
                 <section key={block.id || idx} id="about_us" className="flex flex-col">
                   {block.sectionTitle && (
-                    <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px]`}>
+                    <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px]`} style={getThemeBackgroundStyle(theme, 'section')}>
                       <div className="max-w-[1200px] mx-auto">
                         <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center">
                           {block.sectionTitle}
@@ -533,6 +534,7 @@ export async function PageContent({
                               ? 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'
                               : 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'
                           }`}
+                          style={getThemeBackgroundStyle(theme, itemIndex % 2 === 0 ? 'panel' : 'panelAlt')}
                         >
                           {item.title && (
                             <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-2">{item.title}</h3>
@@ -555,7 +557,7 @@ export async function PageContent({
                     )
                   })}
                   {block.buttonText && (
-                    <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px] text-center`}>
+                    <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px] text-center`} style={getThemeBackgroundStyle(theme, 'section')}>
                       <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                         {block.buttonText}
                       </a>
@@ -576,6 +578,7 @@ export async function PageContent({
                   key={block.id || idx}
                   id="filosofia"
                   className={compactSpacing ? `py-[56px] max-[767px]:py-[40px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
+                  style={getThemeBackgroundStyle(theme, 'section')}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
@@ -589,9 +592,9 @@ export async function PageContent({
                         return (
                           <div
                             key={item.id || itemIndex}
-                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
+                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
                           >
-                            <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-center max-[767px]:gap-4 max-[767px]:text-center ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
+                            <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-start max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
                               {iconUrl ? (
                                 <img src={iconUrl} alt={item.title} className="w-auto h-[50px] shrink-0" />
                               ) : (
@@ -603,7 +606,7 @@ export async function PageContent({
                               )}
                               <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
                             </div>
-                            <div className="text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0">
+                            <div className="mobile-richtext-left text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left">
                               <RichText data={item.text} />
                             </div>
                           </div>
@@ -635,7 +638,7 @@ export async function PageContent({
               const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
-                <section key={block.id || idx} id="offers" className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
+                <section key={block.id || idx} id="offers" className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {imageUrl ? (
                       <img src={imageUrl} alt={promotion.title} className="w-full h-full object-cover block" />
@@ -643,7 +646,7 @@ export async function PageContent({
                       <ImagePlaceholder label={promotion.title} className="w-full h-full min-h-[320px]" />
                     )}
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                     <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{promotion.title}</h2>
                     {promotion.content ? (
                       <div className="prose max-w-none text-[#22282b]">
@@ -654,7 +657,10 @@ export async function PageContent({
                         {typeof promotion.description === 'string' ? <p>{promotion.description}</p> : <RichText data={promotion.description} />}
                       </div>
                     ) : null}
-                    <div className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4">
+                    <div
+                      style={{ fontFamily: 'var(--second-font)' }}
+                      className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4"
+                    >
                       {locale === 'uk' ? 'Діє до' : locale === 'es' ? 'Válido hasta' : 'Valid until'}:{' '}
                       {new Date(promotion.validUntil).toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'es' ? 'es-ES' : 'en-US', {
                         year: 'numeric',
@@ -688,6 +694,7 @@ export async function PageContent({
                   key={block.id || idx}
                   id="team"
                   className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
+                  style={getThemeBackgroundStyle(theme, 'section')}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-0">
                     <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[20px]">
@@ -754,30 +761,58 @@ export async function PageContent({
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
+              const reviewsBlock = block as typeof block & {
+                intro?: unknown
+                splitHeaderLayout?: boolean | null
+                summaryTitle?: string | null
+                reviewsLabel?: string | null
+              }
+              const splitHeaderLayout = Boolean(reviewsBlock.splitHeaderLayout)
               return (
                 <section
                   key={block.id || idx}
                   id="reviews"
                   className={compactSpacing ? `py-[64px] max-[767px]:py-[44px] relative ${theme.section}` : `py-[96px] max-[767px]:py-[64px] relative ${theme.section}`}
+                  style={getThemeBackgroundStyle(theme, 'section')}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] flex flex-col gap-5">
-                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-6">
-                      {block.sectionTitle || reviewsTitle}
-                    </h2>
+                    {splitHeaderLayout ? (
+                      <div className="grid grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] gap-8 items-start mb-6 max-[767px]:grid-cols-1 max-[767px]:gap-4">
+                        <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-0">
+                          {block.sectionTitle || reviewsTitle}
+                        </h2>
+                        {reviewsBlock.intro ? (
+                          <div className="prose max-w-none text-[#505a5e]">
+                            <RichText data={reviewsBlock.intro as never} />
+                          </div>
+                        ) : <div />}
+                      </div>
+                    ) : (
+                      <>
+                        <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-6">
+                          {block.sectionTitle || reviewsTitle}
+                        </h2>
+                        {reviewsBlock.intro && (
+                          <div className="prose max-w-[760px] mx-auto text-[#505a5e] text-center mb-6">
+                            <RichText data={reviewsBlock.intro as never} />
+                          </div>
+                        )}
+                      </>
+                    )}
                     {block.embedCode ? (
                       <div
                         className="bg-white p-[10px] rounded-lg"
                         dangerouslySetInnerHTML={{ __html: block.embedCode }}
                       />
                     ) : (
-                      <GoogleReviews locale={locale as 'es' | 'en' | 'uk'} desktopSlides={parseInt(block.desktopSlides || '2')} />
-                    )}
-                    {block.buttonText && (
-                      <div className="mt-6 text-center">
-                        <a href={resolveHref(block.buttonLink)} className={buttonClass}>
-                          {block.buttonText}
-                        </a>
-                      </div>
+                      <GoogleReviews
+                        locale={locale as 'es' | 'en' | 'uk'}
+                        desktopSlides={parseInt(block.desktopSlides || '2')}
+                        summaryTitle={reviewsBlock.summaryTitle}
+                        reviewsLabel={reviewsBlock.reviewsLabel}
+                        writeReviewLabel={block.buttonText}
+                        writeReviewLink={block.buttonLink}
+                      />
                     )}
                   </div>
                 </section>
@@ -791,7 +826,7 @@ export async function PageContent({
               const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
-                <section key={block.id || idx} id="gallery" className={`flex max-[991px]:flex-col ${theme.panel}`}>
+                <section key={block.id || idx} id="gallery" className={`flex max-[991px]:flex-col ${theme.panel}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                   <div className={`w-1/2 max-[991px]:w-full h-[600px] max-[991px]:h-auto max-[991px]:aspect-[4/3] ${isSliderLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {block.images.length > 0 ? (
                       <GallerySlider images={block.images} />
@@ -824,6 +859,7 @@ export async function PageContent({
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
+              const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
               const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
               const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
                 ? (block as { overlayColor?: string }).overlayColor
@@ -836,10 +872,11 @@ export async function PageContent({
                 <section
                   key={block.id || idx}
                   className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
+                  style={backgroundImageUrl ? undefined : getThemeBackgroundStyle(theme, 'section')}
                 >
                   {backgroundImageUrl && (
-                    <>
-                      <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
+                  <>
+                    <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
                       <div
                         className="absolute inset-0"
                         style={{
@@ -847,21 +884,26 @@ export async function PageContent({
                           opacity: overlayOpacity,
                         }}
                       />
-                    </>
+                  </>
                   )}
-                  <div className={`relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
+                  <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                     {block.title && (
                       <h2
                         className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center ${
-                          block.content ? 'mb-6' : 'mb-0'
+                          block.content || block.bottomText ? 'mb-6' : 'mb-0'
                         }`}
                       >
                         {block.title}
                       </h2>
                     )}
                     {block.content && (
-                      <div className="prose prose-lg max-w-none text-[#22282b]">
+                      <div className="prose prose-lg max-w-none text-[#22282b] max-[767px]:text-left">
                         <RichText data={block.content} />
+                      </div>
+                    )}
+                    {block.bottomText && (
+                      <div className="prose prose-lg max-w-none text-[#22282b] mt-8 max-[767px]:text-left">
+                        <RichText data={block.bottomText} />
                       </div>
                     )}
                     {block.buttonText && (
@@ -884,6 +926,7 @@ export async function PageContent({
                   key={block.id || idx}
                   id="contact_us"
                   className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
+                  style={getThemeBackgroundStyle(theme, 'panel')}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                     <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
@@ -903,7 +946,11 @@ export async function PageContent({
                         {contacts.email && (
                           <div className="flex flex-col gap-2">
                             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{emailLabel}</span>
-                            <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">
+                            <a
+                              href={`mailto:${contacts.email}`}
+                              style={{ fontFamily: 'var(--second-font)' }}
+                              className="text-[18px] font-medium hover:opacity-80 transition-opacity"
+                            >
                               {contacts.email}
                             </a>
                           </div>
@@ -925,7 +972,11 @@ export async function PageContent({
                                 )}
                               </div>
                               <div className="h-[18px] w-px bg-[#22282b]/15" />
-                              <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity">
+                              <a
+                                href={`tel:${contacts.phone.replace(/\s+/g, '')}`}
+                                style={{ fontFamily: 'var(--second-font)' }}
+                                className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity"
+                              >
                                 <img src="/icons/phone.svg" alt="Phone" className="w-[16px] h-[16px] opacity-85" />
                                 <span>{contacts.phone}</span>
                               </a>
@@ -935,13 +986,13 @@ export async function PageContent({
                         {contacts.address && (
                           <div className="flex flex-col gap-2">
                             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{addressLabel}</span>
-                            <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                            <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
                           </div>
                         )}
                         {contacts.transport && (
                           <div className="flex flex-col gap-2">
                             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{transportLabel}</span>
-                            <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                            <p style={{ fontFamily: 'var(--second-font)' }} className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
                           </div>
                         )}
                         {contacts.socialLinks && contacts.socialLinks.length > 0 && (
@@ -959,7 +1010,7 @@ export async function PageContent({
                       </div>
                     </div>
 
-                    <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                    <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                       {(globalContact?.formTitle || globalContact?.formDescription) && (
                         <div className="mb-6">
                           {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
@@ -1023,7 +1074,7 @@ export async function PageContent({
                       )}
                     </div>
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                     {block.title && (
                       <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>
                     )}
@@ -1063,6 +1114,7 @@ export async function PageContent({
                   key={block.id || idx}
                   id="contact_us"
                   className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
+                  style={getThemeBackgroundStyle(theme, 'panel')}
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                     <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
@@ -1087,7 +1139,11 @@ export async function PageContent({
                             return (
                               <div key={`${row}-${rowIndex}`} className="flex flex-col gap-2">
                                 <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{emailLabel}</span>
-                                <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">
+                                <a
+                                  href={`mailto:${contacts.email}`}
+                                  style={{ fontFamily: 'var(--second-font)' }}
+                                  className="text-[18px] font-medium hover:opacity-80 transition-opacity"
+                                >
                                   {contacts.email}
                                 </a>
                               </div>
@@ -1112,7 +1168,11 @@ export async function PageContent({
                                     )}
                                   </div>
                                   <div className="h-[18px] w-px bg-[#22282b]/15" />
-                                  <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity">
+                                  <a
+                                    href={`tel:${contacts.phone.replace(/\s+/g, '')}`}
+                                    style={{ fontFamily: 'var(--second-font)' }}
+                                    className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity"
+                                  >
                                     <img src="/icons/phone.svg" alt="Phone" className="w-[16px] h-[16px] opacity-85" />
                                     <span>{contacts.phone}</span>
                                   </a>
@@ -1125,7 +1185,7 @@ export async function PageContent({
                             return (
                               <div key={`${row}-${rowIndex}`} className="flex flex-col gap-2">
                                 <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{addressLabel}</span>
-                                <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                                <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
                               </div>
                             )
                           }
@@ -1134,7 +1194,7 @@ export async function PageContent({
                             return (
                               <div key={`${row}-${rowIndex}`} className="flex flex-col gap-2">
                                 <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{transportLabel}</span>
-                                <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                                <p style={{ fontFamily: 'var(--second-font)' }} className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
                               </div>
                             )
                           }
@@ -1166,7 +1226,7 @@ export async function PageContent({
                       </div>
                     </div>
 
-                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                       {(block.formTitle || block.formDescription) && (
                         <div className="mb-6">
                           {block.formTitle && (
@@ -1443,7 +1503,7 @@ export async function PageContent({
                         return (
                           <div
                             key={card.id || i}
-                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
+                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
                           >
                             {iconUrl ? (
                               <img src={iconUrl} alt={card.title} className="w-auto h-[50px]" />
@@ -1455,7 +1515,7 @@ export async function PageContent({
                               </div>
                             )}
                             <h3 className="text-[20px] font-medium text-[#22282b]">{card.title}</h3>
-                            <div className="text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0">
+                            <div className="mobile-richtext-left text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left">
                               {typeof card.description === 'string' ? <p>{card.description}</p> : <RichText data={card.description} />}
                             </div>
                           </div>
@@ -1498,7 +1558,10 @@ export async function PageContent({
                               ) : null}
                             </div>
                           </div>
-                          <div className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4">
+                          <div
+                            style={{ fontFamily: 'var(--second-font)' }}
+                            className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4"
+                          >
                             {locale === 'uk' ? 'Діє до' : locale === 'es' ? 'Válido hasta' : 'Valid until'}:{' '}
                             {new Date(promo.validUntil).toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'es' ? 'es-ES' : 'en-US', {
                               year: 'numeric',

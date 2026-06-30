@@ -51,6 +51,11 @@ export const Pricing: CollectionConfig = {
     {
       name: 'items',
       type: 'array',
+      admin: {
+        components: {
+          RowLabel: '/components/admin/TitleRowLabel#TitleRowLabel',
+        },
+      },
       label: {
         en: 'Group Items',
         uk: 'Пункти групи',

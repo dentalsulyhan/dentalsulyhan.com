@@ -18,6 +18,7 @@ function getString(
 export const defaultDesignSettings = {
   colors: {
     mainBackground: '#fafafa',
+    footerBackground: '#f4ede7',
     mainText: '#22282b',
     mutedText: '#909da2',
     accent: '#3c5557',
@@ -26,6 +27,8 @@ export const defaultDesignSettings = {
     placeholderText: '#909da2',
   },
   typography: {
+    mainFontFamily: '"Raleway", sans-serif',
+    secondFontFamily: '"AvenirNextLTPro", sans-serif',
     h1DesktopSize: 'clamp(2rem, 3vw, 3rem)',
     h1DesktopLineHeight: '1.1',
     h1MobileSize: '1.5rem',
@@ -115,9 +118,14 @@ export function getDesignSettingsVars(
   const typography = getGroup(settings?.typography)
   const buttons = getGroup(settings?.buttons)
   const themes = getGroup(settings?.themes)
+  const whiteBase = getString(themes, 'whiteSection', defaultDesignSettings.themes.whiteSection)
+  const softBase = getString(themes, 'softSection', defaultDesignSettings.themes.softSection)
+  const sandBase = getString(themes, 'sandSection', defaultDesignSettings.themes.sandSection)
+  const sageBase = getString(themes, 'sageSection', defaultDesignSettings.themes.sageSection)
 
   return {
     '--main-bg-color': getString(colors, 'mainBackground', defaultDesignSettings.colors.mainBackground),
+    '--footer-bg-color': getString(colors, 'footerBackground', defaultDesignSettings.colors.footerBackground),
     '--main-text-color': getString(colors, 'mainText', defaultDesignSettings.colors.mainText),
     '--second-text-color': getString(colors, 'mutedText', defaultDesignSettings.colors.mutedText),
     '--accent-color': getString(colors, 'accent', defaultDesignSettings.colors.accent),
@@ -134,6 +142,8 @@ export function getDesignSettingsVars(
       'placeholderText',
       defaultDesignSettings.colors.placeholderText,
     ),
+    '--main-font': getString(typography, 'mainFontFamily', defaultDesignSettings.typography.mainFontFamily),
+    '--second-font': getString(typography, 'secondFontFamily', defaultDesignSettings.typography.secondFontFamily),
 
     '--font-size-h1-desktop': getString(typography, 'h1DesktopSize', defaultDesignSettings.typography.h1DesktopSize),
     '--line-height-h1-desktop': getString(
@@ -288,29 +298,29 @@ export function getDesignSettingsVars(
       defaultDesignSettings.buttons.textFontSizeMobile,
     ),
 
-    '--theme-white-section': getString(themes, 'whiteSection', defaultDesignSettings.themes.whiteSection),
-    '--theme-white-section-alt': getString(themes, 'whiteSectionAlt', defaultDesignSettings.themes.whiteSectionAlt),
-    '--theme-white-panel': getString(themes, 'whitePanel', defaultDesignSettings.themes.whitePanel),
-    '--theme-white-panel-alt': getString(themes, 'whitePanelAlt', defaultDesignSettings.themes.whitePanelAlt),
-    '--theme-white-card': getString(themes, 'whiteCard', defaultDesignSettings.themes.whiteCard),
-    '--theme-white-card-alt': getString(themes, 'whiteCardAlt', defaultDesignSettings.themes.whiteCardAlt),
-    '--theme-soft-section': getString(themes, 'softSection', defaultDesignSettings.themes.softSection),
-    '--theme-soft-section-alt': getString(themes, 'softSectionAlt', defaultDesignSettings.themes.softSectionAlt),
-    '--theme-soft-panel': getString(themes, 'softPanel', defaultDesignSettings.themes.softPanel),
-    '--theme-soft-panel-alt': getString(themes, 'softPanelAlt', defaultDesignSettings.themes.softPanelAlt),
-    '--theme-soft-card': getString(themes, 'softCard', defaultDesignSettings.themes.softCard),
-    '--theme-soft-card-alt': getString(themes, 'softCardAlt', defaultDesignSettings.themes.softCardAlt),
-    '--theme-sand-section': getString(themes, 'sandSection', defaultDesignSettings.themes.sandSection),
-    '--theme-sand-section-alt': getString(themes, 'sandSectionAlt', defaultDesignSettings.themes.sandSectionAlt),
-    '--theme-sand-panel': getString(themes, 'sandPanel', defaultDesignSettings.themes.sandPanel),
-    '--theme-sand-panel-alt': getString(themes, 'sandPanelAlt', defaultDesignSettings.themes.sandPanelAlt),
-    '--theme-sand-card': getString(themes, 'sandCard', defaultDesignSettings.themes.sandCard),
-    '--theme-sand-card-alt': getString(themes, 'sandCardAlt', defaultDesignSettings.themes.sandCardAlt),
-    '--theme-sage-section': getString(themes, 'sageSection', defaultDesignSettings.themes.sageSection),
-    '--theme-sage-section-alt': getString(themes, 'sageSectionAlt', defaultDesignSettings.themes.sageSectionAlt),
-    '--theme-sage-panel': getString(themes, 'sagePanel', defaultDesignSettings.themes.sagePanel),
-    '--theme-sage-panel-alt': getString(themes, 'sagePanelAlt', defaultDesignSettings.themes.sagePanelAlt),
-    '--theme-sage-card': getString(themes, 'sageCard', defaultDesignSettings.themes.sageCard),
-    '--theme-sage-card-alt': getString(themes, 'sageCardAlt', defaultDesignSettings.themes.sageCardAlt),
+    '--theme-white-section': whiteBase,
+    '--theme-white-section-alt': whiteBase,
+    '--theme-white-panel': whiteBase,
+    '--theme-white-panel-alt': whiteBase,
+    '--theme-white-card': whiteBase,
+    '--theme-white-card-alt': whiteBase,
+    '--theme-soft-section': softBase,
+    '--theme-soft-section-alt': softBase,
+    '--theme-soft-panel': softBase,
+    '--theme-soft-panel-alt': softBase,
+    '--theme-soft-card': softBase,
+    '--theme-soft-card-alt': softBase,
+    '--theme-sand-section': sandBase,
+    '--theme-sand-section-alt': sandBase,
+    '--theme-sand-panel': sandBase,
+    '--theme-sand-panel-alt': sandBase,
+    '--theme-sand-card': sandBase,
+    '--theme-sand-card-alt': sandBase,
+    '--theme-sage-section': sageBase,
+    '--theme-sage-section-alt': sageBase,
+    '--theme-sage-panel': sageBase,
+    '--theme-sage-panel-alt': sageBase,
+    '--theme-sage-card': sageBase,
+    '--theme-sage-card-alt': sageBase,
   }
 }

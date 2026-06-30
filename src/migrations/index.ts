@@ -15,6 +15,16 @@ import * as migration_20260623_173000 from './20260623_173000';
 import * as migration_20260623_181000 from './20260623_181000';
 import * as migration_20260623_182000 from './20260623_182000';
 import * as migration_20260626_151500 from './20260626_151500';
+import * as migration_20260626_184500 from './20260626_184500';
+import * as migration_20260626_203500 from './20260626_203500';
+import * as migration_20260626_214500 from './20260626_214500';
+import * as migration_20260627_120000 from './20260627_120000';
+import * as migration_20260627_121500 from './20260627_121500';
+import * as migration_20260627_123000 from './20260627_123000';
+import * as migration_20260629_120000 from './20260629_120000';
+import * as migration_20260629_150000 from './20260629_150000';
+import * as migration_20260629_170000 from './20260629_170000';
+import * as migration_20260629_190000 from './20260629_190000';
 
 export const migrations = [
   {
@@ -101,5 +111,55 @@ export const migrations = [
     up: migration_20260626_151500.up,
     down: migration_20260626_151500.down,
     name: '20260626_151500'
+  },
+  {
+    up: migration_20260626_184500.up,
+    down: migration_20260626_184500.down,
+    name: '20260626_184500'
+  },
+  {
+    up: migration_20260626_203500.up,
+    down: migration_20260626_203500.down,
+    name: '20260626_203500'
+  },
+  {
+    up: migration_20260626_214500.up,
+    down: migration_20260626_214500.down,
+    name: '20260626_214500'
+  },
+  {
+    up: migration_20260627_120000.up,
+    down: migration_20260627_120000.down,
+    name: '20260627_120000'
+  },
+  {
+    up: migration_20260627_121500.up,
+    down: migration_20260627_121500.down,
+    name: '20260627_121500'
+  },
+  {
+    up: migration_20260627_123000.up,
+    down: migration_20260627_123000.down,
+    name: '20260627_123000'
+  },
+  {
+    up: migration_20260629_120000.up,
+    down: migration_20260629_120000.down,
+    name: '20260629_120000'
+  },
+  {
+    up: migration_20260629_150000.up,
+    down: migration_20260629_150000.down,
+    name: '20260629_150000'
+  },
+  {
+    up: migration_20260629_170000.up,
+    down: migration_20260629_170000.down,
+    name: '20260629_170000'
+  },
+  {
+    up: migration_20260629_190000.up,
+    down: migration_20260629_190000.down,
+    name: '20260629_190000'
   },
 ];

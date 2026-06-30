@@ -5,6 +5,15 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import type { HeaderFooter, Page, SiteContact, SiteSetting } from '@/payload-types'
 import { getDesignSettingsVars } from '@/lib/designSettings'
+import { isSupportedLocale } from '@/lib/localizedRouting'
+import { notFound } from 'next/navigation'
+
+type BrandingData = {
+  favicon?: number | { url?: string | null; alt?: string | null } | null
+  logo?: number | { url?: string | null; alt?: string | null } | null
+  logoLight?: number | { url?: string | null; alt?: string | null } | null
+  logoDark?: number | { url?: string | null; alt?: string | null } | null
+}
 
 export default async function FrontendLayout({
   children,
@@ -14,6 +23,11 @@ export default async function FrontendLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+
+  if (!isSupportedLocale(locale)) {
+    notFound()
+  }
+
   const payload = await getPayload({ config: configPromise })
 
   let siteSettings: SiteSetting | null = null
@@ -103,10 +117,11 @@ export default async function FrontendLayout({
     ...(siteSettings?.contacts || {}),
     socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
   }
+  const branding = (siteSettings as SiteSetting & { branding?: BrandingData } | null)?.branding
 
   return (
     <div style={getDesignSettingsVars(designSettings)}>
-      <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} />
+      <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} branding={branding} />
 
       <main className="flex-grow pt-[70px]">
         {children}
@@ -118,6 +133,7 @@ export default async function FrontendLayout({
         headerLogo={headerData.logo} 
         currentLocale={locale} 
         servicesPath={servicesPath}
+        branding={branding}
       />
     </div>
   )

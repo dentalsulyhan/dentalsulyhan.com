@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
       '.mjs': ['.mts', '.mjs'],
     }
 
+    webpackConfig.resolve.alias = {
+      ...(webpackConfig.resolve.alias || {}),
+      '@payloadcms/storage-s3/client': path.resolve(
+        dirname,
+        'src/components/admin/DisabledS3ClientUploadHandler.tsx',
+      ),
+    }
+
     return webpackConfig
   },
   turbopack: {

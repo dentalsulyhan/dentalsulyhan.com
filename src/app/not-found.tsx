@@ -9,6 +9,13 @@ import { getNotFoundPageBlock } from '@/lib/not-found-page'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
 
+type BrandingData = {
+  favicon?: number | { url?: string | null; alt?: string | null } | null
+  logo?: number | { url?: string | null; alt?: string | null } | null
+  logoLight?: number | { url?: string | null; alt?: string | null } | null
+  logoDark?: number | { url?: string | null; alt?: string | null } | null
+}
+
 async function detectLocaleFromHeaders() {
   const requestHeaders = await headers()
   const explicitLocale = requestHeaders.get('x-sulyhan-locale')
@@ -86,12 +93,13 @@ export default async function NotFound() {
     ...(siteSettings?.contacts || {}),
     socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
   }
+  const branding = (siteSettings as SiteSetting & { branding?: BrandingData } | null)?.branding
 
   const { contentImageBlock } = await getNotFoundPageBlock(locale)
 
   return (
     <div style={getDesignSettingsVars(designSettings)}>
-      <Header data={headerData} contacts={contactsData} currentLocale={locale} />
+      <Header data={headerData} contacts={contactsData} currentLocale={locale} branding={branding} />
 
       {contentImageBlock ? (
         <FrontendNotFound
@@ -115,6 +123,7 @@ export default async function NotFound() {
         contacts={contactsData}
         headerLogo={headerData.logo}
         currentLocale={locale}
+        branding={branding}
       />
     </div>
   )

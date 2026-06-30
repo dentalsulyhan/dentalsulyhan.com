@@ -4,6 +4,7 @@ import { en } from '@payloadcms/translations/languages/en'
 import { es } from '@payloadcms/translations/languages/es'
 import { uk } from '@payloadcms/translations/languages/uk'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -49,6 +50,44 @@ const email =
       })
     : undefined
 
+const r2Bucket = process.env.R2_BUCKET
+const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID
+const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY
+const r2PublicBaseURL = process.env.R2_PUBLIC_BASE_URL
+
+function normalizeR2Endpoint(value?: string) {
+  if (!value) return undefined
+
+  try {
+    const url = new URL(value)
+    return `${url.protocol}//${url.host}`
+  } catch {
+    return value.replace(/\/+$/, '')
+  }
+}
+
+const r2Endpoint = normalizeR2Endpoint(
+  process.env.R2_ENDPOINT ||
+    (process.env.R2_ACCOUNT_ID ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : undefined),
+)
+
+const isR2Enabled = Boolean(
+  r2Bucket && r2AccessKeyId && r2SecretAccessKey && r2Endpoint && r2PublicBaseURL,
+)
+
+const buildR2FileURL = ({
+  filename,
+  prefix,
+}: {
+  filename: string
+  prefix?: string
+}) => {
+  const base = (r2PublicBaseURL || '').replace(/\/+$/, '')
+  const normalizedPrefix = prefix?.replace(/^\/+|\/+$/g, '')
+
+  return normalizedPrefix ? `${base}/${normalizedPrefix}/${filename}` : `${base}/${filename}`
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -88,5 +127,31 @@ export default buildConfig({
   }),
   email,
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      enabled: isR2Enabled,
+      alwaysInsertFields: true,
+      clientUploads: false,
+      collections: {
+        media: {
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix, size }) =>
+            buildR2FileURL({
+              filename: (size as { filename?: string | null } | undefined)?.filename || filename,
+              prefix,
+            }),
+        },
+      },
+      bucket: r2Bucket || 'disabled',
+      config: {
+        credentials: {
+          accessKeyId: r2AccessKeyId || 'disabled',
+          secretAccessKey: r2SecretAccessKey || 'disabled',
+        },
+        endpoint: r2Endpoint,
+        forcePathStyle: true,
+        region: process.env.R2_REGION || 'auto',
+      },
+    }),
+  ],
 })

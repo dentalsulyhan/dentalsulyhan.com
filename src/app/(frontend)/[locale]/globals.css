@@ -142,6 +142,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
   [id] {
     scroll-margin-top: 90px;
   }
@@ -195,14 +202,17 @@
   ul, ol, .prose ul, .prose ol {
     margin-top: 0.5em;
     margin-bottom: 1.25em;
-    padding-left: 1.4em;
+    margin-left: 0;
+    padding-left: 1.5em !important;
+    padding-inline-start: 1.5em !important;
+    list-style-position: outside !important;
   }
 
   ul:last-child, ol:last-child, .prose ul:last-child, .prose ol:last-child {
     margin-bottom: 0;
   }
 
-  .prose li {
+  li, .prose li {
     margin-bottom: 0.45em;
     line-height: 1.7;
   }
@@ -210,6 +220,12 @@
   ul li::marker, .prose ul li::marker,
   ol li::marker, .prose ol li::marker {
     color: var(--accent-color);
+  }
+
+  ol li::marker,
+  .prose ol li::marker {
+    font-family: var(--second-font);
+    font-weight: 700;
   }
 
   .prose ul {
@@ -277,6 +293,62 @@
     p, .prose p {
       font-size: var(--font-size-body-mobile);
       line-height: var(--line-height-body-mobile);
+    }
+
+    ul, ol, .prose ul, .prose ol {
+      padding-left: 1.25rem !important;
+      padding-inline-start: 1.25rem !important;
+      list-style-position: outside !important;
+    }
+
+    li, .prose li {
+      padding-left: 0;
+    }
+  }
+}
+
+@layer utilities {
+  .theme-section-white { background-color: var(--theme-white-section); }
+  .theme-section-white-alt { background-color: var(--theme-white-section-alt); }
+  .theme-panel-white { background-color: var(--theme-white-panel); }
+  .theme-panel-white-alt { background-color: var(--theme-white-panel-alt); }
+  .theme-card-white { background-color: var(--theme-white-card); }
+  .theme-card-white-alt { background-color: var(--theme-white-card-alt); }
+
+  .theme-section-soft { background-color: var(--theme-soft-section); }
+  .theme-section-soft-alt { background-color: var(--theme-soft-section-alt); }
+  .theme-panel-soft { background-color: var(--theme-soft-panel); }
+  .theme-panel-soft-alt { background-color: var(--theme-soft-panel-alt); }
+  .theme-card-soft { background-color: var(--theme-soft-card); }
+  .theme-card-soft-alt { background-color: var(--theme-soft-card-alt); }
+
+  .theme-section-sand { background-color: var(--theme-sand-section); }
+  .theme-section-sand-alt { background-color: var(--theme-sand-section-alt); }
+  .theme-panel-sand { background-color: var(--theme-sand-panel); }
+  .theme-panel-sand-alt { background-color: var(--theme-sand-panel-alt); }
+  .theme-card-sand { background-color: var(--theme-sand-card); }
+  .theme-card-sand-alt { background-color: var(--theme-sand-card-alt); }
+
+  .theme-section-sage { background-color: var(--theme-sage-section); }
+  .theme-section-sage-alt { background-color: var(--theme-sage-section-alt); }
+  .theme-panel-sage { background-color: var(--theme-sage-panel); }
+  .theme-panel-sage-alt { background-color: var(--theme-sage-panel-alt); }
+  .theme-card-sage { background-color: var(--theme-sage-card); }
+  .theme-card-sage-alt { background-color: var(--theme-sage-card-alt); }
+
+  @media (max-width: 767px) {
+    .mobile-richtext-left,
+    .mobile-richtext-left *,
+    .mobile-richtext-left p,
+    .mobile-richtext-left li,
+    .mobile-richtext-left h1,
+    .mobile-richtext-left h2,
+    .mobile-richtext-left h3,
+    .mobile-richtext-left ul,
+    .mobile-richtext-left ol,
+    .mobile-richtext-left span,
+    .mobile-richtext-left div {
+      text-align: left !important;
     }
   }
 }

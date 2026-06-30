@@ -5,7 +5,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import ContactForm from '../../../../../components/ContactForm'
 import AccordionList from '../../../../../components/AccordionList'
 import type { Media, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
-import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
+import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 
@@ -266,9 +266,9 @@ export async function ServiceDetailPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const theme = getBlockTheme(block.theme)
             return (
-              <section key={block.id || idx} className={`pt-[10px] ${theme.section}`}>
+              <section key={block.id || idx} className={`pt-[10px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                     <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
                       {block.title}
                     </h1>
@@ -297,6 +297,7 @@ export async function ServiceDetailPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
+            const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const hasBackgroundImage = Boolean(backgroundImageUrl)
             const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
@@ -313,6 +314,7 @@ export async function ServiceDetailPageContent({
               <section
                 key={block.id || idx}
                 className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
+                style={backgroundImageUrl ? undefined : getThemeBackgroundStyle(theme, 'section')}
               >
                 {backgroundImageUrl && (
                   <>
@@ -320,15 +322,15 @@ export async function ServiceDetailPageContent({
                     <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
                   </>
                 )}
-                <div className={`relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
+                <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                   {block.title && (
-                    <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold text-center ${hasBackgroundImage ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'} ${block.content ? 'mb-6' : 'mb-0'}`}>
+                    <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold text-center ${hasBackgroundImage ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'} ${block.content || block.bottomText ? 'mb-6' : 'mb-0'}`}>
                       {block.title}
                     </h2>
                   )}
                   {block.content && (
                     <div
-                      className={`prose prose-lg max-w-none ${
+                      className={`prose prose-lg max-w-none max-[767px]:text-left ${
                         hasBackgroundImage
                           ? isLightText
                             ? 'prose-light'
@@ -337,6 +339,19 @@ export async function ServiceDetailPageContent({
                       }`}
                     >
                       <RichText data={block.content} />
+                    </div>
+                  )}
+                  {block.bottomText && (
+                    <div
+                      className={`prose prose-lg max-w-none mt-8 max-[767px]:text-left ${
+                        hasBackgroundImage
+                          ? isLightText
+                            ? 'prose-light'
+                            : 'prose-dark'
+                          : 'text-[#22282b]'
+                      }`}
+                    >
+                      <RichText data={block.bottomText} />
                     </div>
                   )}
                   {block.buttonText && (
@@ -359,13 +374,13 @@ export async function ServiceDetailPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
 
             return (
-              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
-                <div className={`w-1/2 max-[991px]:w-full h-[clamp(380px,42vw,620px)] max-[991px]:h-auto max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
-                  <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full overflow-hidden'}>
-                    {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
+                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
+                  <div className={isImageContained ? 'relative w-full max-w-[520px] h-full min-h-[420px] max-[991px]:max-w-none max-[991px]:h-full max-[991px]:min-h-[320px] overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'relative w-full h-full min-h-[420px] max-[991px]:min-h-[320px] overflow-hidden'}>
+                    {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="absolute inset-0 w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                   {block.title && <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>}
                   <div className="prose max-w-none text-[#22282b]">
                     <RichText data={block.text} />
@@ -387,23 +402,26 @@ export async function ServiceDetailPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
+            const textWidthClass = block.fullWidthText ? 'max-w-[1200px]' : 'max-w-[760px]'
             const desktopColumns = (block as { columns?: '2' | '3' | '4' }).columns || '3'
             const incompleteRowAlignment =
               (block as { incompleteRowAlignment?: 'center' | 'start' }).incompleteRowAlignment || 'center'
             const items = block.items || []
+            const advantagesBottomText = (block as { bottomText?: unknown }).bottomText
             return (
               <section
                 key={block.id || idx}
                 className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
+                style={getThemeBackgroundStyle(theme, 'section')}
               >
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && (
-                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] text-[#3c5557]">
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] max-[767px]:mb-8 text-[#3c5557]">
                       {block.sectionTitle}
                     </h2>
                   )}
                   {block.subtitle && (
-                    <div className="prose prose-lg max-w-[760px] mx-auto text-[#505a5e] text-center mb-10">
+                    <div className={`mobile-richtext-left prose prose-lg ${textWidthClass} mx-auto text-[#505a5e] text-center mb-10 max-[767px]:text-left`}>
                       <RichText data={block.subtitle} />
                     </div>
                   )}
@@ -413,9 +431,9 @@ export async function ServiceDetailPageContent({
                       return (
                         <div
                           key={item.id || itemIndex}
-                          className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 max-[767px]:items-start max-[767px]:text-left`}
+                          className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 ${isRowLayout ? 'max-[767px]:items-center max-[767px]:text-center' : 'max-[767px]:items-start max-[767px]:text-left'}`}
                         >
-                          <div className={`flex w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center gap-4 text-left' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'}`}`}>
+                          <div className={`flex w-full ${isRowLayout ? 'flex-row items-center gap-4 text-left max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'} max-[767px]:flex-col max-[767px]:justify-start max-[767px]:text-left`}`}>
                             {iconUrl ? (
                               <img src={iconUrl} alt={item.title || 'Advantage icon'} className="w-auto h-[50px] shrink-0" />
                             ) : (
@@ -428,7 +446,7 @@ export async function ServiceDetailPageContent({
                             {item.title && <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
                           </div>
                           {item.text && (
-                            <div className="text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]">
+                            <div className={`${isRowLayout ? 'text-center' : 'mobile-richtext-left max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'} text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]`}>
                               <RichText data={item.text} />
                             </div>
                           )}
@@ -443,9 +461,9 @@ export async function ServiceDetailPageContent({
                       </a>
                     </div>
                   )}
-                  {block.bottomText && (
-                    <div className="prose prose-lg max-w-[760px] mx-auto text-[#505a5e] text-center mt-10">
-                      <RichText data={block.bottomText} />
+                  {Boolean(advantagesBottomText) && (
+                    <div className={`mobile-richtext-left prose prose-lg ${textWidthClass} mx-auto text-[#505a5e] text-center mt-10 max-[767px]:text-left`}>
+                      <RichText data={advantagesBottomText as never} />
                     </div>
                   )}
                 </div>
@@ -459,13 +477,19 @@ export async function ServiceDetailPageContent({
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
             const items = block.items || []
+            const cardsBottomText = (block as { bottomText?: unknown }).bottomText
             const desktopColumns = (block as { columns?: '2' | '3' | '4' }).columns || '4'
             const incompleteRowAlignment =
               (block as { incompleteRowAlignment?: 'center' | 'start' }).incompleteRowAlignment || 'center'
             return (
-              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-8 max-[767px]:mb-6">{block.sectionTitle}</h2>}
+                  {block.intro && (
+                    <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] text-center mb-10 max-[767px]:mb-8 max-[767px]:text-left">
+                      <RichText data={block.intro} />
+                    </div>
+                  )}
                   <div className="grid grid-cols-12 gap-x-6 gap-y-8 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-6 max-[1200px]:gap-y-6 max-[767px]:grid-cols-1 max-[767px]:gap-y-4">
                     {items.map((item, itemIndex) => {
                       const iconUrl = mediaUrl(item.icon)
@@ -485,7 +509,7 @@ export async function ServiceDetailPageContent({
                             </div>
                           )}
                           {item.text && (
-                            <div className="prose max-w-none text-[13px] leading-[1.6] text-[#5a666b] prose-p:my-0 prose-p:text-[13px] prose-p:leading-[1.6] prose-li:my-1 prose-li:text-[13px] prose-li:leading-[1.6]">
+                            <div className="mobile-richtext-left prose max-w-none text-[13px] leading-[1.6] text-[#5a666b] prose-p:my-0 prose-p:text-[13px] prose-p:leading-[1.6] prose-li:my-1 prose-li:text-[13px] prose-li:leading-[1.6] max-[767px]:text-left">
                               <RichText data={item.text} />
                             </div>
                           )}
@@ -500,6 +524,11 @@ export async function ServiceDetailPageContent({
                       </a>
                     </div>
                   )}
+                  {Boolean(cardsBottomText) && (
+                    <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] text-center mt-10 max-[767px]:mt-8 max-[767px]:text-left">
+                      <RichText data={cardsBottomText as never} />
+                    </div>
+                  )}
                 </div>
               </section>
             )
@@ -509,14 +538,17 @@ export async function ServiceDetailPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             return (
-              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="max-w-[1100px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-10">{block.sectionTitle}</h2>}
                   <div className="grid grid-cols-2 gap-6 max-[767px]:grid-cols-1">
                     {block.items?.map((item, itemIndex) => (
-                      <div key={item.id || itemIndex} className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5`}>
+                      <div key={item.id || itemIndex} className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5`} style={getThemeBackgroundStyle(theme, 'cardAlt')}>
                         <div className="flex items-start gap-4">
-                          <div className="w-[42px] h-[42px] rounded-full bg-[#3c5557] text-white flex items-center justify-center text-[18px] font-semibold shrink-0">
+                          <div
+                            style={{ fontFamily: 'var(--second-font)' }}
+                            className="w-[42px] h-[42px] rounded-full bg-[#3c5557] text-white flex items-center justify-center text-[18px] font-semibold shrink-0"
+                          >
                             {itemIndex + 1}
                           </div>
                           <div className="min-w-0">
@@ -538,12 +570,14 @@ export async function ServiceDetailPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const faqColumns = block.columns === 'two'
+            const faqBottomText = (block as { bottomText?: unknown }).bottomText
+            const textWidthClass = (block as { fullWidthText?: boolean }).fullWidthText ? 'max-w-[1200px]' : 'max-w-[760px]'
             return (
-              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-10">{block.sectionTitle}</h2>}
                   {block.intro && (
-                    <div className="prose prose-lg max-w-[760px] mx-auto text-[#505a5e] mb-10 text-center">
+                    <div className={`prose prose-lg ${textWidthClass} mx-auto text-[#505a5e] mb-10 text-center max-[767px]:text-left`}>
                       <RichText data={block.intro} />
                     </div>
                   )}
@@ -555,6 +589,11 @@ export async function ServiceDetailPageContent({
                     iconClassName="text-[24px] text-[#3c5557]"
                     contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
                   />
+                  {Boolean(faqBottomText) && (
+                    <div className={`prose prose-lg ${textWidthClass} mx-auto text-[#505a5e] mt-10 text-center max-[767px]:text-left`}>
+                      <RichText data={faqBottomText as never} />
+                    </div>
+                  )}
                 </div>
               </section>
             )
@@ -574,12 +613,15 @@ export async function ServiceDetailPageContent({
             const overlayOpacity = Math.min(100, Math.max(0, overlayOpacityValue ?? 35)) / 100
             const textTone = getOverlayTextTone(backgroundImageUrl, overlayColor || '#000000', overlayOpacity)
             const isLightText = textTone === 'light'
+            const leftContent = (block as { leftContent?: unknown }).leftContent
+            const rightContent = (block as { rightContent?: unknown }).rightContent
 
             if (isSplitLayout) {
               return (
                 <section
                   key={block.id || idx}
                   className={`relative overflow-hidden ${compactSpacing ? 'py-[56px] max-[767px]:py-[40px]' : 'py-[110px] max-[767px]:py-[70px]'} ${backgroundImageUrl ? '' : theme.section}`}
+                  style={backgroundImageUrl ? undefined : getThemeBackgroundStyle(theme, 'section')}
                 >
                   {backgroundImageUrl && (
                     <>
@@ -594,35 +636,31 @@ export async function ServiceDetailPageContent({
                       </h2>
                     )}
                     {block.intro && (
-                      <div className={`prose prose-lg max-w-[820px] mx-auto text-center mb-12 ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                      <div className={`mobile-richtext-left prose prose-lg max-w-[820px] mx-auto text-center mb-12 max-[767px]:text-left ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                         <RichText data={block.intro} />
                       </div>
                     )}
                     <div className="grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-x-10 items-start max-[767px]:grid-cols-1 max-[767px]:gap-y-8">
                       <div className={backgroundImageUrl && isLightText ? 'text-white' : ''}>
                         <h3 className={`text-[24px] max-[767px]:text-[20px] font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.leftColumnTitle}</h3>
-                        <ul className="m-0 p-0 list-none flex flex-col gap-4">
-                          {block.leftItems?.map((item, itemIndex) => (
-                            <li key={item.id || itemIndex} className={`text-[16px] leading-relaxed pl-5 relative before:content-['•'] before:absolute before:left-0 before:top-0 ${backgroundImageUrl ? (isLightText ? 'text-white/90 before:text-white' : 'text-[#22282b] before:text-[#22282b]') : 'text-[#505a5e] before:text-[#3c5557]'}`}>
-                              {item.text}
-                            </li>
-                          ))}
-                        </ul>
+                        {Boolean(leftContent) && (
+                          <div className={`prose max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                            <RichText data={leftContent as never} />
+                          </div>
+                        )}
                       </div>
                       <div className={`w-px self-stretch ${backgroundImageUrl ? (isLightText ? 'bg-white/30 max-[767px]:hidden' : 'bg-[#22282b]/20 max-[767px]:hidden') : 'bg-[#3c5557]/15 max-[767px]:hidden'}`} />
                       <div className={backgroundImageUrl && isLightText ? 'text-white' : ''}>
                         <h3 className={`text-[24px] max-[767px]:text-[20px] font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.rightColumnTitle}</h3>
-                        <ul className="m-0 p-0 list-none flex flex-col gap-4">
-                          {block.rightItems?.map((item, itemIndex) => (
-                            <li key={item.id || itemIndex} className={`text-[16px] leading-relaxed pl-5 relative before:content-['•'] before:absolute before:left-0 before:top-0 ${backgroundImageUrl ? (isLightText ? 'text-white/90 before:text-white' : 'text-[#22282b] before:text-[#22282b]') : 'text-[#505a5e] before:text-[#3c5557]'}`}>
-                              {item.text}
-                            </li>
-                          ))}
-                        </ul>
+                        {Boolean(rightContent) && (
+                          <div className={`prose max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                            <RichText data={rightContent as never} />
+                          </div>
+                        )}
                       </div>
                     </div>
                     {block.conclusion && (
-                      <div className={`prose prose-lg max-w-[820px] mx-auto text-center mt-12 ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                      <div className={`mobile-richtext-left prose prose-lg max-w-[820px] mx-auto text-center mt-12 max-[767px]:text-left ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                         <RichText data={block.conclusion} />
                       </div>
                     )}
@@ -632,38 +670,34 @@ export async function ServiceDetailPageContent({
             }
 
             return (
-              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}>
+              <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="max-w-[1100px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-6">{block.sectionTitle}</h2>}
                   {block.intro && (
-                    <div className="prose prose-lg max-w-[900px] mx-auto text-[#505a5e] mb-10">
+                    <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] mb-10 max-[767px]:text-left">
                       <RichText data={block.intro} />
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-6 max-[767px]:grid-cols-1">
-                    <div className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`}>
+                    <div className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`} style={getThemeBackgroundStyle(theme, 'cardAlt')}>
                       <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-5">{block.leftColumnTitle}</h3>
-                      <ul className="m-0 p-0 list-none flex flex-col gap-3">
-                        {block.leftItems?.map((item, itemIndex) => (
-                          <li key={item.id || itemIndex} className="pl-6 relative text-[16px] leading-relaxed text-[#505a5e] before:content-['-'] before:absolute before:left-0 before:text-[#3c5557] before:font-semibold">
-                            {item.text}
-                          </li>
-                        ))}
-                      </ul>
+                      {Boolean(leftContent) && (
+                        <div className="prose max-w-none text-[#505a5e]">
+                          <RichText data={leftContent as never} />
+                        </div>
+                      )}
                     </div>
-                    <div className={`rounded-[24px] ${theme.panelAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`}>
+                    <div className={`rounded-[24px] ${theme.panelAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                       <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-5">{block.rightColumnTitle}</h3>
-                      <ul className="m-0 p-0 list-none flex flex-col gap-3">
-                        {block.rightItems?.map((item, itemIndex) => (
-                          <li key={item.id || itemIndex} className="pl-6 relative text-[16px] leading-relaxed text-[#505a5e] before:content-['-'] before:absolute before:left-0 before:text-[#3c5557] before:font-semibold">
-                            {item.text}
-                          </li>
-                        ))}
-                      </ul>
+                      {Boolean(rightContent) && (
+                        <div className="prose max-w-none text-[#505a5e]">
+                          <RichText data={rightContent as never} />
+                        </div>
+                      )}
                     </div>
                   </div>
                   {block.conclusion && (
-                    <div className="prose prose-lg max-w-[900px] mx-auto text-[#505a5e] mt-10">
+                    <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] mt-10 max-[767px]:text-left">
                       <RichText data={block.conclusion} />
                     </div>
                   )}
@@ -676,13 +710,14 @@ export async function ServiceDetailPageContent({
             const imageUrl = mediaUrl(block.image)
             const isImageLeft = (block.position || 'left') === 'left'
             const theme = getBlockTheme(block.theme)
+            const accordionBottomText = (block as { bottomText?: unknown }).bottomText
 
             return (
-              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
+              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                   {block.title && <h2 className="text-[28px] max-[767px]:text-[22px] font-semibold text-[#3c5557]">{block.title}</h2>}
                   {block.intro && (
                     <div className="prose max-w-none text-[#505a5e]">
@@ -696,6 +731,11 @@ export async function ServiceDetailPageContent({
                     iconClassName="text-[24px] text-[#3c5557]"
                     contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
                   />
+                  {Boolean(accordionBottomText) && (
+                    <div className="mobile-richtext-left prose max-w-none text-[#505a5e]">
+                      <RichText data={accordionBottomText as never} />
+                    </div>
+                  )}
                 </div>
               </section>
             )
@@ -716,7 +756,7 @@ export async function ServiceDetailPageContent({
             const isLightText = textTone === 'light'
 
             return (
-              <section key={block.id || idx} className={`relative overflow-hidden py-[100px] max-[767px]:py-[64px] ${backgroundImageUrl ? '' : theme.section}`}>
+              <section key={block.id || idx} className={`relative overflow-hidden py-[100px] max-[767px]:py-[64px] ${backgroundImageUrl ? '' : theme.section}`} style={backgroundImageUrl ? undefined : getThemeBackgroundStyle(theme, 'section')}>
                 {backgroundImageUrl && (
                   <>
                     <img src={backgroundImageUrl} alt={block.title || 'CTA background'} className="absolute inset-0 w-full h-full object-cover" />
@@ -751,11 +791,11 @@ export async function ServiceDetailPageContent({
             if (!pricingGroup) return null
 
             return (
-              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`}>
-                <div className={`w-1/2 max-[991px]:w-full h-[clamp(380px,42vw,620px)] max-[991px]:h-auto max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
-                  {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+              <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
+                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                  {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="absolute inset-0 w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, idx % 2 === 0 ? 'panel' : 'panelAlt')}>
                   <div className="flex flex-col gap-3">
                     <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
                       {pricingGroup.title}
@@ -810,7 +850,10 @@ export async function ServiceDetailPageContent({
                               )}
                             </div>
                             <div className="justify-self-end self-center max-[767px]:justify-self-start">
-                              <div className="inline-flex items-center px-0 py-0 text-[15px] max-[767px]:text-[14px] font-semibold text-[#3c5557] whitespace-nowrap">
+                              <div
+                                style={{ fontFamily: 'var(--second-font)' }}
+                                className="inline-flex items-center px-0 py-0 text-[15px] max-[767px]:text-[14px] font-semibold text-[#3c5557] whitespace-nowrap"
+                              >
                                 {item.pricePrefix ? `${item.pricePrefix} ` : ''}
                                 {item.price}
                               </div>
@@ -833,6 +876,7 @@ export async function ServiceDetailPageContent({
                 key={block.id || idx}
                 id="contact_us"
                 className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
+                style={getThemeBackgroundStyle(theme, 'panel')}
               >
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                   <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
@@ -852,25 +896,65 @@ export async function ServiceDetailPageContent({
                       {contacts.email && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.emailLabel}</span>
-                          <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.email}</a>
+                          <a
+                            href={`mailto:${contacts.email}`}
+                            style={{ fontFamily: 'var(--second-font)' }}
+                            className="text-[18px] font-medium hover:opacity-80 transition-opacity"
+                          >
+                            {contacts.email}
+                          </a>
                         </div>
                       )}
                       {contacts.phone && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.phoneLabel}</span>
-                          <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.phone}</a>
+                          <div className="flex items-center gap-4 flex-wrap">
+                            <div className="flex items-center gap-3">
+                              {contacts.telegram && (
+                                <a
+                                  href={contacts.telegram}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-center hover:scale-105 transition-transform"
+                                  title="Telegram"
+                                >
+                                  <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
+                                </a>
+                              )}
+                              {contacts.whatsapp && (
+                                <a
+                                  href={contacts.whatsapp}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-center hover:scale-105 transition-transform"
+                                  title="WhatsApp"
+                                >
+                                  <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-[18px] h-[18px]" />
+                                </a>
+                              )}
+                            </div>
+                            <div className="h-[18px] w-px bg-[#22282b]/15" />
+                            <a
+                              href={`tel:${contacts.phone.replace(/\s+/g, '')}`}
+                              style={{ fontFamily: 'var(--second-font)' }}
+                              className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity"
+                            >
+                              <img src="/icons/phone.svg" alt="Phone" className="w-[16px] h-[16px] opacity-85" />
+                              <span>{contacts.phone}</span>
+                            </a>
+                          </div>
                         </div>
                       )}
                       {contacts.address && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.addressLabel}</span>
-                          <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                          <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
                         </div>
                       )}
                       {contacts.transport && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.transportLabel}</span>
-                          <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                          <p style={{ fontFamily: 'var(--second-font)' }} className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
                         </div>
                       )}
                       {contacts.socialLinks && contacts.socialLinks.length > 0 && (
@@ -888,7 +972,7 @@ export async function ServiceDetailPageContent({
                     </div>
                   </div>
 
-                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                     {(globalContact?.formTitle || globalContact?.formDescription) && (
                       <div className="mb-6">
                         {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}

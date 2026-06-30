@@ -8,6 +8,12 @@ type ContactData = Partial<SiteContact> & {
   socialLinks?: SiteContact['socialLinks']
 }
 
+type BrandingData = {
+  logo?: number | { url?: string | null; alt?: string | null } | null
+  logoDark?: number | { url?: string | null; alt?: string | null } | null
+  logoLight?: number | { url?: string | null; alt?: string | null } | null
+}
+
 interface FooterProps {
   data: NonNullable<HeaderFooter['footer']> & {
     menuItems?: HeaderFooter['menuItems']
@@ -16,9 +22,10 @@ interface FooterProps {
   headerLogo?: number | Media | null
   currentLocale: string
   servicesPath?: string
+  branding?: BrandingData
 }
 
-export default function Footer({ data, contacts, headerLogo, currentLocale, servicesPath = '/services' }: FooterProps) {
+export default function Footer({ data, contacts, headerLogo, currentLocale, servicesPath = '/services', branding }: FooterProps) {
   const currentYear = new Date().getFullYear()
   const localizedServicesPath = buildLocalizedPath(currentLocale, servicesPath)
 
@@ -30,7 +37,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
   }
 
   // Get active logo URL and alt text
-  const activeLogo = data.logo || headerLogo
+  const activeLogo = branding?.logoDark || branding?.logo || branding?.logoLight || data.logo || headerLogo
   const logoUrl =
     activeLogo && typeof activeLogo === 'object' && activeLogo.url
       ? activeLogo.url
@@ -83,7 +90,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
     : (fallbackMenus[currentLocale] || fallbackMenus.es)
 
   return (
-    <footer className="bg-[#f4ede7] flex flex-col w-full">
+    <footer className="flex flex-col w-full" style={{ backgroundColor: 'var(--footer-bg-color)' }}>
       <div className="w-full py-[40px] px-0 max-[991px]:py-[20px] max-[991px]:px-[30px] border-t border-[#3c5557]">
         <div className="max-w-[1200px] mx-auto flex justify-between items-center gap-[24px] max-[1230px]:mx-[30px] max-[1230px]:w-auto max-[1100px]:mx-[20px] max-[1100px]:gap-[18px] max-[991px]:flex-col max-[991px]:gap-[30px]">
           <Link href={buildLocalizedPath(currentLocale, '/')} className="h-[50px] w-auto flex items-center justify-center">
@@ -158,14 +165,20 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
               })}
             </div>
           )}
-          <p className="text-[#909da2] text-[14px] text-center w-full hidden max-[991px]:block">
+          <p
+            style={{ fontFamily: 'var(--second-font)' }}
+            className="text-[#909da2] text-[14px] text-center w-full hidden max-[991px]:block"
+          >
             {data.copyright || `©2024-${currentYear} All right reserved`}
           </p>
         </div>
       </div>
       <div className="w-full py-[40px] px-0 max-[991px]:py-[20px] max-[991px]:px-[30px] border-t border-[#3c5557] flex justify-center max-[991px]:hidden">
         <div className="max-w-[1200px] mx-auto flex justify-center items-center max-[1230px]:mx-[30px] max-[1230px]:w-auto">
-          <p className="text-[#909da2] text-[14px] text-center w-full max-[991px]:hidden">
+          <p
+            style={{ fontFamily: 'var(--second-font)' }}
+            className="text-[#909da2] text-[14px] text-center w-full max-[991px]:hidden"
+          >
             {data.copyright || `©2024-${currentYear} All right reserved`}
           </p>
         </div>

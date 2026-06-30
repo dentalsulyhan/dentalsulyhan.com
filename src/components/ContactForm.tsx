@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, type ChangeEvent, type FormEvent } from 'react'
+import Script from 'next/script'
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 
 type FormOption = {
   id?: string | null
@@ -40,6 +41,25 @@ const initialState: FormState = {
   comment: '',
 }
 
+type TurnstileRenderOptions = {
+  sitekey: string
+  theme?: 'auto' | 'light' | 'dark'
+  language?: string
+  callback?: (token: string) => void
+  'expired-callback'?: () => void
+  'error-callback'?: () => void
+}
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: TurnstileRenderOptions) => string
+      reset: (widgetId?: string) => void
+      remove: (widgetId?: string) => void
+    }
+  }
+}
+
 export default function ContactForm({
   locale,
   fullNamePlaceholder,
@@ -54,10 +74,50 @@ export default function ContactForm({
   patientTypeOptions,
   referralSourceOptions,
 }: ContactFormProps) {
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  const isTurnstileEnabled = Boolean(turnstileSiteKey)
   const [formState, setFormState] = useState<FormState>(initialState)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitState, setSubmitState] = useState<'idle' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const turnstileRef = useRef<HTMLDivElement | null>(null)
+  const widgetIdRef = useRef<string | null>(null)
+
+  const captchaMessage =
+    locale === 'uk'
+      ? 'Підтвердіть, що ви не робот.'
+      : locale === 'en'
+        ? 'Please confirm that you are not a robot.'
+        : 'Confirme que no es un robot.'
+
+  const turnstileLanguage = locale === 'uk' ? 'uk' : locale === 'en' ? 'en' : 'es'
+
+  const renderTurnstile = () => {
+    if (!isTurnstileEnabled || !turnstileSiteKey || !turnstileRef.current || !window.turnstile || widgetIdRef.current) {
+      return
+    }
+
+    widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+      sitekey: turnstileSiteKey,
+      theme: 'auto',
+      language: turnstileLanguage,
+      callback: (token) => setTurnstileToken(token),
+      'expired-callback': () => setTurnstileToken(''),
+      'error-callback': () => setTurnstileToken(''),
+    })
+  }
+
+  useEffect(() => {
+    renderTurnstile()
+
+    return () => {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.remove(widgetIdRef.current)
+      }
+      widgetIdRef.current = null
+    }
+  }, [isTurnstileEnabled, turnstileSiteKey, turnstileLanguage])
 
   const handleChange =
     (field: keyof FormState) =>
@@ -75,6 +135,10 @@ export default function ContactForm({
     setMessage('')
 
     try {
+      if (isTurnstileEnabled && !turnstileToken) {
+        throw new Error(captchaMessage)
+      }
+
       const response = await fetch('/api/contact-form', {
         method: 'POST',
         headers: {
@@ -83,6 +147,7 @@ export default function ContactForm({
         body: JSON.stringify({
           ...formState,
           locale,
+          turnstileToken,
         }),
       })
 
@@ -93,9 +158,17 @@ export default function ContactForm({
       }
 
       setFormState(initialState)
+      setTurnstileToken('')
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(widgetIdRef.current)
+      }
       setSubmitState('success')
       setMessage(successMessage)
     } catch (error) {
+      if (widgetIdRef.current && window.turnstile) {
+        window.turnstile.reset(widgetIdRef.current)
+      }
+      setTurnstileToken('')
       setSubmitState('error')
       setMessage(error instanceof Error ? error.message : errorMessage)
     } finally {
@@ -104,7 +177,15 @@ export default function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <>
+      {isTurnstileEnabled && (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          strategy="afterInteractive"
+          onLoad={renderTurnstile}
+        />
+      )}
+      <form onSubmit={handleSubmit}>
       <div className="form-row">
         <input
           type="text"
@@ -166,6 +247,11 @@ export default function ContactForm({
           onChange={handleChange('comment')}
         />
       </div>
+      {isTurnstileEnabled && (
+        <div className="form-group">
+          <div ref={turnstileRef} />
+        </div>
+      )}
       <div className="form-group">
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? '...' : submitButtonLabel}
@@ -183,6 +269,7 @@ export default function ContactForm({
           <span>{message}</span>
         </div>
       )}
-    </form>
+      </form>
+    </>
   )
 }

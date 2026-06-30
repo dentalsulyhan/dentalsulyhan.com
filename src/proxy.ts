@@ -8,6 +8,7 @@ export function proxy(request: NextRequest) {
 
   if (
     pathname.includes('.') ||
+    pathname.startsWith('/.well-known/') ||
     pathname.startsWith('/assets/') ||
     pathname.startsWith('/icons/') ||
     pathname.startsWith('/fonts/')
@@ -48,5 +49,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|admin|api|favicon.ico).*)'],
+  matcher: ['/((?!_next|admin|api|favicon.ico|\\.well-known).*)'],
 }

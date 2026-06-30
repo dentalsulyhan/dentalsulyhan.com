@@ -10,6 +10,8 @@ function getMessages(locale: 'es' | 'en' | 'uk') {
     return {
       required: 'Будь ласка, заповніть усі обов’язкові поля.',
       email: 'Будь ласка, введіть коректний email.',
+      captcha: 'Підтвердіть, що ви не робот.',
+      captchaFailed: 'Перевірка Cloudflare Turnstile не пройдена.',
       failed: 'Не вдалося надіслати форму.',
     }
   }
@@ -18,6 +20,8 @@ function getMessages(locale: 'es' | 'en' | 'uk') {
     return {
       required: 'Please fill in all required fields.',
       email: 'Please enter a valid email address.',
+      captcha: 'Please confirm that you are not a robot.',
+      captchaFailed: 'Cloudflare Turnstile verification failed.',
       failed: 'Failed to submit the form.',
     }
   }
@@ -25,8 +29,37 @@ function getMessages(locale: 'es' | 'en' | 'uk') {
   return {
     required: 'Por favor, complete todos los campos obligatorios.',
     email: 'Por favor, introduzca un email valido.',
+    captcha: 'Confirme que no es un robot.',
+    captchaFailed: 'La verificacion de Cloudflare Turnstile ha fallado.',
     failed: 'No se pudo enviar el formulario.',
   }
+}
+
+async function verifyTurnstileToken(token: string, remoteIp?: string | null) {
+  const secret = process.env.TURNSTILE_SECRET_KEY
+  if (!secret) return true
+
+  const body = new URLSearchParams({
+    secret,
+    response: token,
+  })
+
+  if (remoteIp) {
+    body.set('remoteip', remoteIp)
+  }
+
+  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  })
+
+  if (!response.ok) return false
+
+  const result = (await response.json()) as { success?: boolean }
+  return Boolean(result.success)
 }
 
 function applyTemplate(
@@ -132,6 +165,7 @@ export async function POST(request: Request) {
     const patientType = typeof body.patientType === 'string' ? body.patientType.trim() : ''
     const referralSource = typeof body.referralSource === 'string' ? body.referralSource.trim() : ''
     const comment = typeof body.comment === 'string' ? body.comment.trim() : ''
+    const turnstileToken = typeof body.turnstileToken === 'string' ? body.turnstileToken.trim() : ''
     locale = body.locale === 'en' || body.locale === 'uk' || body.locale === 'es' ? body.locale : 'es'
     const messages = getMessages(locale)
     const templateData = {
@@ -150,6 +184,20 @@ export async function POST(request: Request) {
 
     if (!emailPattern.test(email)) {
       return Response.json({ error: messages.email }, { status: 400 })
+    }
+
+    if (process.env.TURNSTILE_SECRET_KEY) {
+      if (!turnstileToken) {
+        return Response.json({ error: messages.captcha }, { status: 400 })
+      }
+
+      const forwardedFor = request.headers.get('x-forwarded-for')
+      const remoteIp = forwardedFor ? forwardedFor.split(',')[0]?.trim() : null
+      const isValidTurnstile = await verifyTurnstileToken(turnstileToken, remoteIp)
+
+      if (!isValidTurnstile) {
+        return Response.json({ error: messages.captchaFailed }, { status: 400 })
+      }
     }
 
     await payload.create({

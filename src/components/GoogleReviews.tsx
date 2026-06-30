@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
+import { DEFAULT_LOCALE, isSupportedLocale } from '@/lib/localizedRouting'
 
 type Locale = 'es' | 'en' | 'uk'
 
@@ -133,7 +134,7 @@ function formatRelativeDate(dateString: string | null | undefined, locale: Local
   const months = Math.floor(days / 30)
   if (months < 12) {
     if (locale === 'uk') return `${months} міс. тому`
-    if (locale === 'es') return `hace ${months} мес.`
+    if (locale === 'es') return `hace ${months} mes.`
     return `${months}mo ago`
   }
 
@@ -146,14 +147,23 @@ function formatRelativeDate(dateString: string | null | undefined, locale: Local
 export default function GoogleReviews({
   desktopSlides = 2,
   locale = 'en',
+  summaryTitle,
+  reviewsLabel,
+  writeReviewLabel,
+  writeReviewLink,
 }: {
   desktopSlides?: number
   locale?: Locale
+  summaryTitle?: string | null
+  reviewsLabel?: string | null
+  writeReviewLabel?: string | null
+  writeReviewLink?: string | null
 }) {
   const [data, setData] = useState<WidgetResponse['widget'] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  const t = copy[locale]
+  const safeLocale: Locale = isSupportedLocale(locale) ? locale : DEFAULT_LOCALE
+  const t = copy[safeLocale]
   const [prevEl, setPrevEl] = useState<HTMLButtonElement | null>(null)
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null)
 
@@ -228,10 +238,18 @@ export default function GoogleReviews({
 
             <div className="flex items-end gap-2">
               <div className="flex items-end gap-1">
-                <span className="text-[32px] font-semibold leading-none tracking-[-0.04em] text-[#22282b]">
+                <span
+                  style={{ fontFamily: 'var(--second-font)' }}
+                  className="text-[32px] font-semibold leading-none tracking-[-0.04em] text-[#22282b]"
+                >
                   {summary.rating?.toFixed(1)}
                 </span>
-                <span className="pb-[3px] text-[13px] text-[#8b8c84]">/ 5</span>
+                <span
+                  style={{ fontFamily: 'var(--second-font)' }}
+                  className="pb-[3px] text-[13px] text-[#8b8c84]"
+                >
+                  / 5
+                </span>
               </div>
               <div className="pb-[4px]">
                 <StarRating rating={Math.round(summary.rating || 5)} />
@@ -240,22 +258,23 @@ export default function GoogleReviews({
 
             <div className="space-y-0.5">
               <p className="text-[16px] font-medium leading-tight text-[#22282b]">
-                {data?.config?.title || 'Patient reviews'}
+                {summaryTitle || data?.config?.title || 'Patient reviews'}
               </p>
               <p className="text-[13px] leading-relaxed text-[#72756f]">
-                {summary.reviewsCount} {t.googleReviews}
+                <span style={{ fontFamily: 'var(--second-font)' }}>{summary.reviewsCount}</span>{' '}
+                {reviewsLabel || t.googleReviews}
               </p>
             </div>
           </div>
 
-          {summary.writeAReviewUri && (
+          {(writeReviewLink || summary.writeAReviewUri) && (
             <a
-              href={summary.writeAReviewUri}
+              href={writeReviewLink || summary.writeAReviewUri || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="site-button site-button--primary min-w-0 w-full text-center mt-1"
             >
-              {t.writeReview}
+              {writeReviewLabel || t.writeReview}
             </a>
           )}
         </div>
@@ -285,7 +304,7 @@ export default function GoogleReviews({
             const photoUrl = review.author?.avatarUrl || null
             const rating = review.rating?.value || 5
             const comment = review.text?.trim() || review.originalText?.trim() || t.noText
-            const publishedAt = formatRelativeDate(review.publishedAt, locale)
+            const publishedAt = formatRelativeDate(review.publishedAt, safeLocale)
 
             return (
               <SwiperSlide key={review.id || index} className="!h-auto">
@@ -313,7 +332,12 @@ export default function GoogleReviews({
                         <div className="mt-1 flex items-center gap-2">
                           <StarRating rating={rating} />
                           {publishedAt && (
-                            <span className="text-[12px] text-[#8a9397]">{publishedAt}</span>
+                            <span
+                              style={{ fontFamily: 'var(--second-font)' }}
+                              className="text-[12px] text-[#8a9397]"
+                            >
+                              {publishedAt}
+                            </span>
                           )}
                         </div>
                       </div>

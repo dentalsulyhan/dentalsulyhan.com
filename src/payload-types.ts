@@ -172,6 +172,8 @@ export interface User {
  */
 export interface Media {
   id: number;
+  mediaCategory?: ('general' | 'site' | 'services' | 'team' | 'promotions' | 'blog' | 'branding') | null;
+  prefix?: string | null;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -463,6 +465,24 @@ export interface Page {
              */
             compactSpacing?: boolean | null;
             sectionTitle?: string | null;
+            intro?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            splitHeaderLayout?: boolean | null;
+            summaryTitle?: string | null;
+            reviewsLabel?: string | null;
             /**
              * Paste the review widget code or placeholder markup. Leave empty to use default Google Reviews component.
              */
@@ -541,6 +561,22 @@ export interface Page {
              * Supports bold, italic and underline formatting.
              */
             content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            fullWidthContent?: boolean | null;
+            bottomText?: {
               root: {
                 type: string;
                 children: {
@@ -885,6 +921,22 @@ export interface Service {
               };
               [k: string]: unknown;
             } | null;
+            fullWidthContent?: boolean | null;
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             backgroundImage?: (number | null) | Media;
             overlayColor?: string | null;
             overlayOpacity?: number | null;
@@ -957,9 +1009,68 @@ export interface Service {
               };
               [k: string]: unknown;
             } | null;
+            fullWidthText?: boolean | null;
             itemLayout?: ('column' | 'row') | null;
             columns?: ('2' | '3' | '4') | null;
             incompleteRowAlignment?: ('center' | 'start') | null;
+            items: {
+              icon?: (number | null) | Media;
+              title?: string | null;
+              text?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+              id?: string | null;
+            }[];
+            buttonText?: string | null;
+            buttonLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'advantages';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Choose the visual style for the block button.
+             */
+            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
+            itemLayout?: ('column' | 'row') | null;
+            columns?: ('2' | '3' | '4') | null;
+            incompleteRowAlignment?: ('center' | 'start') | null;
+            intro?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             items: {
               icon?: (number | null) | Media;
               title?: string | null;
@@ -999,49 +1110,6 @@ export interface Service {
             } | null;
             id?: string | null;
             blockName?: string | null;
-            blockType: 'advantages';
-          }
-        | {
-            /**
-             * Choose one of the base background color presets for this block.
-             */
-            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
-            /**
-             * Choose the visual style for the block button.
-             */
-            buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
-            /**
-             * Use smaller vertical padding when the block has only a title or a short intro.
-             */
-            compactSpacing?: boolean | null;
-            sectionTitle?: string | null;
-            itemLayout?: ('column' | 'row') | null;
-            columns?: ('2' | '3' | '4') | null;
-            incompleteRowAlignment?: ('center' | 'start') | null;
-            items: {
-              icon?: (number | null) | Media;
-              title?: string | null;
-              text?: {
-                root: {
-                  type: string;
-                  children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                  }[];
-                  direction: ('ltr' | 'rtl') | null;
-                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                  indent: number;
-                  version: number;
-                };
-                [k: string]: unknown;
-              } | null;
-              id?: string | null;
-            }[];
-            buttonText?: string | null;
-            buttonLink?: string | null;
-            id?: string | null;
-            blockName?: string | null;
             blockType: 'cards';
           }
         | {
@@ -1054,6 +1122,22 @@ export interface Service {
              */
             compactSpacing?: boolean | null;
             sectionTitle?: string | null;
+            fullWidthText?: boolean | null;
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             items: {
               title: string;
               text: {
@@ -1103,6 +1187,21 @@ export interface Service {
               [k: string]: unknown;
             } | null;
             columns?: ('one' | 'two') | null;
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             items: {
               heading: string;
               content: {
@@ -1156,15 +1255,37 @@ export interface Service {
             overlayColor?: string | null;
             overlayOpacity?: number | null;
             leftColumnTitle: string;
-            leftItems: {
-              text: string;
-              id?: string | null;
-            }[];
+            leftContent: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
             rightColumnTitle: string;
-            rightItems: {
-              text: string;
-              id?: string | null;
-            }[];
+            rightContent: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
             conclusion?: {
               root: {
                 type: string;
@@ -1226,6 +1347,21 @@ export interface Service {
               };
               id?: string | null;
             }[];
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'contentAccordion';
@@ -1435,6 +1571,8 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  mediaCategory?: T;
+  prefix?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1592,6 +1730,10 @@ export interface PagesSelect<T extends boolean = true> {
               buttonStyle?: T;
               compactSpacing?: T;
               sectionTitle?: T;
+              intro?: T;
+              splitHeaderLayout?: T;
+              summaryTitle?: T;
+              reviewsLabel?: T;
               embedCode?: T;
               desktopSlides?: T;
               buttonText?: T;
@@ -1632,6 +1774,8 @@ export interface PagesSelect<T extends boolean = true> {
               compactSpacing?: T;
               title?: T;
               content?: T;
+              fullWidthContent?: T;
+              bottomText?: T;
               backgroundImage?: T;
               overlayColor?: T;
               overlayOpacity?: T;
@@ -1773,6 +1917,8 @@ export interface ServicesSelect<T extends boolean = true> {
               compactSpacing?: T;
               title?: T;
               content?: T;
+              fullWidthContent?: T;
+              bottomText?: T;
               backgroundImage?: T;
               overlayColor?: T;
               overlayOpacity?: T;
@@ -1804,9 +1950,34 @@ export interface ServicesSelect<T extends boolean = true> {
               compactSpacing?: T;
               sectionTitle?: T;
               subtitle?: T;
+              fullWidthText?: T;
               itemLayout?: T;
               columns?: T;
               incompleteRowAlignment?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cards?:
+          | T
+          | {
+              theme?: T;
+              buttonStyle?: T;
+              compactSpacing?: T;
+              sectionTitle?: T;
+              itemLayout?: T;
+              columns?: T;
+              incompleteRowAlignment?: T;
+              intro?: T;
               items?:
                 | T
                 | {
@@ -1821,35 +1992,14 @@ export interface ServicesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        cards?:
-          | T
-          | {
-              theme?: T;
-              buttonStyle?: T;
-              compactSpacing?: T;
-              sectionTitle?: T;
-              itemLayout?: T;
-              columns?: T;
-              incompleteRowAlignment?: T;
-              items?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    text?: T;
-                    id?: T;
-                  };
-              buttonText?: T;
-              buttonLink?: T;
-              id?: T;
-              blockName?: T;
-            };
         steps?:
           | T
           | {
               theme?: T;
               compactSpacing?: T;
               sectionTitle?: T;
+              fullWidthText?: T;
+              bottomText?: T;
               items?:
                 | T
                 | {
@@ -1868,6 +2018,7 @@ export interface ServicesSelect<T extends boolean = true> {
               sectionTitle?: T;
               intro?: T;
               columns?: T;
+              bottomText?: T;
               items?:
                 | T
                 | {
@@ -1890,19 +2041,9 @@ export interface ServicesSelect<T extends boolean = true> {
               overlayColor?: T;
               overlayOpacity?: T;
               leftColumnTitle?: T;
-              leftItems?:
-                | T
-                | {
-                    text?: T;
-                    id?: T;
-                  };
+              leftContent?: T;
               rightColumnTitle?: T;
-              rightItems?:
-                | T
-                | {
-                    text?: T;
-                    id?: T;
-                  };
+              rightContent?: T;
               conclusion?: T;
               id?: T;
               blockName?: T;
@@ -1922,6 +2063,7 @@ export interface ServicesSelect<T extends boolean = true> {
                     content?: T;
                     id?: T;
                   };
+              bottomText?: T;
               id?: T;
               blockName?: T;
             };
@@ -2045,6 +2187,10 @@ export interface DesignSetting {
     /**
      * Use HEX, rgb(), rgba(), or any valid CSS color value.
      */
+    footerBackground?: string | null;
+    /**
+     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     */
     mainText?: string | null;
     /**
      * Use HEX, rgb(), rgba(), or any valid CSS color value.
@@ -2068,6 +2214,8 @@ export interface DesignSetting {
     placeholderText?: string | null;
   };
   typography?: {
+    mainFontFamily?: ('"Raleway", sans-serif' | '"AvenirNextLTPro", sans-serif' | '"Inter", sans-serif') | null;
+    secondFontFamily?: ('"AvenirNextLTPro", sans-serif' | '"Raleway", sans-serif' | '"Inter", sans-serif') | null;
     h1DesktopSize?: string | null;
     h1DesktopLineHeight?: string | null;
     h1MobileSize?: string | null;
@@ -2184,99 +2332,99 @@ export interface DesignSetting {
   };
   themes?: {
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: hero blocks, text sections, reviews section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     whiteSection?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: secondary full-width section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     whiteSectionAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: gallery text side, image + text blocks, contact sections. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     whitePanel?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: alternating split blocks and form wrappers. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     whitePanelAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: FAQ items, accordion items, compact cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     whiteCard?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: steps cards, comparison cards, secondary cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     whiteCardAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: hero blocks, text sections, reviews section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     softSection?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: secondary full-width section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     softSectionAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: gallery text side, image + text blocks, contact sections. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     softPanel?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: alternating split blocks and form wrappers. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     softPanelAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: FAQ items, accordion items, compact cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     softCard?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: steps cards, comparison cards, secondary cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     softCardAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: hero blocks, text sections, reviews section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sandSection?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: secondary full-width section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sandSectionAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: gallery text side, image + text blocks, contact sections. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sandPanel?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: alternating split blocks and form wrappers. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sandPanelAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: FAQ items, accordion items, compact cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sandCard?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: steps cards, comparison cards, secondary cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sandCardAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: hero blocks, text sections, reviews section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sageSection?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: secondary full-width section backgrounds. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sageSectionAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: gallery text side, image + text blocks, contact sections. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sagePanel?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: alternating split blocks and form wrappers. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sagePanelAlt?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: FAQ items, accordion items, compact cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sageCard?: string | null;
     /**
-     * Use HEX, rgb(), rgba(), or any valid CSS color value.
+     * Used in: steps cards, comparison cards, secondary cards. Accepts HEX, rgb(), rgba(), or any valid CSS color.
      */
     sageCardAlt?: string | null;
   };
@@ -2299,12 +2447,22 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
-  header?: {
+  branding?: {
+    favicon?: (number | null) | Media;
     logo?: (number | null) | Media;
+    /**
+     * Use on dark backgrounds, such as the footer.
+     */
+    logoLight?: (number | null) | Media;
+    /**
+     * Use on light backgrounds, such as the header.
+     */
+    logoDark?: (number | null) | Media;
+  };
+  header?: {
     menuButtonLabel?: string | null;
   };
   footer?: {
-    logo?: (number | null) | Media;
     copyright?: string | null;
   };
   contacts?: {
@@ -2658,6 +2816,7 @@ export interface DesignSettingsSelect<T extends boolean = true> {
     | T
     | {
         mainBackground?: T;
+        footerBackground?: T;
         mainText?: T;
         mutedText?: T;
         accent?: T;
@@ -2668,6 +2827,8 @@ export interface DesignSettingsSelect<T extends boolean = true> {
   typography?:
     | T
     | {
+        mainFontFamily?: T;
+        secondFontFamily?: T;
         h1DesktopSize?: T;
         h1DesktopLineHeight?: T;
         h1MobileSize?: T;
@@ -2768,16 +2929,22 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         link?: T;
         id?: T;
       };
+  branding?:
+    | T
+    | {
+        favicon?: T;
+        logo?: T;
+        logoLight?: T;
+        logoDark?: T;
+      };
   header?:
     | T
     | {
-        logo?: T;
         menuButtonLabel?: T;
       };
   footer?:
     | T
     | {
-        logo?: T;
         copyright?: T;
       };
   contacts?:

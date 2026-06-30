@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import ContactForm from '../../../../components/ContactForm'
 import type { Media, Page, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
-import { getBlockTheme, getButtonStyle } from '@/lib/blockThemes'
+import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 
@@ -177,9 +177,9 @@ export async function ServicesListingPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const theme = getBlockTheme(block.theme)
             return (
-              <section key={block.id || idx} className={`pt-[10px] ${theme.section}`}>
+              <section key={block.id || idx} className={`pt-[10px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="flex items-stretch min-h-[400px] max-[991px]:min-h-0 max-[991px]:flex-col">
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                     <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
                       {block.title}
                     </h1>
@@ -217,7 +217,7 @@ export async function ServicesListingPageContent({
                     {imageUrl ? <img src={imageUrl} alt={block.title || `Services ${idx + 1}`} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                   {block.title && <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>}
                   <div className="prose max-w-none text-[#22282b]">
                     <RichText data={block.text} />
@@ -238,6 +238,7 @@ export async function ServicesListingPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
+            const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
               ? (block as { overlayColor?: string }).overlayColor
@@ -250,10 +251,11 @@ export async function ServicesListingPageContent({
               <section
                 key={block.id || idx}
                 className={backgroundImageUrl ? 'relative overflow-hidden' : compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`}
+                style={backgroundImageUrl ? undefined : getThemeBackgroundStyle(theme, 'section')}
               >
                 {backgroundImageUrl && (
-                  <>
-                    <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
+                <>
+                  <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
                     <div
                       className="absolute inset-0"
                       style={{
@@ -261,21 +263,26 @@ export async function ServicesListingPageContent({
                         opacity: overlayOpacity,
                       }}
                     />
-                  </>
-                )}
-                <div className={`relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
+                </>
+              )}
+                <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                   {block.title && (
                     <h2
                       className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center ${
-                        block.content ? 'mb-6' : 'mb-0'
+                        block.content || block.bottomText ? 'mb-6' : 'mb-0'
                       }`}
                     >
                       {block.title}
                     </h2>
                   )}
                   {block.content && (
-                    <div className="prose prose-lg max-w-none text-[#22282b]">
+                    <div className="prose prose-lg max-w-none text-[#22282b] max-[767px]:text-left">
                       <RichText data={block.content} />
+                    </div>
+                  )}
+                  {block.bottomText && (
+                    <div className="prose prose-lg max-w-none text-[#22282b] mt-8 max-[767px]:text-left">
+                      <RichText data={block.bottomText} />
                     </div>
                   )}
                   {block.buttonText && (
@@ -303,7 +310,7 @@ export async function ServicesListingPageContent({
                 <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
-                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+                <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, idx % 2 === 0 ? 'panel' : 'panelAlt')}>
                   <div className="flex flex-col gap-3">
                     <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
                       {pricingGroup.title}
@@ -358,7 +365,10 @@ export async function ServicesListingPageContent({
                                 )}
                               </div>
                               <div className="justify-self-end self-center max-[767px]:justify-self-start">
-                                <div className="inline-flex items-center px-0 py-0 text-[15px] max-[767px]:text-[14px] font-semibold text-[#3c5557] whitespace-nowrap">
+                                <div
+                                  style={{ fontFamily: 'var(--second-font)' }}
+                                  className="inline-flex items-center px-0 py-0 text-[15px] max-[767px]:text-[14px] font-semibold text-[#3c5557] whitespace-nowrap"
+                                >
                                   {item.pricePrefix ? `${item.pricePrefix} ` : ''}
                                   {item.price}
                                 </div>
@@ -381,6 +391,7 @@ export async function ServicesListingPageContent({
                 key={block.id || idx}
                 id="contact_us"
                 className={compactSpacing ? `${theme.panel} py-[64px] max-[767px]:py-[44px] contact_us` : `${theme.panel} py-[100px] max-[767px]:py-[64px] contact_us`}
+                style={getThemeBackgroundStyle(theme, 'panel')}
               >
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] flex gap-[80px] max-[1100px]:gap-[40px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                   <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
@@ -400,25 +411,65 @@ export async function ServicesListingPageContent({
                       {contacts.email && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.emailLabel}</span>
-                          <a href={`mailto:${contacts.email}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.email}</a>
+                          <a
+                            href={`mailto:${contacts.email}`}
+                            style={{ fontFamily: 'var(--second-font)' }}
+                            className="text-[18px] font-medium hover:opacity-80 transition-opacity"
+                          >
+                            {contacts.email}
+                          </a>
                         </div>
                       )}
                       {contacts.phone && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.phoneLabel}</span>
-                          <a href={`tel:${contacts.phone.replace(/\s+/g, '')}`} className="text-[18px] font-medium hover:opacity-80 transition-opacity">{contacts.phone}</a>
+                          <div className="flex items-center gap-4 flex-wrap">
+                            <div className="flex items-center gap-3">
+                              {contacts.telegram && (
+                                <a
+                                  href={contacts.telegram}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-center hover:scale-105 transition-transform"
+                                  title="Telegram"
+                                >
+                                  <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
+                                </a>
+                              )}
+                              {contacts.whatsapp && (
+                                <a
+                                  href={contacts.whatsapp}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-center hover:scale-105 transition-transform"
+                                  title="WhatsApp"
+                                >
+                                  <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-[18px] h-[18px]" />
+                                </a>
+                              )}
+                            </div>
+                            <div className="h-[18px] w-px bg-[#22282b]/15" />
+                            <a
+                              href={`tel:${contacts.phone.replace(/\s+/g, '')}`}
+                              style={{ fontFamily: 'var(--second-font)' }}
+                              className="flex items-center gap-[8px] text-[18px] font-medium hover:opacity-80 transition-opacity"
+                            >
+                              <img src="/icons/phone.svg" alt="Phone" className="w-[16px] h-[16px] opacity-85" />
+                              <span>{contacts.phone}</span>
+                            </a>
+                          </div>
                         </div>
                       )}
                       {contacts.address && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.addressLabel}</span>
-                          <p className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                          <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
                         </div>
                       )}
                       {contacts.transport && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.transportLabel}</span>
-                          <p className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
+                          <p style={{ fontFamily: 'var(--second-font)' }} className="text-[15px] text-[#505a5e] leading-relaxed">{contacts.transport}</p>
                         </div>
                       )}
                       {contacts.socialLinks && contacts.socialLinks.length > 0 && (
@@ -436,7 +487,7 @@ export async function ServicesListingPageContent({
                     </div>
                   </div>
 
-                  <div className={`w-1/2 max-[991px]:w-full ${theme.card} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`}>
+                  <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                     {(globalContact?.formTitle || globalContact?.formDescription) && (
                       <div className="mb-6">
                         {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}

@@ -10,6 +10,12 @@ type ContactData = Partial<SiteContact> & {
   socialLinks?: SiteContact['socialLinks']
 }
 
+type BrandingData = {
+  logo?: number | { url?: string | null; alt?: string | null } | null
+  logoDark?: number | { url?: string | null; alt?: string | null } | null
+  logoLight?: number | { url?: string | null; alt?: string | null } | null
+}
+
 interface HeaderProps {
   data: NonNullable<HeaderFooter['header']> & {
     menuItems?: HeaderFooter['menuItems']
@@ -17,9 +23,10 @@ interface HeaderProps {
   contacts: ContactData
   currentLocale: string
   servicesPath?: string
+  branding?: BrandingData
 }
 
-export default function Header({ data, contacts, currentLocale, servicesPath = '/services' }: HeaderProps) {
+export default function Header({ data, contacts, currentLocale, servicesPath = '/services', branding }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [localeLinks, setLocaleLinks] = useState<Record<string, string> | null>(null)
@@ -98,13 +105,14 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
   }, [pathname])
 
   // Get active logo URL and alt text
+  const headerLogo = branding?.logoDark || branding?.logo || data?.logo
   const logoUrl =
-    data?.logo && typeof data.logo === 'object' && data.logo.url
-      ? data.logo.url
+    headerLogo && typeof headerLogo === 'object' && headerLogo.url
+      ? headerLogo.url
       : '/logo-sulyhan.svg'
   const logoAlt =
-    data?.logo && typeof data.logo === 'object' && data.logo.alt
-      ? data.logo.alt
+    headerLogo && typeof headerLogo === 'object' && headerLogo.alt
+      ? headerLogo.alt
       : 'Sulyhan'
 
   // Define localized menu items based on your exact layout translations
@@ -155,6 +163,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
   return (
     <header
+      style={{ fontFamily: 'var(--main-font)' }}
       className={`fixed top-0 left-0 w-full z-[1000] border-b transition-all duration-500 ${
         isScrolled
           ? 'bg-[#fafafa]/95 shadow-[0_4px_20px_rgba(34,40,43,0.05)] border-[#22282b]/[0.08]'
@@ -217,6 +226,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
                   <li key={loc} className="flex items-center">
                     <Link
                       href={switchLanguage(loc)}
+                      style={{ fontFamily: 'var(--second-font)' }}
                       className={`inline-flex items-center h-[20px] leading-none text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
                         currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
                       }`}
@@ -262,7 +272,10 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
           <div className="flex items-center border-[#22282b]/15 min-[992px]:border-l min-[992px]:pl-[12px] h-[20px]">
             <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b]">
               <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
-              <span className="text-[14px] max-[1100px]:hidden font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity">
+              <span
+                style={{ fontFamily: 'var(--second-font)' }}
+                className="text-[14px] max-[1100px]:hidden font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity"
+              >
                 {phone}
               </span>
             </a>
@@ -277,6 +290,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
                   <li key={loc} className="flex items-center">
                     <Link
                       href={switchLanguage(loc)}
+                      style={{ fontFamily: 'var(--second-font)' }}
                       className={`inline-flex items-center h-[20px] leading-none text-[12px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
                         isActive ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:text-[#22282b] hover:opacity-100'
                       }`}

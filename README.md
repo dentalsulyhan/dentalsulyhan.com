@@ -65,3 +65,74 @@ That's it! The Docker instance will help you get up and running quickly while al
 ## Questions
 
 If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+# Cloudflare Turnstile
+
+The contact form already supports optional Cloudflare Turnstile.
+
+To enable it, add:
+
+```env
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_public_site_key
+TURNSTILE_SECRET_KEY=your_private_secret_key
+```
+
+You also need to configure the allowed site hostnames in the client's Cloudflare Turnstile widget.
+
+## Vercel setup
+
+Recommended setup:
+
+### Preview / testing on Vercel
+
+Use Cloudflare Turnstile test keys in the Vercel `Preview` environment:
+
+```env
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+```
+
+These test keys work on any domain, including temporary preview URLs.
+
+### Production
+
+Use the real client keys only in the Vercel `Production` environment:
+
+```env
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_real_site_key
+TURNSTILE_SECRET_KEY=your_real_secret_key
+```
+
+In the Cloudflare Turnstile widget, allow the real production hostnames, for example:
+
+- `dentalsulyhan.com`
+- `www.dentalsulyhan.com`
+
+If needed, you can also add a staging hostname there later.
+
+# Cloudflare R2
+
+The project is prepared for optional Cloudflare R2 media storage.
+
+If the following environment variables are set, the `media` collection will store files in R2 instead of local `public/media`:
+
+```env
+R2_BUCKET=your-bucket-name
+R2_ACCOUNT_ID=your-cloudflare-account-id
+R2_ACCESS_KEY_ID=your-r2-access-key-id
+R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
+R2_REGION=auto
+R2_PUBLIC_BASE_URL=https://cdn.example.com
+```
+
+Optional:
+
+```env
+R2_ENDPOINT=https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+```
+
+Notes:
+
+- `R2_PUBLIC_BASE_URL` should be the public bucket URL or a custom CDN/domain that serves your media files.
+- `R2_ENDPOINT` must be the account S3 API endpoint only, without bucket name in the path.
+- If the full R2 env set is not present, the project continues to use local storage.
+- No database migration is required for switching media storage.

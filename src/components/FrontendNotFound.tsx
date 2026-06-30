@@ -103,7 +103,7 @@ export default function FrontendNotFound({ locale: forcedLocale, splitContent }:
                 <div className={`w-full h-full ${isContained ? 'rounded-[18px] bg-[#e8e0d8]' : 'bg-[#e8e0d8]'}`} />
               )}
             </div>
-            <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
+            <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 bg-[#fbf6f3] ${isImageLeft ? 'order-2 px-[72px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 px-[72px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`}>
               <h1 className="text-[34px] max-[767px]:text-[26px] font-semibold leading-tight text-[#22282b]">
                 {splitContent.title || t.title}
               </h1>

@@ -118,50 +118,72 @@ type ThemePalette = {
   sectionAltColor: string
   panel: string
   panelAlt: string
+  panelColor: string
+  panelAltColor: string
   card: string
   cardAlt: string
+  cardColor: string
+  cardAltColor: string
 }
+
+type ThemeBackgroundTarget = 'section' | 'sectionAlt' | 'panel' | 'panelAlt' | 'card' | 'cardAlt'
 
 const blockThemes: Record<BlockThemeKey, ThemePalette> = {
   white: {
-    section: 'bg-[var(--theme-white-section)]',
-    sectionAlt: 'bg-[var(--theme-white-section-alt)]',
+    section: 'theme-section-white',
+    sectionAlt: 'theme-section-white-alt',
     sectionColor: 'var(--theme-white-section)',
     sectionAltColor: 'var(--theme-white-section-alt)',
-    panel: 'bg-[var(--theme-white-panel)]',
-    panelAlt: 'bg-[var(--theme-white-panel-alt)]',
-    card: 'bg-[var(--theme-white-card)]',
-    cardAlt: 'bg-[var(--theme-white-card-alt)]',
+    panel: 'theme-panel-white',
+    panelAlt: 'theme-panel-white-alt',
+    panelColor: 'var(--theme-white-panel)',
+    panelAltColor: 'var(--theme-white-panel-alt)',
+    card: 'theme-card-white',
+    cardAlt: 'theme-card-white-alt',
+    cardColor: 'var(--theme-white-card)',
+    cardAltColor: 'var(--theme-white-card-alt)',
   },
   soft: {
-    section: 'bg-[var(--theme-soft-section)]',
-    sectionAlt: 'bg-[var(--theme-soft-section-alt)]',
+    section: 'theme-section-soft',
+    sectionAlt: 'theme-section-soft-alt',
     sectionColor: 'var(--theme-soft-section)',
     sectionAltColor: 'var(--theme-soft-section-alt)',
-    panel: 'bg-[var(--theme-soft-panel)]',
-    panelAlt: 'bg-[var(--theme-soft-panel-alt)]',
-    card: 'bg-[var(--theme-soft-card)]',
-    cardAlt: 'bg-[var(--theme-soft-card-alt)]',
+    panel: 'theme-panel-soft',
+    panelAlt: 'theme-panel-soft-alt',
+    panelColor: 'var(--theme-soft-panel)',
+    panelAltColor: 'var(--theme-soft-panel-alt)',
+    card: 'theme-card-soft',
+    cardAlt: 'theme-card-soft-alt',
+    cardColor: 'var(--theme-soft-card)',
+    cardAltColor: 'var(--theme-soft-card-alt)',
   },
   sand: {
-    section: 'bg-[var(--theme-sand-section)]',
-    sectionAlt: 'bg-[var(--theme-sand-section-alt)]',
+    section: 'theme-section-sand',
+    sectionAlt: 'theme-section-sand-alt',
     sectionColor: 'var(--theme-sand-section)',
     sectionAltColor: 'var(--theme-sand-section-alt)',
-    panel: 'bg-[var(--theme-sand-panel)]',
-    panelAlt: 'bg-[var(--theme-sand-panel-alt)]',
-    card: 'bg-[var(--theme-sand-card)]',
-    cardAlt: 'bg-[var(--theme-sand-card-alt)]',
+    panel: 'theme-panel-sand',
+    panelAlt: 'theme-panel-sand-alt',
+    panelColor: 'var(--theme-sand-panel)',
+    panelAltColor: 'var(--theme-sand-panel-alt)',
+    card: 'theme-card-sand',
+    cardAlt: 'theme-card-sand-alt',
+    cardColor: 'var(--theme-sand-card)',
+    cardAltColor: 'var(--theme-sand-card-alt)',
   },
   sage: {
-    section: 'bg-[var(--theme-sage-section)]',
-    sectionAlt: 'bg-[var(--theme-sage-section-alt)]',
+    section: 'theme-section-sage',
+    sectionAlt: 'theme-section-sage-alt',
     sectionColor: 'var(--theme-sage-section)',
     sectionAltColor: 'var(--theme-sage-section-alt)',
-    panel: 'bg-[var(--theme-sage-panel)]',
-    panelAlt: 'bg-[var(--theme-sage-panel-alt)]',
-    card: 'bg-[var(--theme-sage-card)]',
-    cardAlt: 'bg-[var(--theme-sage-card-alt)]',
+    panel: 'theme-panel-sage',
+    panelAlt: 'theme-panel-sage-alt',
+    panelColor: 'var(--theme-sage-panel)',
+    panelAltColor: 'var(--theme-sage-panel-alt)',
+    card: 'theme-card-sage',
+    cardAlt: 'theme-card-sage-alt',
+    cardColor: 'var(--theme-sage-card)',
+    cardAltColor: 'var(--theme-sage-card-alt)',
   },
 }
 
@@ -190,4 +212,19 @@ export function getButtonStyle(buttonStyle?: string | null): string {
   }
 
   return buttonStyles[buttonStyle as ButtonStyleKey]
+}
+
+export function getThemeBackgroundStyle(theme: ThemePalette, target: ThemeBackgroundTarget) {
+  const colorMap: Record<ThemeBackgroundTarget, string> = {
+    section: theme.sectionColor,
+    sectionAlt: theme.sectionAltColor,
+    panel: theme.panelColor,
+    panelAlt: theme.panelAltColor,
+    card: theme.cardColor,
+    cardAlt: theme.cardAltColor,
+  }
+
+  return {
+    backgroundColor: colorMap[target],
+  }
 }
