@@ -205,6 +205,75 @@ export const SiteSettings: GlobalConfig = {
     ),
     collapsibleField(
       {
+        en: 'Analytics & Tracking',
+        uk: 'Аналітика та трекінг',
+        es: 'Analitica y seguimiento',
+      },
+      [
+        {
+          name: 'tracking',
+          type: 'group',
+          label: {
+            en: 'Analytics & Tracking',
+            uk: 'Аналітика та трекінг',
+            es: 'Analitica y seguimiento',
+          },
+          fields: [
+            {
+              name: 'googleTagManagerId',
+              type: 'text',
+              label: {
+                en: 'Google Tag Manager ID',
+                uk: 'Google Tag Manager ID',
+                es: 'Google Tag Manager ID',
+              },
+              admin: {
+                description: {
+                  en: 'Example: GTM-XXXXXXX. Recommended place for GA4 and Meta Pixel tags.',
+                  uk: 'Наприклад: GTM-XXXXXXX. Рекомендоване місце для GA4 та Meta Pixel.',
+                  es: 'Ejemplo: GTM-XXXXXXX. Lugar recomendado para GA4 y Meta Pixel.',
+                },
+              },
+            },
+            {
+              name: 'ga4MeasurementId',
+              type: 'text',
+              label: {
+                en: 'GA4 Measurement ID',
+                uk: 'GA4 Measurement ID',
+                es: 'GA4 Measurement ID',
+              },
+              admin: {
+                description: {
+                  en: 'Example: G-XXXXXXXXXX. Leave empty if GA4 is already configured inside GTM.',
+                  uk: 'Наприклад: G-XXXXXXXXXX. Залиште порожнім, якщо GA4 уже налаштований у GTM.',
+                  es: 'Ejemplo: G-XXXXXXXXXX. Dejelo vacio si GA4 ya esta configurado en GTM.',
+                },
+              },
+            },
+            {
+              name: 'metaPixelId',
+              type: 'text',
+              label: {
+                en: 'Meta Pixel ID',
+                uk: 'Meta Pixel ID',
+                es: 'Meta Pixel ID',
+              },
+              admin: {
+                description: {
+                  en: 'Optional. Usually managed through GTM.',
+                  uk: 'Необов’язково. Зазвичай керується через GTM.',
+                  es: 'Opcional. Normalmente se gestiona a traves de GTM.',
+                },
+              },
+            },
+          ],
+        },
+      ],
+      true,
+    ),
+    collapsibleField(
+      {
         en: 'Header Settings',
         uk: 'Налаштування хедера',
         es: 'Configuracion del header',

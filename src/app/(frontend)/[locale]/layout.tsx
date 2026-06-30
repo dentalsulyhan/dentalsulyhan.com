@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import TrackingScripts from '@/components/TrackingScripts'
 import type { HeaderFooter, Page, SiteContact, SiteSetting } from '@/payload-types'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import { isSupportedLocale } from '@/lib/localizedRouting'
@@ -13,6 +14,12 @@ type BrandingData = {
   logo?: number | { url?: string | null; alt?: string | null } | null
   logoLight?: number | { url?: string | null; alt?: string | null } | null
   logoDark?: number | { url?: string | null; alt?: string | null } | null
+}
+
+type TrackingData = {
+  googleTagManagerId?: string | null
+  ga4MeasurementId?: string | null
+  metaPixelId?: string | null
 }
 
 export default async function FrontendLayout({
@@ -118,9 +125,11 @@ export default async function FrontendLayout({
     socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
   }
   const branding = (siteSettings as SiteSetting & { branding?: BrandingData } | null)?.branding
+  const tracking = (siteSettings as SiteSetting & { tracking?: TrackingData } | null)?.tracking
 
   return (
     <div style={getDesignSettingsVars(designSettings)}>
+      <TrackingScripts tracking={tracking} />
       <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} branding={branding} />
 
       <main className="flex-grow pt-[70px]">
