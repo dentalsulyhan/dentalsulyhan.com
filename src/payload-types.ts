@@ -2459,6 +2459,20 @@ export interface SiteSetting {
      */
     logoDark?: (number | null) | Media;
   };
+  tracking?: {
+    /**
+     * Example: GTM-XXXXXXX. Recommended place for GA4 and Meta Pixel tags.
+     */
+    googleTagManagerId?: string | null;
+    /**
+     * Example: G-XXXXXXXXXX. Leave empty if GA4 is already configured inside GTM.
+     */
+    ga4MeasurementId?: string | null;
+    /**
+     * Optional. Usually managed through GTM.
+     */
+    metaPixelId?: string | null;
+  };
   header?: {
     menuButtonLabel?: string | null;
   };
@@ -2936,6 +2950,13 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         logo?: T;
         logoLight?: T;
         logoDark?: T;
+      };
+  tracking?:
+    | T
+    | {
+        googleTagManagerId?: T;
+        ga4MeasurementId?: T;
+        metaPixelId?: T;
       };
   header?:
     | T
