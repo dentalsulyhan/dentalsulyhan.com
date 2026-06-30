@@ -4,6 +4,7 @@ import configPromise from '@payload-config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TrackingScripts from '@/components/TrackingScripts'
+import AnalyticsListener from '@/components/AnalyticsListener'
 import type { HeaderFooter, Page, SiteContact, SiteSetting } from '@/payload-types'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import { isSupportedLocale } from '@/lib/localizedRouting'
@@ -130,6 +131,7 @@ export default async function FrontendLayout({
   return (
     <div style={getDesignSettingsVars(designSettings)}>
       <TrackingScripts tracking={tracking} />
+      <AnalyticsListener locale={locale} />
       <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} branding={branding} />
 
       <main className="flex-grow pt-[70px]">

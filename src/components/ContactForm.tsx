@@ -2,6 +2,7 @@
 
 import Script from 'next/script'
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import { pushAnalyticsEvent } from '@/lib/analytics'
 
 type FormOption = {
   id?: string | null
@@ -136,6 +137,12 @@ export default function ContactForm({
 
     try {
       if (isTurnstileEnabled && !turnstileToken) {
+        pushAnalyticsEvent({
+          event: 'contact_form_error',
+          locale,
+          reason: 'captcha_missing',
+          form_name: 'contact_form',
+        })
         throw new Error(captchaMessage)
       }
 
@@ -154,6 +161,12 @@ export default function ContactForm({
       const result = (await response.json().catch(() => null)) as { error?: string } | null
 
       if (!response.ok) {
+        pushAnalyticsEvent({
+          event: 'contact_form_error',
+          locale,
+          reason: `server_${response.status}`,
+          form_name: 'contact_form',
+        })
         throw new Error(result?.error || errorMessage)
       }
 
@@ -164,6 +177,13 @@ export default function ContactForm({
       }
       setSubmitState('success')
       setMessage(successMessage)
+      pushAnalyticsEvent({
+        event: 'contact_form_submit',
+        locale,
+        form_name: 'contact_form',
+        patient_type: formState.patientType,
+        referral_source: formState.referralSource,
+      })
     } catch (error) {
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.reset(widgetIdRef.current)
@@ -171,6 +191,12 @@ export default function ContactForm({
       setTurnstileToken('')
       setSubmitState('error')
       setMessage(error instanceof Error ? error.message : errorMessage)
+      pushAnalyticsEvent({
+        event: 'contact_form_error',
+        locale,
+        form_name: 'contact_form',
+        reason: error instanceof Error ? error.message : 'unknown',
+      })
     } finally {
       setIsSubmitting(false)
     }
