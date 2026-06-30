@@ -136,6 +136,36 @@ export function buildWebsiteStructuredData(locale: SupportedLocale, siteName: st
   }
 }
 
+export function buildWebPageStructuredData({
+  name,
+  description,
+  url,
+  locale,
+  siteName,
+}: {
+  name: string
+  description?: string | null
+  url: string
+  locale: SupportedLocale
+  siteName?: string | null
+}) {
+  if (!name || !url) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description: description?.trim() || undefined,
+    url: buildAbsoluteUrl(url),
+    inLanguage: locale,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteName?.trim() || 'Dental Clinic Sulyhan',
+      url: buildAbsoluteUrl(locale === DEFAULT_LOCALE ? '/' : `/${locale}`),
+    },
+  }
+}
+
 export function buildBreadcrumbStructuredData(items: Array<{ name: string; path: string }>) {
   return {
     '@context': 'https://schema.org',

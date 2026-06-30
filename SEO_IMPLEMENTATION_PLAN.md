@@ -21,10 +21,12 @@ Already started:
 - hreflang metadata now includes x-default for the Spanish root
 - structured data now covers breadcrumbs, FAQ blocks, service detail pages, and the services listing
 - homepage metadata now also falls back to the `home-page` global content instead of only the page record
+- homepage now also emits a `WebPage` structured data block
 
 Next to do:
 
 - review whether homepage should also expose dedicated structured data or richer descriptive metadata
+- run browser QA across the public routes to validate canonical, hreflang, sitemap, and JSON-LD output
 
 ## Goal
 

@@ -10,6 +10,7 @@ import GoogleReviews from '../../../components/GoogleReviews'
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { buildWebPageStructuredData } from '@/lib/structuredData'
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {
@@ -367,6 +368,16 @@ export async function PageContent({
 
   const contactTitle = siteSettings?.contacts?.sectionTitle || homeData.contactsSection?.title || loc.contactTitle
   const contactDesc = siteSettings?.contacts?.sectionDescription || homeData.contactsSection?.description || loc.contactDesc
+  const webPageStructuredData = buildWebPageStructuredData({
+    name: heroTitle || loc.heroTitle,
+    description:
+      (typeof heroSubtitle === 'string' ? heroSubtitle : undefined) ||
+      (typeof homeData.whyUs?.text === 'string' ? homeData.whyUs.text : undefined) ||
+      (typeof homeData.gallery?.description === 'string' ? homeData.gallery.description : undefined),
+    url: locale === 'es' ? '/' : `/${locale}`,
+    locale: locale as 'es' | 'en' | 'uk',
+    siteName: 'Dental Clinic Sulyhan',
+  })
   const phoneLabel = siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'es' ? 'Teléfono' : 'Phone')
   const emailLabel = siteSettings?.contacts?.emailLabel || 'Email'
   const addressLabel = siteSettings?.contacts?.addressLabel || (locale === 'uk' ? 'Адреса' : locale === 'es' ? 'Dirección' : 'Address')
@@ -1309,6 +1320,12 @@ export async function PageContent({
 
   return (
     <>
+      {webPageStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageStructuredData) }}
+        />
+      )}
       {sectionOrder.map(({ section, enabled }, idx) => {
         if (!enabled) return null
 
