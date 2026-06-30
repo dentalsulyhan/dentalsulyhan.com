@@ -18,10 +18,12 @@ Already started:
 - 404 route marked `noindex, nofollow`
 - sitemap now expands from CMS pages and services across locales
 - metadata descriptions now fall back to localized page/service content when explicit SEO description is empty
+- hreflang metadata now includes x-default for the Spanish root
+- structured data now covers breadcrumbs, FAQ blocks, service detail pages, and the services listing
 
 Next to do:
 
-- add page-specific structured data where useful, such as service detail pages and FAQ blocks
+- review whether homepage should also expose dedicated structured data or richer descriptive metadata
 
 ## Goal
 

@@ -110,7 +110,7 @@ export function buildOrganizationStructuredData({
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'Dentist',
+    '@type': ['Dentist', 'LocalBusiness'],
     name: resolvedSiteName,
     url: siteUrl,
     logo: toAbsoluteUrl(logoUrl),
@@ -165,6 +165,34 @@ export function buildItemListStructuredData(items: Array<{ name: string; path: s
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     itemListElement: mappedItems,
+  }
+}
+
+export function buildServiceStructuredData({
+  name,
+  description,
+  url,
+  providerName,
+}: {
+  name: string
+  description?: string | null
+  url: string
+  providerName?: string | null
+}) {
+  if (!name || !url) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name,
+    description: description?.trim() || undefined,
+    url: buildAbsoluteUrl(url),
+    provider: providerName?.trim()
+      ? {
+          '@type': 'Dentist',
+          name: providerName.trim(),
+        }
+      : undefined,
   }
 }
 

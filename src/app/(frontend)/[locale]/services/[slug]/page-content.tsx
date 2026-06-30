@@ -8,7 +8,7 @@ import type { Media, Pricing, Service, SiteContact, SiteSetting } from '@/payloa
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
-import { buildBreadcrumbStructuredData, buildFaqStructuredData } from '@/lib/structuredData'
+import { buildBreadcrumbStructuredData, buildFaqStructuredData, buildServiceStructuredData } from '@/lib/structuredData'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -253,6 +253,12 @@ export async function ServiceDetailPageContent({
       }))
     }),
   )
+  const serviceStructuredData = buildServiceStructuredData({
+    name: service.title,
+    description: service.metaDescription || undefined,
+    url: buildLocalizedPath(locale, `${servicesBasePath}/${service.path || service.slug}`),
+    providerName: 'Dental Clinic Sulyhan',
+  })
   const breadcrumbStructuredData = buildBreadcrumbStructuredData([
     {
       name: locale === 'uk' ? 'Головна' : locale === 'en' ? 'Home' : 'Inicio',
@@ -294,6 +300,12 @@ export async function ServiceDetailPageContent({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+        />
+      )}
+      {serviceStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceStructuredData) }}
         />
       )}
       <main>
