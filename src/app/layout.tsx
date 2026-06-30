@@ -1,10 +1,12 @@
 import React from 'react'
+import { getMetadataBase } from '@/lib/seo'
 
 type RootLayoutProps = {
   children: React.ReactNode
 }
 
 export const metadata = {
+  metadataBase: getMetadataBase(),
   manifest: '/manifest.webmanifest',
   icons: {
     icon: [
