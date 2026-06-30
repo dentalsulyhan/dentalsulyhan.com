@@ -31,6 +31,62 @@ function normalizeAddress(value?: string | null) {
   return value?.trim() || undefined
 }
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+function extractLexicalText(value: unknown): string {
+  if (!isPlainObject(value)) return ''
+
+  const root = value.root
+  if (!isPlainObject(root) || !Array.isArray(root.children)) return ''
+
+  const parts: string[] = []
+
+  const walk = (node: unknown) => {
+    if (typeof node === 'string') {
+      const trimmed = node.trim()
+      if (trimmed) parts.push(trimmed)
+      return
+    }
+
+    if (!isPlainObject(node)) return
+
+    if (typeof node.text === 'string') {
+      const trimmed = node.text.trim()
+      if (trimmed) parts.push(trimmed)
+    }
+
+    if (Array.isArray(node.children)) {
+      node.children.forEach(walk)
+    }
+  }
+
+  root.children.forEach(walk)
+  return parts.join(' ')
+}
+
+function extractPlainText(value: unknown): string {
+  if (!value) return ''
+
+  if (typeof value === 'string') return value.trim()
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => extractPlainText(entry)).filter(Boolean).join(' ')
+  }
+
+  if (!isPlainObject(value)) return ''
+
+  const lexicalText = extractLexicalText(value)
+  if (lexicalText) return lexicalText
+
+  if (typeof value.text === 'string') return value.text.trim()
+  if (typeof value.heading === 'string') return value.heading.trim()
+  if (typeof value.title === 'string') return value.title.trim()
+
+  return Object.values(value).map((entry) => extractPlainText(entry)).filter(Boolean).join(' ')
+}
+
 export function buildOrganizationStructuredData({
   locale,
   siteName,
@@ -90,5 +146,35 @@ export function buildBreadcrumbStructuredData(items: Array<{ name: string; path:
       name: item.name,
       item: buildAbsoluteUrl(item.path),
     })),
+  }
+}
+
+export function buildFaqStructuredData(
+  items: Array<{ heading?: unknown; content?: unknown }> | null | undefined,
+) {
+  const questions = (items || [])
+    .map((item) => {
+      const question = extractPlainText(item.heading)
+      const answer = extractPlainText(item.content)
+
+      if (!question || !answer) return null
+
+      return {
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: answer,
+        },
+      }
+    })
+    .filter(Boolean)
+
+  if (!questions.length) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions,
   }
 }

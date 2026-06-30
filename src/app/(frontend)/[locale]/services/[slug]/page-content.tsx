@@ -8,6 +8,7 @@ import type { Media, Pricing, Service, SiteContact, SiteSetting } from '@/payloa
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { buildBreadcrumbStructuredData, buildFaqStructuredData } from '@/lib/structuredData'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -242,6 +243,30 @@ export async function ServiceDetailPageContent({
 
   const globalContact = siteSettings?.globalContactSection
   const serviceLayout = service.layout || []
+  const faqStructuredData = buildFaqStructuredData(
+    serviceLayout.flatMap((block) => {
+      if (block.blockType !== 'faq') return []
+
+      return (block.items || []).map((item) => ({
+        heading: item.heading,
+        content: item.content,
+      }))
+    }),
+  )
+  const breadcrumbStructuredData = buildBreadcrumbStructuredData([
+    {
+      name: locale === 'uk' ? 'Головна' : locale === 'en' ? 'Home' : 'Inicio',
+      path: locale === 'es' ? '/' : `/${locale}`,
+    },
+    {
+      name: servicesPage?.title || (locale === 'uk' ? 'Послуги' : locale === 'en' ? 'Services' : 'Servicios'),
+      path: servicesBasePath,
+    },
+    {
+      name: service.title,
+      path: buildLocalizedPath(locale, `${servicesBasePath}/${service.path || service.slug}`),
+    },
+  ])
 
   const copy = {
     phoneLabel: siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono'),
@@ -258,7 +283,20 @@ export async function ServiceDetailPageContent({
   }
 
   return (
-    <main>
+    <>
+      {breadcrumbStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+        />
+      )}
+      {faqStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+        />
+      )}
+      <main>
       {serviceLayout.map((block, idx) => {
         switch (block.blockType) {
           case 'hero': {
@@ -1021,7 +1059,8 @@ export async function ServiceDetailPageContent({
             return null
         }
       })}
-    </main>
+      </main>
+    </>
   )
 }
 
