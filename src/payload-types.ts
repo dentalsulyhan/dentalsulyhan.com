@@ -101,6 +101,7 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('es' | 'en' | 'uk') | ('es' | 'en' | 'uk')[];
   globals: {
     'design-settings': DesignSetting;
+    'seo-settings': SeoSetting;
     'site-settings': SiteSetting;
     'home-page': HomePage;
     'header-footer': HeaderFooter;
@@ -108,6 +109,7 @@ export interface Config {
   };
   globalsSelect: {
     'design-settings': DesignSettingsSelect<false> | DesignSettingsSelect<true>;
+    'seo-settings': SeoSettingsSelect<false> | SeoSettingsSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'header-footer': HeaderFooterSelect<false> | HeaderFooterSelect<true>;
@@ -202,6 +204,19 @@ export interface Page {
    * Visible URL segment for this language, for example servicios, about-us or contactos.
    */
   path: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  /**
+   * Used for Open Graph and Twitter cards.
+   */
+  metaImage?: (number | null) | Media;
+  /**
+   * Optional. Leave empty to use the automatic localized URL.
+   */
+  canonicalUrl?: string | null;
+  noIndex?: boolean | null;
+  noFollow?: boolean | null;
+  twitterCard?: ('summary' | 'summary_large_image') | null;
   layout?:
     | (
         | {
@@ -872,6 +887,19 @@ export interface Service {
    * Visible URL segment for this language, for example dental-implants.
    */
   path: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  /**
+   * Used for Open Graph and Twitter cards.
+   */
+  metaImage?: (number | null) | Media;
+  /**
+   * Optional. Leave empty to use the automatic localized URL.
+   */
+  canonicalUrl?: string | null;
+  noIndex?: boolean | null;
+  noFollow?: boolean | null;
+  twitterCard?: ('summary' | 'summary_large_image') | null;
   layout?:
     | (
         | {
@@ -1594,6 +1622,13 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   path?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaImage?: T;
+  canonicalUrl?: T;
+  noIndex?: T;
+  noFollow?: T;
+  twitterCard?: T;
   layout?:
     | T
     | {
@@ -1893,6 +1928,13 @@ export interface ServicesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   path?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaImage?: T;
+  canonicalUrl?: T;
+  noIndex?: T;
+  noFollow?: T;
+  twitterCard?: T;
   layout?:
     | T
     | {
@@ -2433,6 +2475,34 @@ export interface DesignSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-settings".
+ */
+export interface SeoSetting {
+  id: number;
+  siteName: string;
+  /**
+   * Use %s where the page title should be inserted.
+   */
+  titleTemplate: string;
+  /**
+   * Optional. Used for canonical URLs if you want to override the environment URL.
+   */
+  baseUrl?: string | null;
+  defaultDescription?: string | null;
+  defaultOgImage?: (number | null) | Media;
+  defaultTwitterCard?: ('summary' | 'summary_large_image') | null;
+  indexSite?: boolean | null;
+  followLinks?: boolean | null;
+  organizationName?: string | null;
+  organizationLogo?: (number | null) | Media;
+  organizationPhone?: string | null;
+  organizationEmail?: string | null;
+  organizationAddress?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSetting {
@@ -2927,6 +2997,28 @@ export interface DesignSettingsSelect<T extends boolean = true> {
         sageCard?: T;
         sageCardAlt?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-settings_select".
+ */
+export interface SeoSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  titleTemplate?: T;
+  baseUrl?: T;
+  defaultDescription?: T;
+  defaultOgImage?: T;
+  defaultTwitterCard?: T;
+  indexSite?: T;
+  followLinks?: T;
+  organizationName?: T;
+  organizationLogo?: T;
+  organizationPhone?: T;
+  organizationEmail?: T;
+  organizationAddress?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

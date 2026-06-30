@@ -11,14 +11,15 @@ Already started:
 - root `metadataBase`
 - `robots.txt` scaffold
 - initial `sitemap.xml` scaffold
+- `seo-settings` global added to Payload
+- reusable SEO fields added to `Pages` and `Services`
 
 Next to do:
 
-- global SEO settings in Payload
-- page-level SEO fields
 - `generateMetadata()` for all public routes
 - canonical and hreflang support
 - structured data
+- sitemap expansion for all public pages
 
 ## Goal
 
