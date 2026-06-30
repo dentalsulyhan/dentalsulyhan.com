@@ -17,10 +17,10 @@ Already started:
 - base Organization / WebSite structured data added on public layout
 - 404 route marked `noindex, nofollow`
 - sitemap now expands from CMS pages and services across locales
+- metadata descriptions now fall back to localized page/service content when explicit SEO description is empty
 
 Next to do:
 
-- review whether home/services/service-detail metadata needs deeper content-based fallbacks
 - add page-specific structured data where useful, such as service detail pages and FAQ blocks
 
 ## Goal

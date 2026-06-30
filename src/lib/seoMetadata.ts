@@ -6,6 +6,7 @@ import { buildAbsoluteUrl, buildLocalizedAbsoluteUrl } from '@/lib/seo'
 export type SeoTarget = {
   title?: string | null
   description?: string | null
+  content?: unknown
   image?: number | Media | null
   canonicalUrl?: string | null
   noIndex?: boolean | null
@@ -37,8 +38,112 @@ function resolveTitle(title: string | null | undefined, settings: SeoSetting | n
   return `${cleanTitle} | ${siteName}`
 }
 
-function resolveDescription(description: string | null | undefined, settings: SeoSetting | null | undefined) {
-  return description?.trim() || settings?.defaultDescription?.trim() || undefined
+function cleanDescription(value: string) {
+  return value.replace(/\s+/g, ' ').trim()
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+function truncateDescription(value: string, limit = 160) {
+  const cleaned = cleanDescription(value)
+
+  if (cleaned.length <= limit) return cleaned
+
+  return `${cleaned.slice(0, limit).trimEnd()}...`
+}
+
+function extractLexicalText(value: unknown): string {
+  if (!isPlainObject(value)) return ''
+
+  const root = value.root
+  if (!isPlainObject(root) || !Array.isArray(root.children)) return ''
+
+  const parts: string[] = []
+
+  const walk = (node: unknown) => {
+    if (typeof node === 'string') {
+      if (node.trim()) parts.push(node.trim())
+      return
+    }
+
+    if (!isPlainObject(node)) return
+
+    if (typeof node.text === 'string' && node.text.trim()) {
+      parts.push(node.text.trim())
+    }
+
+    if (Array.isArray(node.children)) {
+      node.children.forEach(walk)
+    }
+  }
+
+  root.children.forEach(walk)
+  return parts.join(' ')
+}
+
+function extractTextFromValue(value: unknown, seen = new Set<unknown>()): string {
+  if (!value || seen.has(value)) return ''
+
+  if (typeof value === 'string') return value
+
+  if (Array.isArray(value)) {
+    const nested = value
+      .map((entry) => extractTextFromValue(entry, seen))
+      .filter(Boolean)
+      .join(' ')
+
+    return nested
+  }
+
+  if (!isPlainObject(value)) return ''
+  seen.add(value)
+
+  const lexicalText = extractLexicalText(value)
+  if (lexicalText) return lexicalText
+
+  const priorityKeys = [
+    'metaDescription',
+    'description',
+    'subtitle',
+    'intro',
+    'text',
+    'content',
+    'sectionDescription',
+    'bottomText',
+    'conclusion',
+    'body',
+    'title',
+    'label',
+    'name',
+  ]
+
+  for (const key of priorityKeys) {
+    const nested = extractTextFromValue(value[key], seen)
+    if (nested) return nested
+  }
+
+  for (const nestedValue of Object.values(value)) {
+    const nested = extractTextFromValue(nestedValue, seen)
+    if (nested) return nested
+  }
+
+  return ''
+}
+
+function resolveDescription(
+  description: string | null | undefined,
+  settings: SeoSetting | null | undefined,
+  content?: unknown,
+) {
+  const explicitDescription = description?.trim()
+  if (explicitDescription) return explicitDescription
+
+  const contentDescription = extractTextFromValue(content)
+  if (contentDescription) return truncateDescription(contentDescription)
+
+  return settings?.defaultDescription?.trim() || undefined
 }
 
 function resolveCanonicalUrl(
@@ -86,7 +191,7 @@ export function buildSeoMetadata({
   alternates?: SeoAlternates
 }): Metadata {
   const title = resolveTitle(target.title, settings)
-  const description = resolveDescription(target.description, settings)
+  const description = resolveDescription(target.description, settings, target.content)
   const canonical = resolveCanonicalUrl(locale, path, target.canonicalUrl)
   const robots = resolveRobots(settings, target.noIndex, target.noFollow)
   const ogImage = getMediaUrl(target.image) || getMediaUrl(settings?.defaultOgImage)

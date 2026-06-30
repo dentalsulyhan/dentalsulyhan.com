@@ -11,9 +11,34 @@ import { buildSeoMetadata, type SeoAlternates } from '@/lib/seoMetadata'
 
 type RouteDoc = Pick<
   Page,
-  'slug' | 'path' | 'metaTitle' | 'metaDescription' | 'metaImage' | 'canonicalUrl' | 'noIndex' | 'noFollow' | 'twitterCard' | 'title'
+  | 'slug'
+  | 'path'
+  | 'metaTitle'
+  | 'metaDescription'
+  | 'metaImage'
+  | 'canonicalUrl'
+  | 'noIndex'
+  | 'noFollow'
+  | 'twitterCard'
+  | 'title'
 > &
-  Partial<Pick<Service, 'slug' | 'path' | 'metaTitle' | 'metaDescription' | 'metaImage' | 'canonicalUrl' | 'noIndex' | 'noFollow' | 'twitterCard' | 'title'>>
+  Partial<
+    Pick<
+      Service,
+      | 'slug'
+      | 'path'
+      | 'metaTitle'
+      | 'metaDescription'
+      | 'metaImage'
+      | 'canonicalUrl'
+      | 'noIndex'
+      | 'noFollow'
+      | 'twitterCard'
+      | 'title'
+    >
+  > & {
+    layout?: unknown[] | null
+  }
 
 async function fetchSeoSettings(locale: 'es' | 'en' | 'uk') {
   const payload = await getPayload({ config: configPromise })
@@ -154,6 +179,7 @@ export async function generateMetadata({
     target: {
       title: resolved.doc.metaTitle || resolved.doc.title,
       description: resolved.doc.metaDescription,
+      content: resolved.doc.layout,
       image: resolved.doc.metaImage,
       canonicalUrl: resolved.doc.canonicalUrl,
       noIndex: resolved.doc.noIndex,
