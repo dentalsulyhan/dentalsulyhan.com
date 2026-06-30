@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { PageContent } from '../page-content'
 import { ServiceDetailPageContent } from '../services/[slug]/page-content'
 import { ServicesListingPageContent } from '../services/page-content'
-import type { Page, SeoSetting, Service } from '@/payload-types'
+import type { HomePage as HomePageType, Page, SeoSetting, Service } from '@/payload-types'
 import { isSupportedLocale, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { buildSeoMetadata, type SeoAlternates } from '@/lib/seoMetadata'
 
@@ -151,6 +151,20 @@ async function resolveRouteDocument(locale: 'es' | 'en' | 'uk', slug: string[]) 
   return { kind: 'page' as const, doc: page, slug: page.slug }
 }
 
+async function fetchHomePageContent(locale: 'es' | 'en' | 'uk') {
+  const payload = await getPayload({ config: configPromise })
+
+  try {
+    return (await payload.findGlobal({
+      slug: 'home-page',
+      locale,
+    })) as HomePageType
+  } catch (error) {
+    console.error('Error fetching home-page global for metadata:', error)
+    return null
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -168,6 +182,7 @@ export async function generateMetadata({
   }
 
   const seoSettings = await fetchSeoSettings(locale as 'es' | 'en' | 'uk')
+  const homePageContent = slug.length === 0 ? await fetchHomePageContent(locale as 'es' | 'en' | 'uk') : null
   const alternates =
     resolved.kind === 'service'
       ? await fetchLocalizedDocPaths('services', resolved.slug)
@@ -179,7 +194,7 @@ export async function generateMetadata({
     target: {
       title: resolved.doc.metaTitle || resolved.doc.title,
       description: resolved.doc.metaDescription,
-      content: resolved.doc.layout,
+      content: homePageContent || resolved.doc.layout,
       image: resolved.doc.metaImage,
       canonicalUrl: resolved.doc.canonicalUrl,
       noIndex: resolved.doc.noIndex,

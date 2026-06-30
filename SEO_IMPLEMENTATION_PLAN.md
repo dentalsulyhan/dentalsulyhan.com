@@ -20,6 +20,7 @@ Already started:
 - metadata descriptions now fall back to localized page/service content when explicit SEO description is empty
 - hreflang metadata now includes x-default for the Spanish root
 - structured data now covers breadcrumbs, FAQ blocks, service detail pages, and the services listing
+- homepage metadata now also falls back to the `home-page` global content instead of only the page record
 
 Next to do:
 
