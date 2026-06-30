@@ -14,13 +14,14 @@ Already started:
 - `seo-settings` global added to Payload
 - reusable SEO fields added to `Pages` and `Services`
 - route-level `generateMetadata()` started for localized public pages
+- base Organization / WebSite structured data added on public layout
+- 404 route marked `noindex, nofollow`
 
 Next to do:
 
-- structured data
 - sitemap expansion for all public pages
-- 404 metadata and noindex handling
 - review whether home/services/service-detail metadata needs deeper content-based fallbacks
+- add page-specific structured data where useful, such as service detail pages and FAQ blocks
 
 ## Goal
 
@@ -50,12 +51,12 @@ What is still missing or incomplete:
 - centralized SEO model in the CMS
 - per-page SEO fields
 - deeper content-based metadata fallbacks for page descriptions
-- 404 metadata
 - sitemap.xml
 - robots.txt
 - JSON-LD structured data
 - noindex handling for internal/admin/404/preview routes
 - SEO-safe handling of localized slugs and root Spanish URLs
+- sitemap expansion for localized service and page entries
 
 ## SEO Principles for This Site
 

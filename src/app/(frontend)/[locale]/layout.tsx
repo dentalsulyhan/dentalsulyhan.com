@@ -9,6 +9,7 @@ import type { HeaderFooter, Page, SiteContact, SiteSetting } from '@/payload-typ
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import { isSupportedLocale } from '@/lib/localizedRouting'
 import { notFound } from 'next/navigation'
+import { buildOrganizationStructuredData, buildWebsiteStructuredData } from '@/lib/structuredData'
 
 type BrandingData = {
   favicon?: number | { url?: string | null; alt?: string | null } | null
@@ -127,11 +128,25 @@ export default async function FrontendLayout({
   }
   const branding = (siteSettings as SiteSetting & { branding?: BrandingData } | null)?.branding
   const tracking = (siteSettings as SiteSetting & { tracking?: TrackingData } | null)?.tracking
+  const structuredData = [
+    buildOrganizationStructuredData({
+      locale: locale as 'es' | 'en' | 'uk',
+      siteName: 'Dental Clinic Sulyhan',
+      contacts: contactsData,
+      branding,
+    }),
+    buildWebsiteStructuredData(locale as 'es' | 'en' | 'uk', 'Dental Clinic Sulyhan'),
+  ]
 
   return (
     <div style={getDesignSettingsVars(designSettings)}>
       <TrackingScripts tracking={tracking} />
       <AnalyticsListener locale={locale} />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} branding={branding} />
 
       <main className="flex-grow pt-[70px]">

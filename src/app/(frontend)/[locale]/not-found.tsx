@@ -1,5 +1,13 @@
+import type { Metadata } from 'next'
 import FrontendNotFound from '@/components/FrontendNotFound'
 import { getNotFoundPageBlock } from '@/lib/not-found-page'
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default async function NotFound({
   params,
