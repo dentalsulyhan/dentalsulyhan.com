@@ -1,6 +1,4 @@
 import React from 'react'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import Image from 'next/image'
 import type { HomePage as HomePageType, Page, TeamMember, Media, SiteContact, SiteSetting, Promotion, SeoSetting } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -9,6 +7,18 @@ import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 import { buildWebPageStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
+import {
+  getCachedActivePromotions,
+  getCachedHomePage,
+  getCachedPageByPath,
+  getCachedPageBySlug,
+  getCachedPagePathEntries,
+  getCachedSeoSettings,
+  getCachedServicePathEntries,
+  getCachedSiteContacts,
+  getCachedSiteSettings,
+  getCachedTeamMembers,
+} from '@/lib/publicData'
 import TeamSlider from '../../../components/TeamSlider'
 import GallerySlider from '../../../components/GallerySlider'
 import ContactForm from '../../../components/ContactForm'
@@ -145,30 +155,57 @@ export async function PageContent({
   slug?: string
   path?: string
 }) {
-  const payload = await getPayload({ config: configPromise })
-  const [allPagesResult, allServicesResult] = await Promise.all([
-    payload.find({
-      collection: 'pages',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 200,
+  const [allPagesDocs, allServicesDocs, pageData, homeData, team, siteSettings, seoSettings, siteContacts, activePromos, siteUrl] = await Promise.all([
+    getCachedPagePathEntries(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching page path entries:', err)
+      return []
     }),
-    payload.find({
-      collection: 'services',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 200,
+    getCachedServicePathEntries(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching service path entries:', err)
+      return []
     }),
+    (path
+      ? getCachedPageByPath(locale as 'es' | 'en' | 'uk', path, 2)
+      : getCachedPageBySlug(locale as 'es' | 'en' | 'uk', slug, 2)
+    ).catch((err) => {
+      console.error('Error fetching pages collection for home:', err)
+      return null as Page | null
+    }),
+    getCachedHomePage(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching home-page global:', err)
+      return {} as HomePageType
+    }),
+    getCachedTeamMembers(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching team-members:', err)
+      return [] as TeamMember[]
+    }),
+    getCachedSiteSettings(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching site-settings global:', err)
+      return null as SiteSetting | null
+    }),
+    getCachedSeoSettings(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching seo-settings global:', err)
+      return null as SeoSetting | null
+    }),
+    getCachedSiteContacts(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching site-contacts global:', err)
+      return {} as SiteContact
+    }),
+    getCachedActivePromotions(locale as 'es' | 'en' | 'uk').catch((err) => {
+      console.error('Error fetching promotions:', err)
+      return [] as Promotion[]
+    }),
+    getConfiguredSiteUrl(),
   ])
 
   const pagePaths = Object.fromEntries(
-    allPagesResult.docs
+    allPagesDocs
       .filter((page) => typeof page.slug === 'string' && typeof page.path === 'string')
       .map((page) => [page.slug, { path: page.slug === 'home' ? '/' : `/${page.path}` }]),
   )
   const servicesPagePath = pagePaths.services?.path || '/services'
   const servicePaths = Object.fromEntries(
-    allServicesResult.docs
+    allServicesDocs
       .filter((service) => typeof service.slug === 'string' && typeof service.path === 'string')
       .map((service) => [service.slug, { path: service.path }]),
   )
@@ -181,120 +218,12 @@ export async function PageContent({
       servicesPagePath,
     })
 
-  let pageData: Page | null = null
-  try {
-    const fetchedPages = await payload.find({
-      collection: 'pages',
-      depth: 2,
-      locale: locale as 'es' | 'en' | 'uk',
-      where: {
-        ...(path
-          ? {
-              path: {
-                equals: path,
-              },
-            }
-          : {
-              slug: {
-                equals: slug,
-              },
-            }),
-      },
-      limit: 1,
-    })
-    pageData = (fetchedPages.docs[0] as Page | undefined) || null
-  } catch (err) {
-    console.error('Error fetching pages collection for home:', err)
-  }
-
-  let homeData: HomePageType = {} as HomePageType
-  try {
-    const fetchedHome = await payload.findGlobal({
-      slug: 'home-page',
-      locale: locale as 'es' | 'en' | 'uk',
-    })
-    if (fetchedHome) {
-      homeData = fetchedHome as HomePageType
-    }
-  } catch (err) {
-    console.error('Error fetching home-page global:', err)
-  }
-
-  let teamMembers: any = { docs: [] }
-  try {
-    teamMembers = await payload.find({
-      collection: 'team-members',
-      locale: locale as 'es' | 'en' | 'uk',
-      sort: 'order',
-      limit: 20,
-    })
-  } catch (err) {
-    console.error('Error fetching team-members:', err)
-  }
-
-  let siteSettings: SiteSetting | null = null
-  try {
-    const fetchedSiteSettings = await payload.findGlobal({
-      slug: 'site-settings',
-      locale: locale as 'es' | 'en' | 'uk',
-    })
-    if (fetchedSiteSettings) {
-      siteSettings = fetchedSiteSettings as SiteSetting
-    }
-  } catch (err) {
-    console.error('Error fetching site-settings global:', err)
-  }
-
-  let seoSettings: SeoSetting | null = null
-  try {
-    const fetchedSeoSettings = await payload.findGlobal({
-      slug: 'seo-settings',
-      locale: locale as 'es' | 'en' | 'uk',
-    })
-    if (fetchedSeoSettings) {
-      seoSettings = fetchedSeoSettings as SeoSetting
-    }
-  } catch (err) {
-    console.error('Error fetching seo-settings global:', err)
-  }
-
-  const siteUrl = await getConfiguredSiteUrl()
-
-  let siteContacts: SiteContact = {} as SiteContact
-  try {
-    const fetchedContacts = await payload.findGlobal({
-      slug: 'site-contacts',
-      locale: locale as 'es' | 'en' | 'uk',
-    })
-    if (fetchedContacts) {
-      siteContacts = fetchedContacts as SiteContact
-    }
-  } catch (err) {
-    console.error('Error fetching site-contacts global:', err)
-  }
   const contacts: SiteContact = {
     ...siteContacts,
     ...(siteSettings?.contacts || {}),
     socialLinks: siteSettings?.socialLinks || siteContacts?.socialLinks || [],
   }
   const globalContact = siteSettings?.globalContactSection
-
-  let activePromos: Promotion[] = []
-  try {
-    const promotionsData = await payload.find({
-      collection: 'promotions',
-      locale: locale as 'es' | 'en' | 'uk',
-      where: {
-        isActive: {
-          equals: true,
-        },
-      },
-      limit: 10,
-    })
-    activePromos = promotionsData.docs as Promotion[]
-  } catch (err) {
-    console.error('Error fetching promotions:', err)
-  }
 
   // ─── Localized placeholders ───
   const t = {
@@ -371,8 +300,6 @@ export async function PageContent({
   const philLink = '#contact_us'
 
   const teamTitle = homeData.teamSection?.title || loc.teamTitle
-  const team = teamMembers.docs as TeamMember[]
-
   const reviewsTitle = homeData.reviews?.title || loc.reviewsTitle
   const reviewsEmbed = homeData.reviews?.embedCode || ''
 

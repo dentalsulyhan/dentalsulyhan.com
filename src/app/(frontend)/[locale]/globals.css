@@ -212,6 +212,16 @@
     margin-bottom: 0;
   }
 
+  .site-menu-list {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
+  }
+
+  .site-menu-list li {
+    margin-bottom: 0;
+  }
+
   li, .prose li {
     margin-bottom: 0.45em;
     line-height: 1.7;

@@ -98,7 +98,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
             <Image src={logoUrl} alt={logoAlt} width={200} height={50} className="h-[50px] w-auto object-contain" />
           </Link>
           <nav>
-            <ul className="flex flex-wrap gap-[20px] max-[1100px]:gap-[14px] m-[10px] justify-end max-[991px]:justify-center max-[991px]:flex-col max-[991px]:gap-[10px] max-[991px]:text-center list-none p-0">
+            <ul className="site-menu-list flex flex-wrap gap-[20px] max-[1100px]:gap-[14px] m-[10px] justify-end max-[991px]:justify-center max-[991px]:flex-col max-[991px]:gap-[10px] max-[991px]:text-center list-none p-0">
               {menuItems.map((item, i) => {
                 const linkHref = resolveMenuLink(item.link)
                 return (

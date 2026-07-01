@@ -213,7 +213,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
                 <h2 className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-4">
                   {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
                 </h2>
-                <ul className="list-none p-0 m-0 flex flex-col items-start gap-[8px]">
+                <ul className="site-menu-list list-none p-0 m-0 flex flex-col items-start gap-[8px]">
                   {menuItems.map((item, i) => {
                     const linkHref = resolveMenuLink(item.link)
                     return (
@@ -234,7 +234,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
             {/* Mobile language switcher inside drawer */}
             <div className="mt-auto pt-6 border-t border-[#22282b]/10 flex gap-5 max-[767px]:block">
-              <ul className="flex flex-row gap-5 list-none p-0 m-0">
+              <ul className="site-menu-list flex flex-row gap-5 list-none p-0 m-0">
                 {locales.map((loc) => (
                   <li key={loc} className="flex items-center">
                     <Link
@@ -296,7 +296,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
           {/* PC Language Switcher */}
           <div className="max-[991px]:hidden flex items-center border-l border-[#22282b]/15 pl-[12px] h-[20px]">
-            <ul className="flex gap-[10px] list-none m-0 p-0 items-center">
+            <ul className="site-menu-list flex gap-[10px] list-none m-0 p-0 items-center">
               {locales.map((loc) => {
                 const isActive = currentLocale === loc
                 return (

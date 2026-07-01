@@ -1,7 +1,6 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import { NextResponse } from 'next/server'
 import { buildLocalizedPath, DEFAULT_LOCALE, detectLocaleFromPathname, stripLocalePrefix, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
+import { getCachedPagePathEntries, getCachedServicePathEntries } from '@/lib/publicData'
 
 const responseHeaders = {
   'Cache-Control': 'public, max-age=300, stale-while-revalidate=86400',
@@ -38,25 +37,8 @@ export async function GET(request: Request) {
     }
 
     const currentLocale = detectLocaleFromPathname(rawPath)
-    const payload = await getPayload({ config: configPromise })
-
-    const pagesResult = await payload.find({
-      collection: 'pages',
-      locale: currentLocale,
-      fallbackLocale: false,
-      select: {
-        slug: true,
-        path: true,
-      },
-      where: {
-        path: {
-          equals: segments[0],
-        },
-      },
-      limit: 1,
-    })
-
-    const page = pagesResult.docs[0]
+    const currentLocalePages = await getCachedPagePathEntries(currentLocale)
+    const page = currentLocalePages.find((entry) => entry.path === segments[0])
     if (!page) {
       return buildResponse(links)
     }
@@ -65,45 +47,16 @@ export async function GET(request: Request) {
       let currentServiceSlug: string | null = null
 
       if (segments.length > 1) {
-        const currentServiceResult = await payload.find({
-          collection: 'services',
-          locale: currentLocale,
-          fallbackLocale: false,
-          select: {
-            slug: true,
-          },
-          where: {
-            path: {
-              equals: segments[1],
-            },
-          },
-          limit: 1,
-        })
-
-        currentServiceSlug = currentServiceResult.docs[0]?.slug || null
+        const currentLocaleServices = await getCachedServicePathEntries(currentLocale)
+        currentServiceSlug = currentLocaleServices.find((entry) => entry.path === segments[1])?.slug || null
       }
 
       const localizedPages = await Promise.all(
-        SUPPORTED_LOCALES.map((locale) =>
-          payload.find({
-          collection: 'pages',
-          locale,
-          fallbackLocale: false,
-          select: {
-            path: true,
-          },
-          where: {
-            slug: {
-              equals: 'services',
-            },
-          },
-          limit: 1,
-          }),
-        ),
+        SUPPORTED_LOCALES.map((locale) => getCachedPagePathEntries(locale)),
       )
 
       for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
-        const servicesPage = localizedPages[index]?.docs[0]
+        const servicesPage = localizedPages[index]?.find((entry) => entry.slug === 'services')
         const servicesPath = `/${servicesPage?.path || 'services'}`
 
         if (segments.length === 1) {
@@ -118,27 +71,12 @@ export async function GET(request: Request) {
 
       if (currentServiceSlug && segments.length > 1) {
         const localizedServices = await Promise.all(
-          SUPPORTED_LOCALES.map((locale) =>
-            payload.find({
-              collection: 'services',
-              locale,
-              fallbackLocale: false,
-              select: {
-                path: true,
-              },
-              where: {
-                slug: {
-                  equals: currentServiceSlug,
-                },
-              },
-              limit: 1,
-            }),
-          ),
+          SUPPORTED_LOCALES.map((locale) => getCachedServicePathEntries(locale)),
         )
 
         for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
-          const servicesPage = localizedPages[index]?.docs[0]
-          const service = localizedServices[index]?.docs[0]
+          const servicesPage = localizedPages[index]?.find((entry) => entry.slug === 'services')
+          const service = localizedServices[index]?.find((entry) => entry.slug === currentServiceSlug)
           const servicesPath = `/${servicesPage?.path || 'services'}`
 
           if (service?.path) {
@@ -155,26 +93,11 @@ export async function GET(request: Request) {
     }
 
     const localizedPages = await Promise.all(
-      SUPPORTED_LOCALES.map((locale) =>
-        payload.find({
-        collection: 'pages',
-        locale,
-        fallbackLocale: false,
-        select: {
-          path: true,
-        },
-        where: {
-          slug: {
-            equals: page.slug,
-          },
-        },
-        limit: 1,
-        }),
-      ),
+      SUPPORTED_LOCALES.map((locale) => getCachedPagePathEntries(locale)),
     )
 
     for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
-      const translatedPage = localizedPages[index]?.docs[0]
+      const translatedPage = localizedPages[index]?.find((entry) => entry.slug === page.slug)
       if (translatedPage?.path) {
         links[locale] = buildLocalizedPath(locale, `/${translatedPage.path}`)
       }

@@ -1,13 +1,20 @@
 import './frontend.css'
 import { headers } from 'next/headers'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import FrontendNotFound from '@/components/FrontendNotFound'
 import { getNotFoundPageBlock } from '@/lib/not-found-page'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
+import {
+  PUBLIC_REVALIDATE,
+  getCachedDesignSettings,
+  getCachedHeaderFooter,
+  getCachedSiteContacts,
+  getCachedSiteSettings,
+} from '@/lib/publicData'
+
+export const revalidate = PUBLIC_REVALIDATE
 
 export const metadata = {
   robots: {
@@ -51,36 +58,24 @@ async function detectLocaleFromHeaders() {
 
 export default async function NotFound() {
   const locale = await detectLocaleFromHeaders()
-  const payload = await getPayload({ config: configPromise })
-
-  let siteSettings: SiteSetting | null = null
-  let headerFooter: HeaderFooter | null = null
-  let siteContacts: SiteContact | null = null
-  let designSettings: Record<string, unknown> | null = null
-
-  try {
-    siteSettings = (await payload.findGlobal({ slug: 'site-settings', locale })) as SiteSetting
-  } catch (error) {
-    console.error('Error fetching site-settings global for 404:', error)
-  }
-
-  try {
-    headerFooter = (await payload.findGlobal({ slug: 'header-footer', locale })) as HeaderFooter
-  } catch (error) {
-    console.error('Error fetching header-footer global for 404:', error)
-  }
-
-  try {
-    siteContacts = (await payload.findGlobal({ slug: 'site-contacts', locale })) as SiteContact
-  } catch (error) {
-    console.error('Error fetching site-contacts global for 404:', error)
-  }
-
-  try {
-    designSettings = (await payload.findGlobal({ slug: 'design-settings', locale })) as unknown as Record<string, unknown>
-  } catch (error) {
-    console.error('Error fetching design-settings global for 404:', error)
-  }
+  const [siteSettings, headerFooter, siteContacts, designSettings] = await Promise.all([
+    getCachedSiteSettings(locale).catch((error) => {
+      console.error('Error fetching site-settings global for 404:', error)
+      return null as SiteSetting | null
+    }),
+    getCachedHeaderFooter(locale).catch((error) => {
+      console.error('Error fetching header-footer global for 404:', error)
+      return null as HeaderFooter | null
+    }),
+    getCachedSiteContacts(locale).catch((error) => {
+      console.error('Error fetching site-contacts global for 404:', error)
+      return null as SiteContact | null
+    }),
+    getCachedDesignSettings(locale).catch((error) => {
+      console.error('Error fetching design-settings global for 404:', error)
+      return null as Record<string, unknown> | null
+    }),
+  ])
 
   const sharedMenuItems = siteSettings?.menuItems?.length
     ? siteSettings.menuItems

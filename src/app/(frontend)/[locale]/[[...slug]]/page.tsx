@@ -1,5 +1,3 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PageContent } from '../page-content'
@@ -9,6 +7,15 @@ import type { HomePage as HomePageType, Page, SeoSetting, Service } from '@/payl
 import { isSupportedLocale, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { buildSeoMetadata, type SeoAlternates } from '@/lib/seoMetadata'
 import { getConfiguredSiteUrl } from '@/lib/seo'
+import {
+  PUBLIC_REVALIDATE,
+  getCachedHomePage,
+  getCachedPageByPath,
+  getCachedPageBySlug,
+  getCachedSeoSettings,
+  getCachedServiceByPath,
+  getCachedServicesPage,
+} from '@/lib/publicData'
 
 type RouteDoc = Pick<
   Page,
@@ -41,19 +48,7 @@ type RouteDoc = Pick<
     layout?: unknown[] | null
   }
 
-async function fetchSeoSettings(locale: 'es' | 'en' | 'uk') {
-  const payload = await getPayload({ config: configPromise })
-
-  try {
-    return (await payload.findGlobal({
-      slug: 'seo-settings',
-      locale,
-    })) as SeoSetting
-  } catch (error) {
-    console.error('Error fetching seo-settings global:', error)
-    return null
-  }
-}
+export const revalidate = PUBLIC_REVALIDATE
 
 async function fetchLocalizedDocPaths(
   collection: 'pages' | 'services',
@@ -67,43 +62,18 @@ async function fetchLocalizedDocPaths(
     }
   }
 
-  const payload = await getPayload({ config: configPromise })
-
   const entries = await Promise.all(
     SUPPORTED_LOCALES.map(async (locale) => {
-      const result = await payload.find({
-        collection,
-        locale,
-        fallbackLocale: false,
-        depth: 0,
-        where: {
-          slug: {
-            equals: slug,
-          },
-        },
-        limit: 1,
-      })
-
-      const doc = result.docs[0] as { path?: string | null } | undefined
+      const doc =
+        collection === 'services'
+          ? ((await getCachedServiceByPath(locale, slug, 0).catch(() => null)) as { path?: string | null } | null)
+          : ((await getCachedPageBySlug(locale, slug, 0).catch(() => null)) as { path?: string | null } | null)
       if (!doc?.path) {
         return [locale, null] as const
       }
 
       if (collection === 'services') {
-        const servicesPageResult = await payload.find({
-          collection: 'pages',
-          locale,
-          fallbackLocale: false,
-          depth: 0,
-          where: {
-            slug: {
-              equals: 'services',
-            },
-          },
-          limit: 1,
-        })
-
-        const servicesPage = servicesPageResult.docs[0] as { path?: string | null } | undefined
+        const servicesPage = (await getCachedServicesPage(locale, 0).catch(() => null)) as { path?: string | null } | null
         const servicesBasePath = servicesPage?.path ? `/${servicesPage.path}` : '/services'
 
         return [locale, `${servicesBasePath}/${doc.path}`] as const
@@ -143,60 +113,19 @@ async function resolveMetadataPath({
     return path
   }
 
-  const payload = await getPayload({ config: configPromise })
-  const servicesPageResult = await payload.find({
-    collection: 'pages',
-    locale,
-    fallbackLocale: false,
-    depth: 0,
-    where: {
-      slug: {
-        equals: 'services',
-      },
-    },
-    limit: 1,
-  })
-
-  const servicesPage = servicesPageResult.docs[0] as { path?: string | null } | undefined
+  const servicesPage = (await getCachedServicesPage(locale, 0).catch(() => null)) as { path?: string | null } | null
   const servicesBasePath = servicesPage?.path ? `/${servicesPage.path}` : '/services'
 
   return `${servicesBasePath}/${path}`
 }
 
 async function resolveRouteDocument(locale: 'es' | 'en' | 'uk', slug: string[]) {
-  const payload = await getPayload({ config: configPromise })
-
   if (slug.length === 0) {
-    const homeResult = await payload.find({
-      collection: 'pages',
-      locale,
-      fallbackLocale: false,
-      depth: 1,
-      where: {
-        slug: {
-          equals: 'home',
-        },
-      },
-      limit: 1,
-    })
-
-    return { kind: 'page' as const, doc: homeResult.docs[0] as RouteDoc | undefined, slug: 'home' }
+    const homePage = (await getCachedPageBySlug(locale, 'home', 1).catch(() => null)) as RouteDoc | null
+    return { kind: 'page' as const, doc: homePage || undefined, slug: 'home' }
   }
 
-  const pageResult = await payload.find({
-    collection: 'pages',
-    locale,
-    fallbackLocale: false,
-    depth: 1,
-    where: {
-      path: {
-        equals: slug[0],
-      },
-    },
-    limit: 1,
-  })
-
-  const page = pageResult.docs[0] as RouteDoc | undefined
+  const page = (await getCachedPageByPath(locale, slug[0], 1).catch(() => null)) as RouteDoc | null
 
   if (!page) return null
 
@@ -206,20 +135,7 @@ async function resolveRouteDocument(locale: 'es' | 'en' | 'uk', slug: string[]) 
     }
 
     if (slug.length === 2) {
-      const serviceResult = await payload.find({
-        collection: 'services',
-        locale,
-        fallbackLocale: false,
-        depth: 1,
-        where: {
-          path: {
-            equals: slug[1],
-          },
-        },
-        limit: 1,
-      })
-
-      const service = serviceResult.docs[0] as RouteDoc | undefined
+      const service = (await getCachedServiceByPath(locale, slug[1], 1).catch(() => null)) as RouteDoc | null
       return service ? { kind: 'service' as const, doc: service, slug: service.slug || slug[1] } : null
     }
 
@@ -232,13 +148,8 @@ async function resolveRouteDocument(locale: 'es' | 'en' | 'uk', slug: string[]) 
 }
 
 async function fetchHomePageContent(locale: 'es' | 'en' | 'uk') {
-  const payload = await getPayload({ config: configPromise })
-
   try {
-    return (await payload.findGlobal({
-      slug: 'home-page',
-      locale,
-    })) as HomePageType
+    return (await getCachedHomePage(locale)) as HomePageType
   } catch (error) {
     console.error('Error fetching home-page global for metadata:', error)
     return null
@@ -261,7 +172,10 @@ export async function generateMetadata({
     return {}
   }
 
-  const seoSettings = await fetchSeoSettings(locale as 'es' | 'en' | 'uk')
+  const seoSettings = await getCachedSeoSettings(locale as 'es' | 'en' | 'uk').catch((error) => {
+    console.error('Error fetching seo-settings global:', error)
+    return null as SeoSetting | null
+  })
   const homePageContent = slug.length === 0 ? await fetchHomePageContent(locale as 'es' | 'en' | 'uk') : null
   const siteUrl = await getConfiguredSiteUrl()
   const metadataPath = await resolveMetadataPath({
@@ -309,21 +223,7 @@ export default async function LocalizedPageRouter({
     return PageContent({ locale, slug: 'home' })
   }
 
-  const payload = await getPayload({ config: configPromise })
-  const pageResult = await payload.find({
-    collection: 'pages',
-    locale: locale as 'es' | 'en' | 'uk',
-    fallbackLocale: false,
-    depth: 1,
-    where: {
-      path: {
-        equals: slug[0],
-      },
-    },
-    limit: 1,
-  })
-
-  const page = pageResult.docs[0]
+  const page = await getCachedPageByPath(locale as 'es' | 'en' | 'uk', slug[0], 1)
   if (!page) {
     return notFound()
   }

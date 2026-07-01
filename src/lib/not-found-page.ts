@@ -1,6 +1,6 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import type { Media, Page } from '@/payload-types'
+import { getCachedPageBySlug } from '@/lib/publicData'
 
 export type NotFoundPageBlock = {
   title?: string | null
@@ -19,27 +19,23 @@ function isContentImageBlock(
 }
 
 export async function getNotFoundPageBlock(locale?: 'es' | 'en' | 'uk') {
-  const payload = await getPayload({ config: configPromise })
+  const resolvedLocale = locale || 'es'
 
-  const result = await payload.find({
-    collection: 'pages',
-    ...(locale ? { locale } : {}),
-    fallbackLocale: ['es', 'en', 'uk'],
-    depth: 1,
-    where: {
-      slug: {
-        equals: '404',
-      },
+  return unstable_cache(
+    async () => {
+      const pageData = (await getCachedPageBySlug(resolvedLocale, '404', 1).catch(() => null)) as Page | null
+      const contentImageBlock = pageData?.layout?.find(isContentImageBlock) || null
+
+      return {
+        locale: resolvedLocale,
+        pageData,
+        contentImageBlock,
+      }
     },
-    limit: 1,
-  })
-
-  const pageData = (result.docs[0] as Page | undefined) || null
-  const contentImageBlock = pageData?.layout?.find(isContentImageBlock) || null
-
-  return {
-    locale: locale || 'es',
-    pageData,
-    contentImageBlock,
-  }
+    ['not-found-page-block', resolvedLocale],
+    {
+      revalidate: 300,
+      tags: [`not-found-page-block:${resolvedLocale}`],
+    },
+  )()
 }

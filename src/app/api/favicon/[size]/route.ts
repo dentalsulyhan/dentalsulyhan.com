@@ -1,8 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import sharp from 'sharp'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import { getCachedSiteSettings } from '@/lib/publicData'
 
 const ALLOWED_SIZES = new Set([16, 32, 180, 192, 512])
 
@@ -34,12 +33,7 @@ export async function GET(
   }
 
   try {
-    const payload = await getPayload({ config: configPromise })
-    const siteSettings = (await payload.findGlobal({
-      slug: 'site-settings',
-      locale: 'es',
-      depth: 1,
-    })) as { branding?: { favicon?: number | BrandingMedia | null } } | null
+    const siteSettings = (await getCachedSiteSettings('es').catch(() => null)) as { branding?: { favicon?: number | BrandingMedia | null } } | null
 
     const favicon = siteSettings?.branding?.favicon
 
@@ -50,7 +44,7 @@ export async function GET(
     let source: Buffer
 
     if (favicon.url && /^https?:\/\//.test(favicon.url)) {
-      const remoteResponse = await fetch(favicon.url, { cache: 'no-store' })
+      const remoteResponse = await fetch(favicon.url, { cache: 'force-cache' })
 
       if (!remoteResponse.ok) {
         return new Response('Failed to fetch favicon source', { status: 502 })

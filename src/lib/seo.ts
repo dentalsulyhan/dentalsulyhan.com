@@ -1,8 +1,6 @@
-import { cache } from 'react'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
-import type { SeoSetting } from '@/payload-types'
+import { unstable_cache } from 'next/cache'
 import { DEFAULT_LOCALE, type SupportedLocale, buildLocalizedPath, normalizePath } from '@/lib/localizedRouting'
+import { PUBLIC_REVALIDATE, getCachedSeoSettings } from '@/lib/publicData'
 
 function getRawSiteUrl() {
   return (
@@ -22,24 +20,30 @@ export function getSiteUrl() {
   return normalizeSiteUrl(getRawSiteUrl())
 }
 
-export const getConfiguredSiteUrl = cache(async () => {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const seoSettings = (await payload.findGlobal({
-      slug: 'seo-settings',
-      locale: DEFAULT_LOCALE,
-    })) as SeoSetting
+export const getConfiguredSiteUrl = unstable_cache(
+  async () => {
+    try {
+      const seoSettings = await getCachedSeoSettings(DEFAULT_LOCALE).catch((error) => {
+        console.error('Error fetching seo-settings baseUrl:', error)
+        return null
+      })
 
-    const cmsBaseUrl = seoSettings?.baseUrl?.trim()
-    if (cmsBaseUrl) {
-      return normalizeSiteUrl(cmsBaseUrl)
+      const cmsBaseUrl = seoSettings?.baseUrl?.trim()
+      if (cmsBaseUrl) {
+        return normalizeSiteUrl(cmsBaseUrl)
+      }
+    } catch (error) {
+      console.error('Error resolving configured siteUrl:', error)
     }
-  } catch (error) {
-    console.error('Error fetching seo-settings baseUrl:', error)
-  }
 
-  return getSiteUrl()
-})
+    return getSiteUrl()
+  },
+  ['configured-site-url'],
+  {
+    revalidate: PUBLIC_REVALIDATE,
+    tags: ['configured-site-url'],
+  },
+)
 
 export function getMetadataBase() {
   return new URL(getSiteUrl())

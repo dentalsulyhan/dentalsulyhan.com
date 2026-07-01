@@ -1,5 +1,3 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -9,6 +7,15 @@ import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 import { buildBreadcrumbStructuredData, buildFaqStructuredData, buildServiceStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
+import {
+  getCachedPagePathEntries,
+  getCachedSeoSettings,
+  getCachedServiceByPath,
+  getCachedServicePathEntries,
+  getCachedServicesPage,
+  getCachedSiteContacts,
+  getCachedSiteSettings,
+} from '@/lib/publicData'
 import ContactForm from '../../../../../components/ContactForm'
 import AccordionList from '../../../../../components/AccordionList'
 
@@ -155,58 +162,37 @@ export async function ServiceDetailPageContent({
   locale: string
   slug: string
 }) {
-  const payload = await getPayload({ config: configPromise })
-  const [allPagesResult, allServicesResult] = await Promise.all([
-    payload.find({
-      collection: 'pages',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 200,
+  const [allPagesDocs, allServicesDocs, service, servicesPage, siteSettings, seoSettings, siteContacts, siteUrl] = await Promise.all([
+    getCachedPagePathEntries(locale as 'es' | 'en' | 'uk').catch(() => []),
+    getCachedServicePathEntries(locale as 'es' | 'en' | 'uk').catch(() => []),
+    getCachedServiceByPath(locale as 'es' | 'en' | 'uk', slug, 3).catch(() => null),
+    getCachedServicesPage(locale as 'es' | 'en' | 'uk', 1).catch(() => null),
+    getCachedSiteSettings(locale as 'es' | 'en' | 'uk').catch((error) => {
+      console.error('Error fetching site settings for service page:', error)
+      return null as SiteSetting | null
     }),
-    payload.find({
-      collection: 'services',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 200,
+    getCachedSeoSettings(locale as 'es' | 'en' | 'uk').catch((error) => {
+      console.error('Error fetching seo-settings for service page:', error)
+      return null as SeoSetting | null
     }),
+    getCachedSiteContacts(locale as 'es' | 'en' | 'uk').catch((error) => {
+      console.error('Error fetching site contacts for service page:', error)
+      return {} as SiteContact
+    }),
+    getConfiguredSiteUrl(),
   ])
 
   const pagePaths = Object.fromEntries(
-    allPagesResult.docs
+    allPagesDocs
       .filter((page) => typeof page.slug === 'string' && typeof page.path === 'string')
       .map((page) => [page.slug, { path: page.slug === 'home' ? '/' : `/${page.path}` }]),
   )
   const servicePaths = Object.fromEntries(
-    allServicesResult.docs
+    allServicesDocs
       .filter((service) => typeof service.slug === 'string' && typeof service.path === 'string')
       .map((service) => [service.slug, { path: service.path }]),
   )
-
-  const { docs } = await payload.find({
-    collection: 'services',
-    where: {
-      path: { equals: slug },
-    },
-    locale: locale as 'es' | 'en' | 'uk',
-    fallbackLocale: false,
-    depth: 3,
-    limit: 1,
-  })
-
-  const service = docs[0]
   if (!service) return notFound()
-  const servicePageResult = await payload.find({
-    collection: 'pages',
-    locale: locale as 'es' | 'en' | 'uk',
-    fallbackLocale: false,
-    where: {
-      slug: {
-        equals: 'services',
-      },
-    },
-    limit: 1,
-  })
-  const servicesPage = servicePageResult.docs[0]
   const servicesBasePath = `/${servicesPage?.path || 'services'}`
   const resolveHref = (link: string | null | undefined) =>
     resolveInternalHref({
@@ -217,36 +203,6 @@ export async function ServiceDetailPageContent({
       servicesPagePath: servicesBasePath,
     })
 
-  let siteSettings: SiteSetting | null = null
-  try {
-    siteSettings = (await payload.findGlobal({
-      slug: 'site-settings',
-      locale: locale as 'es' | 'en' | 'uk',
-    })) as SiteSetting
-  } catch (error) {
-    console.error('Error fetching site settings for service page:', error)
-  }
-
-  let seoSettings: SeoSetting | null = null
-  try {
-    seoSettings = (await payload.findGlobal({
-      slug: 'seo-settings',
-      locale: locale as 'es' | 'en' | 'uk',
-    })) as SeoSetting
-  } catch (error) {
-    console.error('Error fetching seo-settings for service page:', error)
-  }
-
-  let siteContacts: SiteContact = {} as SiteContact
-  try {
-    siteContacts = (await payload.findGlobal({
-      slug: 'site-contacts',
-      locale: locale as 'es' | 'en' | 'uk',
-    })) as SiteContact
-  } catch (error) {
-    console.error('Error fetching site contacts for service page:', error)
-  }
-
   const contacts: ContactData = {
     ...siteContacts,
     ...(siteSettings?.contacts || {}),
@@ -255,7 +211,6 @@ export async function ServiceDetailPageContent({
 
   const globalContact = siteSettings?.globalContactSection
   const serviceLayout = service.layout || []
-  const siteUrl = await getConfiguredSiteUrl()
   const faqStructuredData = buildFaqStructuredData(
     serviceLayout.flatMap((block) => {
       if (block.blockType !== 'faq') return []
@@ -1104,19 +1059,13 @@ export default async function ServicePage({
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
   const locales = ['es', 'en', 'uk']
   const params: { locale: string; slug: string }[] = []
 
   for (const locale of locales) {
-    const services = await payload.find({
-      collection: 'services',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 100,
-    })
+    const services = await getCachedServicePathEntries(locale as 'es' | 'en' | 'uk')
 
-    services.docs.forEach((service) => {
+    services.forEach((service) => {
       if (typeof service.path === 'string' && service.path) {
         params.push({ locale, slug: service.path })
       }

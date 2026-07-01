@@ -1,5 +1,3 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -9,6 +7,13 @@ import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 import { buildBreadcrumbStructuredData, buildItemListStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
+import {
+  getCachedPagePathEntries,
+  getCachedServicePathEntries,
+  getCachedServicesPage,
+  getCachedSiteContacts,
+  getCachedSiteSettings,
+} from '@/lib/publicData'
 import ContactForm from '../../../../components/ContactForm'
 
 function mediaUrl(field: unknown): string | null {
@@ -76,47 +81,31 @@ export async function ServicesListingPageContent({
 }: {
   locale: string
 }) {
-  const payload = await getPayload({ config: configPromise })
-  const [allPagesResult, allServicesResult] = await Promise.all([
-    payload.find({
-      collection: 'pages',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 200,
+  const [allPagesDocs, allServicesDocs, pageData, siteSettings, siteContacts, siteUrl] = await Promise.all([
+    getCachedPagePathEntries(locale as 'es' | 'en' | 'uk').catch(() => []),
+    getCachedServicePathEntries(locale as 'es' | 'en' | 'uk').catch(() => []),
+    getCachedServicesPage(locale as 'es' | 'en' | 'uk', 3).catch(() => null),
+    getCachedSiteSettings(locale as 'es' | 'en' | 'uk').catch((error) => {
+      console.error('Error fetching site settings for services page:', error)
+      return null as SiteSetting | null
     }),
-    payload.find({
-      collection: 'services',
-      locale: locale as 'es' | 'en' | 'uk',
-      fallbackLocale: false,
-      limit: 200,
+    getCachedSiteContacts(locale as 'es' | 'en' | 'uk').catch((error) => {
+      console.error('Error fetching site contacts for services page:', error)
+      return {} as SiteContact
     }),
+    getConfiguredSiteUrl(),
   ])
 
   const pagePaths = Object.fromEntries(
-    allPagesResult.docs
+    allPagesDocs
       .filter((page) => typeof page.slug === 'string' && typeof page.path === 'string')
       .map((page) => [page.slug, { path: page.slug === 'home' ? '/' : `/${page.path}` }]),
   )
   const servicePaths = Object.fromEntries(
-    allServicesResult.docs
+    allServicesDocs
       .filter((service) => typeof service.slug === 'string' && typeof service.path === 'string')
       .map((service) => [service.slug, { path: service.path }]),
   )
-
-  const pagesResult = await payload.find({
-    collection: 'pages',
-    locale: locale as 'es' | 'en' | 'uk',
-    fallbackLocale: false,
-    where: {
-      slug: {
-        equals: 'services',
-      },
-    },
-    depth: 3,
-    limit: 1,
-  })
-
-  const pageData = (pagesResult.docs[0] as Page | undefined) || null
   if (!pageData) return notFound()
   const servicesBasePath = `/${pageData.path || 'services'}`
   const resolveHref = (link: string | null | undefined) =>
@@ -128,26 +117,6 @@ export async function ServicesListingPageContent({
       servicesPagePath: servicesBasePath,
     })
 
-  let siteSettings: SiteSetting | null = null
-  try {
-    siteSettings = (await payload.findGlobal({
-      slug: 'site-settings',
-      locale: locale as 'es' | 'en' | 'uk',
-    })) as SiteSetting
-  } catch (error) {
-    console.error('Error fetching site settings for services page:', error)
-  }
-
-  let siteContacts: SiteContact = {} as SiteContact
-  try {
-    siteContacts = (await payload.findGlobal({
-      slug: 'site-contacts',
-      locale: locale as 'es' | 'en' | 'uk',
-    })) as SiteContact
-  } catch (error) {
-    console.error('Error fetching site contacts for services page:', error)
-  }
-
   const contacts: ContactData = {
     ...siteContacts,
     ...(siteSettings?.contacts || {}),
@@ -156,9 +125,8 @@ export async function ServicesListingPageContent({
 
   const pageLayout = pageData.layout || []
   const globalContact = siteSettings?.globalContactSection
-  const siteUrl = await getConfiguredSiteUrl()
   const itemListStructuredData = buildItemListStructuredData(
-    allServicesResult.docs
+    allServicesDocs
       .filter((service) => typeof service.title === 'string' && Boolean(service.path))
       .map((service) => ({
         name: service.title as string,

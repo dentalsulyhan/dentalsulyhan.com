@@ -175,9 +175,8 @@ export default function GoogleReviews({
         setIsLoading(true)
         setHasError(false)
 
-        const response = await fetch(`https://api.featurable.com/v2/widgets/${FEATURABLE_ID}`, {
+        const response = await fetch('/api/google-reviews', {
           method: 'GET',
-          cache: 'no-store',
         })
 
         if (!response.ok) {
