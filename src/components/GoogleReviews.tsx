@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
+import PageSpinner from '@/components/PageSpinner'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
 import 'swiper/css'
@@ -211,8 +212,8 @@ export default function GoogleReviews({
 
   if (isLoading) {
     return (
-      <div className="rounded-[28px] border border-[#22282b]/10 bg-white px-6 py-10 text-center text-[#6b7478]">
-        {t.loading}
+      <div className="rounded-[28px] border border-[#22282b]/10 bg-white">
+        <PageSpinner label={t.loading} className="py-12" sizeClassName="h-10 w-10" />
       </div>
     )
   }
