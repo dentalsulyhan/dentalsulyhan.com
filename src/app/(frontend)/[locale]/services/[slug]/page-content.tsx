@@ -394,8 +394,8 @@ export async function ServiceDetailPageContent({
 
             return (
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
-                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
-                  <div className={isImageContained ? 'relative w-full max-w-[520px] h-full min-h-[420px] max-[991px]:max-w-none max-[991px]:h-full max-[991px]:min-h-[320px] overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'relative w-full h-full min-h-[420px] max-[991px]:min-h-[320px] overflow-hidden'}>
+                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
+                  <div className={isImageContained ? 'relative w-full max-w-[520px] h-full min-h-[420px] max-[991px]:max-w-none max-[991px]:min-h-0 overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'relative w-full h-full min-h-[420px] max-[991px]:min-h-0 overflow-hidden'}>
                     {imageUrl ? <Image src={imageUrl} alt={block.title || service.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
@@ -450,9 +450,9 @@ export async function ServiceDetailPageContent({
                       return (
                         <div
                           key={item.id || itemIndex}
-                          className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 ${isRowLayout ? 'max-[767px]:items-center max-[767px]:text-center' : 'max-[767px]:items-start max-[767px]:text-left'}`}
+                          className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 max-[767px]:items-center max-[767px]:text-center`}
                         >
-                          <div className={`flex w-full ${isRowLayout ? 'flex-row items-center gap-4 text-left max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'} max-[767px]:flex-col max-[767px]:justify-start max-[767px]:text-left`}`}>
+                          <div className={`flex w-full ${isRowLayout ? 'flex-row items-center gap-4 text-left max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'} max-[767px]:flex-col max-[767px]:justify-center max-[767px]:text-center`}`}>
                             {iconUrl ? (
                               <Image src={iconUrl} alt={item.title || 'Advantage icon'} width={50} height={50} className="w-auto h-[50px] shrink-0" />
                             ) : (
@@ -465,7 +465,7 @@ export async function ServiceDetailPageContent({
                             {item.title && <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
                           </div>
                           {item.text && (
-                            <div className={`${isRowLayout ? 'text-center' : 'mobile-richtext-left max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'} text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]`}>
+                            <div className={`${isRowLayout ? 'text-center' : 'mobile-richtext-left max-[767px]:text-center max-[767px]:[&_p]:text-center max-[767px]:[&_li]:text-center'} text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]`}>
                               <RichText data={item.text} />
                             </div>
                           )}
@@ -733,9 +733,9 @@ export async function ServiceDetailPageContent({
 
             return (
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
-                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? (
-                    <div className="relative w-full h-full min-h-[420px] max-[991px]:min-h-[320px]">
+                    <div className="relative w-full h-full min-h-[420px] max-[991px]:h-auto max-[991px]:min-h-0">
                       <Image src={imageUrl} alt={block.title || service.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                     </div>
                   ) : <div className="w-full h-full bg-[#e8e0d8]" />}
@@ -815,7 +815,7 @@ export async function ServiceDetailPageContent({
 
             return (
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
-                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? <Image src={imageUrl} alt={pricingGroup.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, idx % 2 === 0 ? 'panel' : 'panelAlt')}>

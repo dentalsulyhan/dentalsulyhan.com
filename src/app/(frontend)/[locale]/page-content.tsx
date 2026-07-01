@@ -471,23 +471,23 @@ export async function PageContent({
                     return (
                       <div
                         key={item.id || itemIndex}
-                        className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col"
+                        className="flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0"
                       >
                         <div
-                          className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${
+                          className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] max-[991px]:overflow-hidden ${
                             isReversed ? 'order-2 max-[991px]:order-1' : 'order-1'
                           }`}
                         >
                           {imgUrl ? (
-                            <div className="relative w-full h-full min-h-[320px]">
+                            <div className="relative w-full h-full min-h-[320px] max-[991px]:min-h-0">
                               <Image src={imgUrl} alt={item.title || `About ${itemIndex + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                             </div>
                           ) : (
-                            <ImagePlaceholder label={item.title || aboutLabels[itemIndex % aboutLabels.length]} className="w-full h-full min-h-[320px]" />
+                            <ImagePlaceholder label={item.title || aboutLabels[itemIndex % aboutLabels.length]} className="w-full h-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3]" />
                           )}
                         </div>
                         <div
-                          className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-14 max-[1100px]:py-10 ${bgClass} ${
+                          className={`w-1/2 max-[991px]:w-full flex flex-col justify-center max-[991px]:justify-start gap-5 py-14 max-[1100px]:py-10 ${bgClass} ${
                             isReversed
                               ? 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'
                               : 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'
@@ -596,17 +596,17 @@ export async function PageContent({
               const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
-                <section key={block.id || idx} id="offers" className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
-                  <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
+                <section key={block.id || idx} id="offers" className={`flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0 ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
+                  <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] max-[991px]:overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {imageUrl ? (
-                      <div className="relative w-full h-full min-h-[320px]">
+                      <div className="relative w-full h-full min-h-[320px] max-[991px]:min-h-0">
                         <Image src={imageUrl} alt={promotion.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                       </div>
                     ) : (
-                      <ImagePlaceholder label={promotion.title} className="w-full h-full min-h-[320px]" />
+                      <ImagePlaceholder label={promotion.title} className="w-full h-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3]" />
                     )}
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center max-[991px]:justify-start gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                     <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{promotion.title}</h2>
                     {promotion.content ? (
                       <div className="prose max-w-none text-[#22282b]">
@@ -1024,9 +1024,9 @@ export async function PageContent({
               const buttonClass = getButtonStyle(block.buttonStyle)
 
               return (
-                <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
+                <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0">
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
-                    <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
+                    <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
                       {imageUrl ? (
                         <div className="relative w-full h-full">
                           <Image src={imageUrl} alt={block.title || `Content block ${idx + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
@@ -1036,7 +1036,7 @@ export async function PageContent({
                       )}
                     </div>
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center max-[991px]:justify-start gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                     {block.title && (
                       <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>
                     )}
@@ -1386,11 +1386,11 @@ export async function PageContent({
                     return (
                       <div
                         key={block.id || i}
-                        className="flex items-stretch min-h-[500px] max-[991px]:h-auto max-[991px]:flex-col"
+                        className="flex items-stretch min-h-[500px] max-[991px]:block max-[991px]:h-auto"
                       >
                         {/* Photo side */}
                         <div
-                          className={`w-1/2 max-[991px]:w-full h-full min-h-[500px] max-[991px]:min-h-[300px] flex ${
+                          className={`w-1/2 max-[991px]:w-full h-full min-h-[500px] max-[991px]:h-auto max-[991px]:min-h-[300px] max-[991px]:overflow-hidden flex ${
                             isReversed ? 'order-2 max-[991px]:order-1' : 'order-1'
                           }`}
                         >
@@ -1399,12 +1399,12 @@ export async function PageContent({
                               <Image src={imgUrl} alt={block.title || `About ${i + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                             </div>
                           ) : (
-                            <ImagePlaceholder label={block.title || aboutLabels[i % aboutLabels.length]} className="w-full h-full" />
+                            <ImagePlaceholder label={block.title || aboutLabels[i % aboutLabels.length]} className="w-full h-full max-[991px]:aspect-[4/3]" />
                           )}
                         </div>
                         {/* Text side */}
                         <div
-                          className={`w-1/2 max-[991px]:w-full h-full min-h-[500px] max-[991px]:min-h-0 flex flex-col justify-center gap-5 ${bgClass} ${
+                          className={`w-1/2 max-[991px]:w-full h-full min-h-[500px] max-[991px]:h-auto max-[991px]:min-h-0 flex flex-col justify-center max-[991px]:justify-start gap-5 ${bgClass} ${
                             isReversed
                               ? 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[991px]:px-[30px]'
                               : 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[991px]:px-[30px]'
@@ -1437,17 +1437,17 @@ export async function PageContent({
                     return (
                       <div
                         key={i}
-                        className="flex items-center h-[500px] max-[991px]:h-auto max-[991px]:flex-col"
+                        className="flex items-center h-[500px] max-[991px]:block max-[991px]:h-auto"
                       >
                         <div
-                          className={`w-1/2 max-[991px]:w-full h-full flex max-[991px]:min-h-[300px] ${
+                          className={`w-1/2 max-[991px]:w-full h-full max-[991px]:h-auto max-[991px]:overflow-hidden flex max-[991px]:min-h-[300px] ${
                             isReversed ? 'order-2 max-[991px]:order-1' : 'order-1'
                           }`}
                         >
-                          <ImagePlaceholder label={aboutLabels[i]} className="w-full h-full" />
+                          <ImagePlaceholder label={aboutLabels[i]} className="w-full h-full max-[991px]:aspect-[4/3]" />
                         </div>
                         <div
-                          className={`w-1/2 max-[991px]:w-full h-full flex flex-col justify-center gap-5 ${bgClass} ${
+                          className={`w-1/2 max-[991px]:w-full h-full max-[991px]:h-auto flex flex-col justify-center max-[991px]:justify-start gap-5 ${bgClass} ${
                             isReversed
                               ? 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[991px]:px-[30px]'
                               : 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[991px]:px-[30px]'

@@ -217,9 +217,9 @@ export async function ServicesListingPageContent({
             return (
               <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
                 <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
-                  <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
+                  <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-auto overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full max-[991px]:h-auto'}>
                     {imageUrl ? (
-                      <div className="relative w-full h-full">
+                      <div className="relative w-full h-full max-[991px]:h-auto">
                         <Image src={imageUrl} alt={block.title || `Services ${idx + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                       </div>
                     ) : <div className="w-full h-full bg-[#e8e0d8]" />}
@@ -317,7 +317,7 @@ export async function ServicesListingPageContent({
               <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col">
                 <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? (
-                    <div className="relative w-full h-full min-h-[320px]">
+                    <div className="relative w-full h-full min-h-[320px] max-[991px]:h-auto">
                       <Image src={imageUrl} alt={pricingGroup.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                     </div>
                   ) : <div className="w-full h-full bg-[#e8e0d8]" />}
