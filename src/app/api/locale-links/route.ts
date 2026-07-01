@@ -3,12 +3,20 @@ import configPromise from '@payload-config'
 import { NextResponse } from 'next/server'
 import { buildLocalizedPath, DEFAULT_LOCALE, detectLocaleFromPathname, stripLocalePrefix, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 
+const responseHeaders = {
+  'Cache-Control': 'public, max-age=300, stale-while-revalidate=86400',
+}
+
 function getDefaultLinks() {
   return {
     es: '/',
     en: '/en',
     uk: '/uk',
   }
+}
+
+function buildResponse(links: Record<string, string>) {
+  return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE }, { headers: responseHeaders })
 }
 
 export async function GET(request: Request) {
@@ -26,7 +34,7 @@ export async function GET(request: Request) {
       rawPath.startsWith('/admin') ||
       rawPath.startsWith('/.well-known')
     ) {
-      return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE })
+      return buildResponse(links)
     }
 
     const currentLocale = detectLocaleFromPathname(rawPath)
@@ -36,6 +44,10 @@ export async function GET(request: Request) {
       collection: 'pages',
       locale: currentLocale,
       fallbackLocale: false,
+      select: {
+        slug: true,
+        path: true,
+      },
       where: {
         path: {
           equals: segments[0],
@@ -46,7 +58,7 @@ export async function GET(request: Request) {
 
     const page = pagesResult.docs[0]
     if (!page) {
-      return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE })
+      return buildResponse(links)
     }
 
     if (page.slug === 'services') {
@@ -57,6 +69,9 @@ export async function GET(request: Request) {
           collection: 'services',
           locale: currentLocale,
           fallbackLocale: false,
+          select: {
+            slug: true,
+          },
           where: {
             path: {
               equals: segments[1],
@@ -68,20 +83,27 @@ export async function GET(request: Request) {
         currentServiceSlug = currentServiceResult.docs[0]?.slug || null
       }
 
-      for (const locale of SUPPORTED_LOCALES) {
-        const localizedPage = await payload.find({
+      const localizedPages = await Promise.all(
+        SUPPORTED_LOCALES.map((locale) =>
+          payload.find({
           collection: 'pages',
           locale,
           fallbackLocale: false,
+          select: {
+            path: true,
+          },
           where: {
             slug: {
               equals: 'services',
             },
           },
           limit: 1,
-        })
+          }),
+        ),
+      )
 
-        const servicesPage = localizedPage.docs[0]
+      for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
+        const servicesPage = localizedPages[index]?.docs[0]
         const servicesPath = `/${servicesPage?.path || 'services'}`
 
         if (segments.length === 1) {
@@ -92,54 +114,75 @@ export async function GET(request: Request) {
         if (!currentServiceSlug) {
           continue
         }
+      }
 
-        const serviceResult = await payload.find({
-          collection: 'services',
-          locale,
-          fallbackLocale: false,
-          where: {
-            slug: {
-              equals: currentServiceSlug,
-            },
-          },
-          limit: 1,
-        })
+      if (currentServiceSlug && segments.length > 1) {
+        const localizedServices = await Promise.all(
+          SUPPORTED_LOCALES.map((locale) =>
+            payload.find({
+              collection: 'services',
+              locale,
+              fallbackLocale: false,
+              select: {
+                path: true,
+              },
+              where: {
+                slug: {
+                  equals: currentServiceSlug,
+                },
+              },
+              limit: 1,
+            }),
+          ),
+        )
 
-        const service = serviceResult.docs[0]
-        if (service?.path) {
-          links[locale] = buildLocalizedPath(locale, `${servicesPath}/${service.path}`)
+        for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
+          const servicesPage = localizedPages[index]?.docs[0]
+          const service = localizedServices[index]?.docs[0]
+          const servicesPath = `/${servicesPage?.path || 'services'}`
+
+          if (service?.path) {
+            links[locale] = buildLocalizedPath(locale, `${servicesPath}/${service.path}`)
+          }
         }
       }
 
-      return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE })
+      return buildResponse(links)
     }
 
     if (page.slug === 'home') {
-      return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE })
+      return buildResponse(links)
     }
 
-    for (const locale of SUPPORTED_LOCALES) {
-      const localizedPage = await payload.find({
+    const localizedPages = await Promise.all(
+      SUPPORTED_LOCALES.map((locale) =>
+        payload.find({
         collection: 'pages',
         locale,
         fallbackLocale: false,
+        select: {
+          path: true,
+        },
         where: {
           slug: {
             equals: page.slug,
           },
         },
         limit: 1,
-      })
+        }),
+      ),
+    )
 
-      const translatedPage = localizedPage.docs[0]
+    for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
+      const translatedPage = localizedPages[index]?.docs[0]
       if (translatedPage?.path) {
         links[locale] = buildLocalizedPath(locale, `/${translatedPage.path}`)
       }
     }
 
-    return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE })
+    return buildResponse(links)
   } catch (error) {
     console.error('Error building locale links:', error)
-    return NextResponse.json({ links: getDefaultLinks(), defaultLocale: DEFAULT_LOCALE })
+    return buildResponse(getDefaultLinks())
   }
 }

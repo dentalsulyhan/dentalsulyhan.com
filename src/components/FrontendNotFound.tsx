@@ -160,6 +160,7 @@ export default function FrontendNotFound({ locale: forcedLocale, splitContent }:
             <button
               type="button"
               onClick={() => window.history.back()}
+              aria-label={t.back}
               className="mt-5 text-left text-[14px] font-medium text-[#7a8489] hover:text-[#3c5557] transition-colors"
             >
               {t.back}

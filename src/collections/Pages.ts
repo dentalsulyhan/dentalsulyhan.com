@@ -1,5 +1,6 @@
 import type { CollectionConfig, Field } from 'payload'
 import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
+import { seoFields } from '@/lib/seoFields'
 
 const sectionSpacingField = {
   name: 'compactSpacing',
@@ -136,6 +137,7 @@ export const Pages: CollectionConfig = {
         },
       },
     },
+    seoFields(),
     {
       name: 'layout',
       type: 'blocks',

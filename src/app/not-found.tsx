@@ -9,6 +9,13 @@ import { getNotFoundPageBlock } from '@/lib/not-found-page'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
+
 type BrandingData = {
   favicon?: number | { url?: string | null; alt?: string | null } | null
   logo?: number | { url?: string | null; alt?: string | null } | null

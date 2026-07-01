@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -37,10 +38,12 @@ export default function TeamSlider({ members }: TeamSliderProps) {
             <div key={member.id} className="rounded-[20px] overflow-hidden flex flex-col">
               <div className="relative h-[400px] max-[767px]:h-[280px]">
                 {photoUrl ? (
-                  <img
+                  <Image
                     src={photoUrl}
                     alt={member.name}
-                    className="absolute inset-0 w-full h-full object-cover rounded-[20px]"
+                    fill
+                    sizes="(max-width: 567px) 100vw, (max-width: 767px) 50vw, (max-width: 991px) 33vw, 25vw"
+                    className="object-cover rounded-[20px]"
                   />
                 ) : (
                   <div className="absolute inset-0 w-full h-full bg-[#e8e0d8] rounded-[20px] flex items-center justify-center text-[#909da2]">
@@ -95,10 +98,12 @@ export default function TeamSlider({ members }: TeamSliderProps) {
               {/* Photo container */}
               <div className="relative h-[400px] max-[767px]:h-[280px]">
                 {photoUrl ? (
-                  <img
+                  <Image
                     src={photoUrl}
                     alt={member.name}
-                    className="absolute inset-0 w-full h-full object-cover rounded-[20px]"
+                    fill
+                    sizes="(max-width: 567px) 100vw, (max-width: 767px) 50vw, (max-width: 991px) 33vw, 25vw"
+                    className="object-cover rounded-[20px]"
                   />
                 ) : (
                   <div className="absolute inset-0 w-full h-full bg-[#e8e0d8] rounded-[20px] flex items-center justify-center text-[#909da2]">
@@ -106,10 +111,12 @@ export default function TeamSlider({ members }: TeamSliderProps) {
                   </div>
                 )}
                 {hoverUrl && (
-                  <img
+                  <Image
                     src={hoverUrl}
                     alt={`${member.name} hover`}
-                    className="absolute inset-0 w-full h-full object-cover rounded-[20px] opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-500 ease-in-out z-[2]"
+                    fill
+                    sizes="(max-width: 567px) 100vw, (max-width: 767px) 50vw, (max-width: 991px) 33vw, 25vw"
+                    className="object-cover rounded-[20px] opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-500 ease-in-out z-[2]"
                   />
                 )}
               </div>
@@ -129,12 +136,12 @@ export default function TeamSlider({ members }: TeamSliderProps) {
 
       {/* Custom pagination & navigation */}
       <div className="team-pagination-custom mt-8 flex justify-center" />
-      <button className="team-btn-prev absolute left-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors max-[767px]:w-[40px] max-[767px]:h-[40px] max-[767px]:left-2">
+      <button aria-label="Previous team slide" className="team-btn-prev absolute left-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors max-[767px]:w-[40px] max-[767px]:h-[40px] max-[767px]:left-2">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#22282b]">
           <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
-      <button className="team-btn-next absolute right-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors max-[767px]:w-[40px] max-[767px]:h-[40px] max-[767px]:right-2">
+      <button aria-label="Next team slide" className="team-btn-next absolute right-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors max-[767px]:w-[40px] max-[767px]:h-[40px] max-[767px]:right-2">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#22282b]">
           <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>

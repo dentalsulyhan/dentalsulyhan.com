@@ -5,10 +5,12 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TrackingScripts from '@/components/TrackingScripts'
 import AnalyticsListener from '@/components/AnalyticsListener'
-import type { HeaderFooter, Page, SiteContact, SiteSetting } from '@/payload-types'
+import type { HeaderFooter, Page, SeoSetting, SiteContact, SiteSetting } from '@/payload-types'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import { isSupportedLocale } from '@/lib/localizedRouting'
 import { notFound } from 'next/navigation'
+import { buildOrganizationStructuredData, buildWebsiteStructuredData } from '@/lib/structuredData'
+import { getConfiguredSiteUrl } from '@/lib/seo'
 
 type BrandingData = {
   favicon?: number | { url?: string | null; alt?: string | null } | null
@@ -87,6 +89,16 @@ export default async function FrontendLayout({
     console.error('Error fetching design-settings global:', err)
   }
 
+  let seoSettings: SeoSetting | null = null
+  try {
+    seoSettings = (await payload.findGlobal({
+      slug: 'seo-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as SeoSetting
+  } catch (err) {
+    console.error('Error fetching seo-settings global:', err)
+  }
+
   const sharedMenuItems = siteSettings?.menuItems?.length
     ? siteSettings.menuItems
     : (headerFooter?.menuItems || [])
@@ -127,11 +139,32 @@ export default async function FrontendLayout({
   }
   const branding = (siteSettings as SiteSetting & { branding?: BrandingData } | null)?.branding
   const tracking = (siteSettings as SiteSetting & { tracking?: TrackingData } | null)?.tracking
+  const siteUrl = await getConfiguredSiteUrl()
+  const structuredData = [
+    buildOrganizationStructuredData({
+      locale: locale as 'es' | 'en' | 'uk',
+      siteName: seoSettings?.siteName,
+      contacts: contactsData,
+      branding,
+      organizationName: seoSettings?.organizationName,
+      organizationLogo: seoSettings?.organizationLogo,
+      organizationPhone: seoSettings?.organizationPhone,
+      organizationEmail: seoSettings?.organizationEmail,
+      organizationAddress: seoSettings?.organizationAddress,
+      siteUrl,
+    }),
+    buildWebsiteStructuredData(locale as 'es' | 'en' | 'uk', seoSettings?.siteName, siteUrl),
+  ]
 
   return (
     <div style={getDesignSettingsVars(designSettings)}>
       <TrackingScripts tracking={tracking} />
       <AnalyticsListener locale={locale} />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Header data={headerData} contacts={contactsData} currentLocale={locale} servicesPath={servicesPath} branding={branding} />
 
       <main className="flex-grow pt-[70px]">

@@ -21,6 +21,7 @@ import { SiteContacts } from './globals/SiteContacts'
 import { Services } from './collections/Services'
 import { TeamMembers } from './collections/TeamMembers'
 import { SiteSettings } from './globals/SiteSettings'
+import { SeoSettings } from './globals/SeoSettings'
 import { ContactSubmissions } from './collections/ContactSubmissions'
 import { DesignSettings } from './globals/DesignSettings'
 
@@ -114,7 +115,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Pages, Pricing, Promotions, Services, TeamMembers, ContactSubmissions],
-  globals: [DesignSettings, SiteSettings, HomePage, HeaderFooter, SiteContacts],
+  globals: [DesignSettings, SeoSettings, SiteSettings, HomePage, HeaderFooter, SiteContacts],
   editor,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

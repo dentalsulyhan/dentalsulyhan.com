@@ -1,13 +1,16 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import ContactForm from '../../../../../components/ContactForm'
-import AccordionList from '../../../../../components/AccordionList'
-import type { Media, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
+import type { Media, Pricing, SeoSetting, Service, SiteContact, SiteSetting } from '@/payload-types'
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { buildBreadcrumbStructuredData, buildFaqStructuredData, buildServiceStructuredData } from '@/lib/structuredData'
+import { getConfiguredSiteUrl } from '@/lib/seo'
+import ContactForm from '../../../../../components/ContactForm'
+import AccordionList from '../../../../../components/AccordionList'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -224,6 +227,16 @@ export async function ServiceDetailPageContent({
     console.error('Error fetching site settings for service page:', error)
   }
 
+  let seoSettings: SeoSetting | null = null
+  try {
+    seoSettings = (await payload.findGlobal({
+      slug: 'seo-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })) as SeoSetting
+  } catch (error) {
+    console.error('Error fetching seo-settings for service page:', error)
+  }
+
   let siteContacts: SiteContact = {} as SiteContact
   try {
     siteContacts = (await payload.findGlobal({
@@ -242,6 +255,38 @@ export async function ServiceDetailPageContent({
 
   const globalContact = siteSettings?.globalContactSection
   const serviceLayout = service.layout || []
+  const siteUrl = await getConfiguredSiteUrl()
+  const faqStructuredData = buildFaqStructuredData(
+    serviceLayout.flatMap((block) => {
+      if (block.blockType !== 'faq') return []
+
+      return (block.items || []).map((item) => ({
+        heading: item.heading,
+        content: item.content,
+      }))
+    }),
+  )
+  const serviceStructuredData = buildServiceStructuredData({
+    name: service.title,
+    description: service.metaDescription || undefined,
+    url: buildLocalizedPath(locale, `${servicesBasePath}/${service.path || service.slug}`),
+    providerName: seoSettings?.organizationName || seoSettings?.siteName || 'Dental Clinic Sulyhan',
+    siteUrl,
+  })
+  const breadcrumbStructuredData = buildBreadcrumbStructuredData([
+    {
+      name: locale === 'uk' ? 'Головна' : locale === 'en' ? 'Home' : 'Inicio',
+      path: locale === 'es' ? '/' : `/${locale}`,
+    },
+    {
+      name: servicesPage?.title || (locale === 'uk' ? 'Послуги' : locale === 'en' ? 'Services' : 'Servicios'),
+      path: servicesBasePath,
+    },
+    {
+      name: service.title,
+      path: buildLocalizedPath(locale, `${servicesBasePath}/${service.path || service.slug}`),
+    },
+  ], siteUrl)
 
   const copy = {
     phoneLabel: siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'en' ? 'Phone' : 'Telefono'),
@@ -258,7 +303,26 @@ export async function ServiceDetailPageContent({
   }
 
   return (
-    <main>
+    <>
+      {breadcrumbStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+        />
+      )}
+      {faqStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+        />
+      )}
+      {serviceStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceStructuredData) }}
+        />
+      )}
+      <main>
       {serviceLayout.map((block, idx) => {
         switch (block.blockType) {
           case 'hero': {
@@ -286,7 +350,7 @@ export async function ServiceDetailPageContent({
                     )}
                   </div>
                   <div className="w-1/2 max-[991px]:w-full relative overflow-hidden h-[clamp(400px,44vw,640px)] max-[991px]:h-auto max-[991px]:min-h-[300px] max-[991px]:aspect-[4/3]">
-                    {imageUrl ? <img src={imageUrl} alt={block.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                    {imageUrl ? <Image src={imageUrl} alt={block.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" priority /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
               </section>
@@ -318,7 +382,7 @@ export async function ServiceDetailPageContent({
               >
                 {backgroundImageUrl && (
                   <>
-                    <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
+                    <Image src={backgroundImageUrl} alt={block.title || 'Content background'} fill sizes="100vw" className="object-cover" />
                     <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
                   </>
                 )}
@@ -377,7 +441,7 @@ export async function ServiceDetailPageContent({
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
                   <div className={isImageContained ? 'relative w-full max-w-[520px] h-full min-h-[420px] max-[991px]:max-w-none max-[991px]:h-full max-[991px]:min-h-[320px] overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'relative w-full h-full min-h-[420px] max-[991px]:min-h-[320px] overflow-hidden'}>
-                    {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="absolute inset-0 w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                    {imageUrl ? <Image src={imageUrl} alt={block.title || service.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                   </div>
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
@@ -435,7 +499,7 @@ export async function ServiceDetailPageContent({
                         >
                           <div className={`flex w-full ${isRowLayout ? 'flex-row items-center gap-4 text-left max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'} max-[767px]:flex-col max-[767px]:justify-start max-[767px]:text-left`}`}>
                             {iconUrl ? (
-                              <img src={iconUrl} alt={item.title || 'Advantage icon'} className="w-auto h-[50px] shrink-0" />
+                              <Image src={iconUrl} alt={item.title || 'Advantage icon'} width={50} height={50} className="w-auto h-[50px] shrink-0" />
                             ) : (
                               <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
                                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -502,7 +566,7 @@ export async function ServiceDetailPageContent({
                             <div className={`flex ${itemLayout === 'row' ? `items-start ${item.title ? 'gap-3' : 'gap-2'}` : `flex-col ${item.title ? 'gap-2' : 'gap-1'}`} ${item.title ? 'mb-3' : 'mb-2'}`}>
                               {iconUrl && (
                                 <div className={`w-[38px] h-[38px] rounded-[12px] bg-[#3c5557]/[0.05] flex items-center justify-center shrink-0 ${item.title ? 'mt-[2px]' : 'mt-0'}`}>
-                                  <img src={iconUrl} alt={item.title || 'Card icon'} className="w-[20px] h-[20px] object-contain shrink-0" />
+                                  <Image src={iconUrl} alt={item.title || 'Card icon'} width={20} height={20} className="w-[20px] h-[20px] object-contain shrink-0" />
                                 </div>
                               )}
                               {item.title && <h3 className="text-[16px] max-[767px]:text-[14px] font-semibold text-[#2d4447] mb-0 leading-snug tracking-[-0.01em]">{item.title}</h3>}
@@ -625,7 +689,7 @@ export async function ServiceDetailPageContent({
                 >
                   {backgroundImageUrl && (
                     <>
-                      <img src={backgroundImageUrl} alt={block.sectionTitle || 'Comparison background'} className="absolute inset-0 w-full h-full object-cover" />
+                      <Image src={backgroundImageUrl} alt={block.sectionTitle || 'Comparison background'} fill sizes="100vw" className="object-cover" />
                       <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
                     </>
                   )}
@@ -715,7 +779,11 @@ export async function ServiceDetailPageContent({
             return (
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
-                  {imageUrl ? <img src={imageUrl} alt={block.title || service.title} className="w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                  {imageUrl ? (
+                    <div className="relative w-full h-full min-h-[420px] max-[991px]:min-h-[320px]">
+                      <Image src={imageUrl} alt={block.title || service.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
+                    </div>
+                  ) : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                   {block.title && <h2 className="text-[28px] max-[767px]:text-[22px] font-semibold text-[#3c5557]">{block.title}</h2>}
@@ -759,7 +827,7 @@ export async function ServiceDetailPageContent({
               <section key={block.id || idx} className={`relative overflow-hidden py-[100px] max-[767px]:py-[64px] ${backgroundImageUrl ? '' : theme.section}`} style={backgroundImageUrl ? undefined : getThemeBackgroundStyle(theme, 'section')}>
                 {backgroundImageUrl && (
                   <>
-                    <img src={backgroundImageUrl} alt={block.title || 'CTA background'} className="absolute inset-0 w-full h-full object-cover" />
+                    <Image src={backgroundImageUrl} alt={block.title || 'CTA background'} fill sizes="100vw" className="object-cover" />
                     <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
                   </>
                 )}
@@ -793,7 +861,7 @@ export async function ServiceDetailPageContent({
             return (
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-[320px] max-[991px]:aspect-[4/3] relative overflow-hidden ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
-                  {imageUrl ? <img src={imageUrl} alt={pricingGroup.title} className="absolute inset-0 w-full h-full object-cover block" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
+                  {imageUrl ? <Image src={imageUrl} alt={pricingGroup.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" /> : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, idx % 2 === 0 ? 'panel' : 'panelAlt')}>
                   <div className="flex flex-col gap-3">
@@ -1021,7 +1089,8 @@ export async function ServiceDetailPageContent({
             return null
         }
       })}
-    </main>
+      </main>
+    </>
   )
 }
 

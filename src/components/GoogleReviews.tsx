@@ -357,6 +357,7 @@ export default function GoogleReviews({
 
         <button
           ref={setPrevEl}
+          aria-label="Previous reviews slide"
           className="reviews-btn-prev absolute left-[calc(12vw-24px)] md:left-[-12px] top-[50%] z-[50] flex h-[32px] w-[32px] -translate-y-1/2 items-center justify-center rounded-full border border-[#22282b]/8 bg-white/95 shadow-[0_8px_18px_rgba(34,40,43,0.06)] transition-colors hover:bg-[#f5ede4] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f696d]">
@@ -366,6 +367,7 @@ export default function GoogleReviews({
 
         <button
           ref={setNextEl}
+          aria-label="Next reviews slide"
           className="reviews-btn-next absolute right-[calc(12vw-24px)] md:right-[-12px] top-[50%] z-[50] flex h-[32px] w-[32px] -translate-y-1/2 items-center justify-center rounded-full border border-[#22282b]/8 bg-white/95 shadow-[0_8px_18px_rgba(34,40,43,0.06)] transition-colors hover:bg-[#f5ede4] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#5f696d]">
