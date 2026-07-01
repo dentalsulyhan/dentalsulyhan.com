@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import type { Media, SeoSetting } from '@/payload-types'
 import { DEFAULT_LOCALE, type SupportedLocale } from '@/lib/localizedRouting'
-import { buildAbsoluteUrl, buildLocalizedAbsoluteUrl } from '@/lib/seo'
+import { buildAbsoluteUrlWithBase, buildLocalizedAbsoluteUrlWithBase } from '@/lib/seo'
 
 export type SeoTarget = {
   title?: string | null
@@ -150,17 +150,18 @@ function resolveCanonicalUrl(
   locale: SupportedLocale,
   path: string | null | undefined,
   canonicalUrl: string | null | undefined,
+  siteUrl?: string,
 ) {
   const trimmedCanonical = canonicalUrl?.trim()
 
   if (trimmedCanonical) {
     return /^https?:\/\//i.test(trimmedCanonical)
       ? trimmedCanonical
-      : buildAbsoluteUrl(trimmedCanonical)
+      : buildAbsoluteUrlWithBase(trimmedCanonical, siteUrl)
   }
 
   if (!path) return undefined
-  return buildLocalizedAbsoluteUrl(locale, path)
+  return buildLocalizedAbsoluteUrlWithBase(locale, path, siteUrl)
 }
 
 function resolveRobots(
@@ -183,39 +184,39 @@ export function buildSeoMetadata({
   target,
   path,
   alternates,
+  siteUrl,
 }: {
   locale: SupportedLocale
   settings: SeoSetting | null | undefined
   target: SeoTarget
   path?: string | null
   alternates?: SeoAlternates
+  siteUrl?: string
 }): Metadata {
   const title = resolveTitle(target.title, settings)
   const description = resolveDescription(target.description, settings, target.content)
-  const canonical = resolveCanonicalUrl(locale, path, target.canonicalUrl)
+  const canonical = resolveCanonicalUrl(locale, path, target.canonicalUrl, siteUrl)
   const robots = resolveRobots(settings, target.noIndex, target.noFollow)
   const ogImage = getMediaUrl(target.image) || getMediaUrl(settings?.defaultOgImage)
+  const languages = Object.fromEntries(
+    Object.entries(alternates || {}).flatMap(([altLocale, altPath]) => {
+      if (!altPath) return []
+      return [[altLocale, buildLocalizedAbsoluteUrlWithBase(altLocale as SupportedLocale, altPath, siteUrl)]]
+    }),
+  )
+
+  if (alternates?.es) {
+    languages['x-default'] = buildLocalizedAbsoluteUrlWithBase(DEFAULT_LOCALE, alternates.es, siteUrl)
+  } else if (canonical) {
+    languages['x-default'] = canonical
+  }
 
   return {
     title,
     description,
     alternates: {
       canonical,
-      languages: Object.fromEntries(
-        Object.entries(alternates || {}).flatMap(([altLocale, altPath]) => {
-          if (!altPath) return []
-          return [[altLocale, buildLocalizedAbsoluteUrl(altLocale as SupportedLocale, altPath)]]
-        }),
-      ),
-      ...(alternates?.es
-        ? {
-            'x-default': buildLocalizedAbsoluteUrl(DEFAULT_LOCALE, alternates.es),
-          }
-        : canonical
-          ? {
-              'x-default': canonical,
-            }
-          : {}),
+      languages,
     },
     openGraph: {
       type: 'website',

@@ -1,5 +1,5 @@
 import type { SiteContact } from '@/payload-types'
-import { buildAbsoluteUrl } from '@/lib/seo'
+import { buildAbsoluteUrlWithBase } from '@/lib/seo'
 import { DEFAULT_LOCALE, type SupportedLocale, buildLocalizedPath } from '@/lib/localizedRouting'
 
 type BrandingData = {
@@ -18,9 +18,9 @@ function getLogoUrl(branding?: BrandingData | null) {
   return mediaUrl(branding?.logoDark) || mediaUrl(branding?.logo) || mediaUrl(branding?.logoLight)
 }
 
-function toAbsoluteUrl(url: string | null | undefined) {
+function toAbsoluteUrl(url: string | null | undefined, siteUrl?: string) {
   if (!url) return undefined
-  return /^https?:\/\//i.test(url) ? url : buildAbsoluteUrl(url)
+  return /^https?:\/\//i.test(url) ? url : buildAbsoluteUrlWithBase(url, siteUrl)
 }
 
 function normalizePhone(value?: string | null) {
@@ -92,18 +92,34 @@ export function buildOrganizationStructuredData({
   siteName,
   contacts,
   branding,
+  organizationName,
+  organizationLogo,
+  organizationPhone,
+  organizationEmail,
+  organizationAddress,
+  siteUrl,
 }: {
   locale: SupportedLocale
   siteName?: string | null
   contacts: Partial<SiteContact> | null | undefined
   branding?: BrandingData | null
+  organizationName?: string | null
+  organizationLogo?: unknown
+  organizationPhone?: string | null
+  organizationEmail?: string | null
+  organizationAddress?: string | null
+  siteUrl?: string
 }) {
-  const resolvedSiteName = siteName?.trim() || 'Dental Clinic Sulyhan'
-  const siteUrl = buildAbsoluteUrl(locale === DEFAULT_LOCALE ? '/' : `/${locale}`)
-  const logoUrl = getLogoUrl(branding)
-  const contactPoint = normalizePhone(contacts?.phone)
-  const email = contacts?.email?.trim() || undefined
-  const address = normalizeAddress(contacts?.address)
+  const resolvedSiteName =
+    organizationName?.trim() || siteName?.trim() || 'Dental Clinic Sulyhan'
+  const localizedSiteUrl = buildAbsoluteUrlWithBase(
+    locale === DEFAULT_LOCALE ? '/' : `/${locale}`,
+    siteUrl,
+  )
+  const logoUrl = mediaUrl(organizationLogo) || getLogoUrl(branding)
+  const contactPoint = normalizePhone(organizationPhone || contacts?.phone)
+  const email = organizationEmail?.trim() || contacts?.email?.trim() || undefined
+  const address = normalizeAddress(organizationAddress || contacts?.address)
   const sameAs = [...(contacts?.socialLinks || [])]
     .map((link) => link.url?.trim())
     .filter((url): url is string => Boolean(url))
@@ -112,8 +128,8 @@ export function buildOrganizationStructuredData({
     '@context': 'https://schema.org',
     '@type': ['Dentist', 'LocalBusiness'],
     name: resolvedSiteName,
-    url: siteUrl,
-    logo: toAbsoluteUrl(logoUrl),
+    url: localizedSiteUrl,
+    logo: toAbsoluteUrl(logoUrl, siteUrl),
     telephone: contactPoint,
     email,
     address: address
@@ -126,12 +142,16 @@ export function buildOrganizationStructuredData({
   }
 }
 
-export function buildWebsiteStructuredData(locale: SupportedLocale, siteName: string | null | undefined) {
+export function buildWebsiteStructuredData(
+  locale: SupportedLocale,
+  siteName: string | null | undefined,
+  siteUrl?: string,
+) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: siteName?.trim() || 'Dental Clinic Sulyhan',
-    url: buildAbsoluteUrl(locale === DEFAULT_LOCALE ? '/' : `/${locale}`),
+    url: buildAbsoluteUrlWithBase(locale === DEFAULT_LOCALE ? '/' : `/${locale}`, siteUrl),
     inLanguage: locale,
   }
 }
@@ -142,12 +162,14 @@ export function buildWebPageStructuredData({
   url,
   locale,
   siteName,
+  siteUrl,
 }: {
   name: string
   description?: string | null
   url: string
   locale: SupportedLocale
   siteName?: string | null
+  siteUrl?: string
 }) {
   if (!name || !url) return null
 
@@ -156,17 +178,20 @@ export function buildWebPageStructuredData({
     '@type': 'WebPage',
     name,
     description: description?.trim() || undefined,
-    url: buildAbsoluteUrl(url),
+    url: buildAbsoluteUrlWithBase(url, siteUrl),
     inLanguage: locale,
     isPartOf: {
       '@type': 'WebSite',
       name: siteName?.trim() || 'Dental Clinic Sulyhan',
-      url: buildAbsoluteUrl(locale === DEFAULT_LOCALE ? '/' : `/${locale}`),
+      url: buildAbsoluteUrlWithBase(locale === DEFAULT_LOCALE ? '/' : `/${locale}`, siteUrl),
     },
   }
 }
 
-export function buildBreadcrumbStructuredData(items: Array<{ name: string; path: string }>) {
+export function buildBreadcrumbStructuredData(
+  items: Array<{ name: string; path: string }>,
+  siteUrl?: string,
+) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -174,19 +199,22 @@ export function buildBreadcrumbStructuredData(items: Array<{ name: string; path:
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: buildAbsoluteUrl(item.path),
+      item: buildAbsoluteUrlWithBase(item.path, siteUrl),
     })),
   }
 }
 
-export function buildItemListStructuredData(items: Array<{ name: string; path: string }>) {
+export function buildItemListStructuredData(
+  items: Array<{ name: string; path: string }>,
+  siteUrl?: string,
+) {
   const mappedItems = items
     .filter((item) => item.name && item.path)
     .map((item, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      url: buildAbsoluteUrl(item.path),
+      url: buildAbsoluteUrlWithBase(item.path, siteUrl),
     }))
 
   if (!mappedItems.length) return null
@@ -203,11 +231,13 @@ export function buildServiceStructuredData({
   description,
   url,
   providerName,
+  siteUrl,
 }: {
   name: string
   description?: string | null
   url: string
   providerName?: string | null
+  siteUrl?: string
 }) {
   if (!name || !url) return null
 
@@ -216,7 +246,7 @@ export function buildServiceStructuredData({
     '@type': 'Service',
     name,
     description: description?.trim() || undefined,
-    url: buildAbsoluteUrl(url),
+    url: buildAbsoluteUrlWithBase(url, siteUrl),
     provider: providerName?.trim()
       ? {
           '@type': 'Dentist',

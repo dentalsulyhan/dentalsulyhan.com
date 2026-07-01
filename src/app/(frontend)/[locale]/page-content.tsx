@@ -1,16 +1,18 @@
 import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import type { HomePage as HomePageType, Page, TeamMember, Media, SiteContact, SiteSetting, Promotion } from '@/payload-types'
+import Image from 'next/image'
+import type { HomePage as HomePageType, Page, TeamMember, Media, SiteContact, SiteSetting, Promotion, SeoSetting } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import TeamSlider from '../../../components/TeamSlider'
-import GallerySlider from '../../../components/GallerySlider'
-import ContactForm from '../../../components/ContactForm'
-import GoogleReviews from '../../../components/GoogleReviews'
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
 import { buildWebPageStructuredData } from '@/lib/structuredData'
+import { getConfiguredSiteUrl } from '@/lib/seo'
+import TeamSlider from '../../../components/TeamSlider'
+import GallerySlider from '../../../components/GallerySlider'
+import ContactForm from '../../../components/ContactForm'
+import GoogleReviews from '../../../components/GoogleReviews'
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {
@@ -243,6 +245,21 @@ export async function PageContent({
     console.error('Error fetching site-settings global:', err)
   }
 
+  let seoSettings: SeoSetting | null = null
+  try {
+    const fetchedSeoSettings = await payload.findGlobal({
+      slug: 'seo-settings',
+      locale: locale as 'es' | 'en' | 'uk',
+    })
+    if (fetchedSeoSettings) {
+      seoSettings = fetchedSeoSettings as SeoSetting
+    }
+  } catch (err) {
+    console.error('Error fetching seo-settings global:', err)
+  }
+
+  const siteUrl = await getConfiguredSiteUrl()
+
   let siteContacts: SiteContact = {} as SiteContact
   try {
     const fetchedContacts = await payload.findGlobal({
@@ -376,7 +393,8 @@ export async function PageContent({
       (typeof homeData.gallery?.description === 'string' ? homeData.gallery.description : undefined),
     url: locale === 'es' ? '/' : `/${locale}`,
     locale: locale as 'es' | 'en' | 'uk',
-    siteName: 'Dental Clinic Sulyhan',
+    siteName: seoSettings?.siteName,
+    siteUrl,
   })
   const phoneLabel = siteSettings?.contacts?.phoneLabel || (locale === 'uk' ? 'Телефон' : locale === 'es' ? 'Teléfono' : 'Phone')
   const emailLabel = siteSettings?.contacts?.emailLabel || 'Email'
@@ -435,7 +453,7 @@ export async function PageContent({
                         style={{ background: `linear-gradient(to right, ${theme.sectionColor} 0%, transparent 100%)` }}
                       />
                       {imageUrl ? (
-                        <img src={imageUrl} alt={block.title} className="w-full h-full object-cover block" />
+                        <Image src={imageUrl} alt={block.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" priority />
                       ) : (
                         <ImagePlaceholder label="Hero Image" className="w-full h-full min-h-[400px]" />
                       )}
@@ -474,7 +492,7 @@ export async function PageContent({
                           >
                             <div className={`flex max-[767px]:w-full ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : 'w-full flex-col items-center gap-5 text-center max-[767px]:justify-start max-[767px]:text-left'}`}>
                               {iconUrl ? (
-                                <img src={iconUrl} alt={item.title} className="w-auto h-[50px] shrink-0" />
+                                <Image src={iconUrl} alt={item.title} width={50} height={50} className="w-auto h-[50px] shrink-0" />
                               ) : (
                                 <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
                                   <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -534,7 +552,9 @@ export async function PageContent({
                           }`}
                         >
                           {imgUrl ? (
-                            <img src={imgUrl} alt={item.title || `About ${itemIndex + 1}`} className="w-full h-full object-cover block" />
+                            <div className="relative w-full h-full min-h-[320px]">
+                              <Image src={imgUrl} alt={item.title || `About ${itemIndex + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
+                            </div>
                           ) : (
                             <ImagePlaceholder label={item.title || aboutLabels[itemIndex % aboutLabels.length]} className="w-full h-full min-h-[320px]" />
                           )}
@@ -607,7 +627,7 @@ export async function PageContent({
                           >
                             <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-start max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
                               {iconUrl ? (
-                                <img src={iconUrl} alt={item.title} className="w-auto h-[50px] shrink-0" />
+                                <Image src={iconUrl} alt={item.title} width={50} height={50} className="w-auto h-[50px] shrink-0" />
                               ) : (
                                 <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
                                   <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -652,7 +672,9 @@ export async function PageContent({
                 <section key={block.id || idx} id="offers" className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {imageUrl ? (
-                      <img src={imageUrl} alt={promotion.title} className="w-full h-full object-cover block" />
+                      <div className="relative w-full h-full min-h-[320px]">
+                        <Image src={imageUrl} alt={promotion.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
+                      </div>
                     ) : (
                       <ImagePlaceholder label={promotion.title} className="w-full h-full min-h-[320px]" />
                     )}
@@ -727,7 +749,7 @@ export async function PageContent({
                               <div key={member.id || memberIndex} className="rounded-[20px] overflow-hidden flex flex-col">
                                 <div className="relative h-[400px] max-[767px]:h-[280px]">
                                   {photoUrl ? (
-                                    <img src={photoUrl} alt={member.name} className="absolute inset-0 w-full h-full object-cover rounded-[20px]" />
+                                    <Image src={photoUrl} alt={member.name} fill sizes="(max-width: 567px) 100vw, (max-width: 767px) 50vw, (max-width: 991px) 33vw, 25vw" className="object-cover rounded-[20px]" />
                                   ) : (
                                     <ImagePlaceholder label={member.name} className="absolute inset-0 w-full h-full rounded-[20px]" />
                                   )}
@@ -887,7 +909,7 @@ export async function PageContent({
                 >
                   {backgroundImageUrl && (
                   <>
-                    <img src={backgroundImageUrl} alt={block.title || 'Content background'} className="absolute inset-0 w-full h-full object-cover" />
+                    <Image src={backgroundImageUrl} alt={block.title || 'Content background'} fill sizes="100vw" className="object-cover" />
                       <div
                         className="absolute inset-0"
                         style={{
@@ -1079,7 +1101,9 @@ export async function PageContent({
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
                     <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none max-[991px]:h-full overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
                       {imageUrl ? (
-                        <img src={imageUrl} alt={block.title || `Content block ${idx + 1}`} className="w-full h-full object-cover block" />
+                        <div className="relative w-full h-full">
+                          <Image src={imageUrl} alt={block.title || `Content block ${idx + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
+                        </div>
                       ) : (
                         <ImagePlaceholder label={block.title || `Content block ${idx + 1}`} className="w-full h-full" />
                       )}
@@ -1355,10 +1379,13 @@ export async function PageContent({
                   <div className="w-1/2 max-[991px]:w-full relative overflow-hidden min-h-[300px]">
                     <div className="absolute top-0 left-0 w-[10%] h-full bg-gradient-to-r from-[#fafafa] to-transparent z-[1] pointer-events-none max-[991px]:hidden" />
                     {heroImageUrl ? (
-                      <img
+                      <Image
                         src={heroImageUrl}
                         alt="Hero"
-                        className="w-full h-full object-cover block"
+                        fill
+                        sizes="(max-width: 991px) 100vw, 50vw"
+                        className="object-cover"
+                        priority
                       />
                     ) : (
                       <ImagePlaceholder label="Hero Image" className="w-full h-full min-h-[400px]" />
@@ -1381,7 +1408,7 @@ export async function PageContent({
                           className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
                         >
                           {iconUrl ? (
-                            <img src={iconUrl} alt={adv.title} className="w-auto h-[50px]" />
+                            <Image src={iconUrl} alt={adv.title} width={50} height={50} className="w-auto h-[50px]" />
                           ) : (
                             <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center">
                               <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -1441,7 +1468,9 @@ export async function PageContent({
                           }`}
                         >
                           {imgUrl ? (
-                            <img src={imgUrl} alt={block.title || `About ${i + 1}`} className="w-full h-full object-cover" />
+                            <div className="relative w-full h-full">
+                              <Image src={imgUrl} alt={block.title || `About ${i + 1}`} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
+                            </div>
                           ) : (
                             <ImagePlaceholder label={block.title || aboutLabels[i % aboutLabels.length]} className="w-full h-full" />
                           )}
@@ -1523,7 +1552,7 @@ export async function PageContent({
                             className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
                           >
                             {iconUrl ? (
-                              <img src={iconUrl} alt={card.title} className="w-auto h-[50px]" />
+                              <Image src={iconUrl} alt={card.title} width={50} height={50} className="w-auto h-[50px]" />
                             ) : (
                               <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center">
                                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">

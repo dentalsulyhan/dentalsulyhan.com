@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next'
-import { getSiteUrl } from '@/lib/seo'
+import { getConfiguredSiteUrl } from '@/lib/seo'
 
-export default function robots(): MetadataRoute.Robots {
-  const siteUrl = getSiteUrl()
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const siteUrl = await getConfiguredSiteUrl()
 
   return {
     rules: [
@@ -16,4 +16,3 @@ export default function robots(): MetadataRoute.Robots {
     host: siteUrl,
   }
 }
-

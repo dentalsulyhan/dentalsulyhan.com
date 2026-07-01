@@ -44,6 +44,7 @@ export default function AccordionList({
               type="button"
               aria-expanded={isOpen}
               aria-controls={panelId}
+              aria-label={item.heading || `Accordion item ${itemIndex + 1}`}
               onClick={() => setOpenIndex(isOpen ? null : itemIndex)}
               className={`w-full flex items-center justify-between gap-4 text-left ${headingClassName}`}
             >

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import 'swiper/css'
@@ -25,6 +26,7 @@ interface GallerySliderProps {
 
 export default function GallerySlider({ images }: GallerySliderProps) {
   const [isMounted, setIsMounted] = useState(false)
+  const galleryImageSizes = '(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1200px'
 
   useEffect(() => {
     setIsMounted(true)
@@ -36,7 +38,9 @@ export default function GallerySlider({ images }: GallerySliderProps) {
     return (
       <div className="w-full h-full">
         {url ? (
-          <img src={url} alt="Gallery fallback" className="w-full h-full object-cover" />
+          <div className="relative w-full h-full">
+            <Image src={url} alt="Gallery fallback" fill sizes={galleryImageSizes} className="object-cover" />
+          </div>
         ) : (
           <div className="w-full h-full bg-[#e8e0d8] flex items-center justify-center text-[#909da2]">
             Photo 1
@@ -68,11 +72,15 @@ export default function GallerySlider({ images }: GallerySliderProps) {
         return (
           <SwiperSlide key={item.id || i}>
             {url ? (
-              <img
-                src={url}
-                alt={`Gallery ${i + 1}`}
-                className="w-full h-full object-cover"
-              />
+              <div className="relative w-full h-full">
+                <Image
+                  src={url}
+                  alt={`Gallery ${i + 1}`}
+                  fill
+                  sizes={galleryImageSizes}
+                  className="object-cover"
+                />
+              </div>
             ) : (
               <div className="w-full h-full bg-[#e8e0d8] flex items-center justify-center text-[#909da2]">
                 Photo {i + 1}
@@ -84,12 +92,12 @@ export default function GallerySlider({ images }: GallerySliderProps) {
 
       {/* Custom pagination & navigation */}
       <div className="gallery-pagination-custom absolute bottom-4 left-0 right-0 flex justify-center z-[9]" />
-      <button className="gallery-btn-prev absolute left-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors">
+      <button aria-label="Previous gallery slide" className="gallery-btn-prev absolute left-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#22282b]">
           <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
-      <button className="gallery-btn-next absolute right-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors">
+      <button aria-label="Next gallery slide" className="gallery-btn-next absolute right-4 top-1/2 -translate-y-1/2 z-[9] w-[50px] h-[50px] flex items-center justify-center bg-white/60 rounded-full backdrop-blur-sm hover:bg-white/80 transition-colors">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#22282b]">
           <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>

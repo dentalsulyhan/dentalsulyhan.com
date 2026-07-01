@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { Page, Service } from '@/payload-types'
 import { SUPPORTED_LOCALES } from '@/lib/localizedRouting'
-import { getSiteUrl, buildLocalizedAbsoluteUrl } from '@/lib/seo'
+import { getConfiguredSiteUrl, buildLocalizedAbsoluteUrlWithBase } from '@/lib/seo'
 
 type SitemapEntry = MetadataRoute.Sitemap[number]
 
@@ -12,24 +12,10 @@ function toDate(value?: string | null) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = getSiteUrl()
+  const siteUrl = await getConfiguredSiteUrl()
   const now = new Date()
   const payload = await getPayload({ config: configPromise })
-
-  const entries: SitemapEntry[] = [
-    {
-      url: `${siteUrl}/`,
-      lastModified: now,
-    },
-    {
-      url: buildLocalizedAbsoluteUrl('en', '/'),
-      lastModified: now,
-    },
-    {
-      url: buildLocalizedAbsoluteUrl('uk', '/'),
-      lastModified: now,
-    },
-  ]
+  const entries: SitemapEntry[] = []
 
   const pageResults = await Promise.all(
     SUPPORTED_LOCALES.map(async (locale) =>
@@ -61,10 +47,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const services = serviceResults[localeIndex].docs as Service[]
 
     for (const page of pages) {
-      if (!page.path || page.slug === '404') continue
+      if (page.noIndex || page.slug === '404') continue
+
       const path = page.slug === 'home' ? '/' : `/${page.path}`
+      if (page.slug !== 'home' && !page.path) continue
+
       entries.push({
-        url: buildLocalizedAbsoluteUrl(locale, path),
+        url: buildLocalizedAbsoluteUrlWithBase(locale, path, siteUrl),
         lastModified: toDate(page.updatedAt) || now,
       })
     }
@@ -73,9 +62,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const servicesBasePath = servicesPage?.path ? `/${servicesPage.path}` : '/services'
 
     for (const service of services) {
-      if (!service.path) continue
+      if (!service.path || service.noIndex) continue
       entries.push({
-        url: buildLocalizedAbsoluteUrl(locale, `${servicesBasePath}/${service.path}`),
+        url: buildLocalizedAbsoluteUrlWithBase(locale, `${servicesBasePath}/${service.path}`, siteUrl),
         lastModified: toDate(service.updatedAt) || now,
       })
     }

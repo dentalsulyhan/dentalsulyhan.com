@@ -75,6 +75,16 @@ export default function ContactForm({
   patientTypeOptions,
   referralSourceOptions,
 }: ContactFormProps) {
+  const fieldIds = {
+    fullName: 'contact-form-full-name',
+    phone: 'contact-form-phone',
+    email: 'contact-form-email',
+    patientType: 'contact-form-patient-type',
+    referralSource: 'contact-form-referral-source',
+    comment: 'contact-form-comment',
+    turnstile: 'contact-form-turnstile',
+    feedback: 'contact-form-feedback',
+  } as const
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
   const isTurnstileEnabled = Boolean(turnstileSiteKey)
   const [formState, setFormState] = useState<FormState>(initialState)
@@ -213,35 +223,60 @@ export default function ContactForm({
       )}
       <form onSubmit={handleSubmit}>
       <div className="form-row">
+        <label htmlFor={fieldIds.fullName} className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0">
+          {fullNamePlaceholder}
+        </label>
         <input
+          id={fieldIds.fullName}
           type="text"
           placeholder={fullNamePlaceholder}
           value={formState.fullName}
           onChange={handleChange('fullName')}
+          aria-describedby={submitState !== 'idle' && message ? fieldIds.feedback : undefined}
           required
         />
       </div>
       <div className="form-row">
+        <label htmlFor={fieldIds.phone} className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0">
+          {phonePlaceholder}
+        </label>
         <input
+          id={fieldIds.phone}
           type="tel"
           placeholder={phonePlaceholder}
           value={formState.phone}
           onChange={handleChange('phone')}
+          aria-describedby={submitState !== 'idle' && message ? fieldIds.feedback : undefined}
           required
         />
       </div>
       <div className="form-group">
+        <label htmlFor={fieldIds.email} className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0">
+          {emailPlaceholder}
+        </label>
         <input
+          id={fieldIds.email}
           type="email"
           placeholder={emailPlaceholder}
           value={formState.email}
           onChange={handleChange('email')}
+          aria-describedby={submitState !== 'idle' && message ? fieldIds.feedback : undefined}
           required
         />
       </div>
       <div className="form-select-row">
         <div className="form-group">
-          <select value={formState.patientType} onChange={handleChange('patientType')} required>
+          <label htmlFor={fieldIds.patientType} className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0">
+            {patientTypePlaceholder}
+          </label>
+          <select
+            id={fieldIds.patientType}
+            value={formState.patientType}
+            onChange={handleChange('patientType')}
+            aria-label={patientTypePlaceholder}
+            aria-describedby={submitState !== 'idle' && message ? fieldIds.feedback : undefined}
+            required
+          >
             <option value="" disabled>
               {patientTypePlaceholder}
             </option>
@@ -253,7 +288,17 @@ export default function ContactForm({
           </select>
         </div>
         <div className="form-group">
-          <select value={formState.referralSource} onChange={handleChange('referralSource')} required>
+          <label htmlFor={fieldIds.referralSource} className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0">
+            {referralSourcePlaceholder}
+          </label>
+          <select
+            id={fieldIds.referralSource}
+            value={formState.referralSource}
+            onChange={handleChange('referralSource')}
+            aria-label={referralSourcePlaceholder}
+            aria-describedby={submitState !== 'idle' && message ? fieldIds.feedback : undefined}
+            required
+          >
             <option value="" disabled>
               {referralSourcePlaceholder}
             </option>
@@ -266,25 +311,44 @@ export default function ContactForm({
         </div>
       </div>
       <div className="form-group">
+        <label htmlFor={fieldIds.comment} className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0">
+          {commentPlaceholder}
+        </label>
         <input
+          id={fieldIds.comment}
           type="text"
           placeholder={commentPlaceholder}
           value={formState.comment}
           onChange={handleChange('comment')}
+          aria-describedby={submitState !== 'idle' && message ? fieldIds.feedback : undefined}
         />
       </div>
       {isTurnstileEnabled && (
         <div className="form-group">
-          <div ref={turnstileRef} />
+          <div role="group" aria-labelledby={`${fieldIds.turnstile}-label`}>
+            <span
+              id={`${fieldIds.turnstile}-label`}
+              className="sr-only absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0"
+            >
+              {captchaMessage}
+            </span>
+            <div
+              id={fieldIds.turnstile}
+              ref={turnstileRef}
+            />
+          </div>
         </div>
       )}
       <div className="form-group">
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" aria-label={submitButtonLabel} disabled={isSubmitting}>
           {isSubmitting ? '...' : submitButtonLabel}
         </button>
       </div>
       {submitState !== 'idle' && message && (
         <div
+          id={fieldIds.feedback}
+          role="status"
+          aria-live="polite"
           className={`form-feedback text-[14px] leading-relaxed ${
             submitState === 'success' ? 'is-success' : 'is-error'
           }`}

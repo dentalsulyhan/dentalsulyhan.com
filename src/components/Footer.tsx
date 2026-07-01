@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import type { HeaderFooter, Media, SiteContact } from '@/payload-types'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 
@@ -94,7 +95,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
       <div className="w-full py-[40px] px-0 max-[991px]:py-[20px] max-[991px]:px-[30px] border-t border-[#3c5557]">
         <div className="max-w-[1200px] mx-auto flex justify-between items-center gap-[24px] max-[1230px]:mx-[30px] max-[1230px]:w-auto max-[1100px]:mx-[20px] max-[1100px]:gap-[18px] max-[991px]:flex-col max-[991px]:gap-[30px]">
           <Link href={buildLocalizedPath(currentLocale, '/')} className="h-[50px] w-auto flex items-center justify-center">
-            <img src={logoUrl} alt={logoAlt} className="h-[50px] w-auto object-contain" />
+            <Image src={logoUrl} alt={logoAlt} width={200} height={50} className="h-[50px] w-auto object-contain" />
           </Link>
           <nav>
             <ul className="flex flex-wrap gap-[20px] max-[1100px]:gap-[14px] m-[10px] justify-end max-[991px]:justify-center max-[991px]:flex-col max-[991px]:gap-[10px] max-[991px]:text-center list-none p-0">
@@ -128,13 +129,16 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={link.platform}
                     className="hover:scale-110 transition-transform duration-200 flex items-center"
                     title={link.platform}
                   >
                     {iconSrc ? (
-                      <img
+                      <Image
                         src={iconSrc}
                         alt={link.platform}
+                        width={20}
+                        height={20}
                         className="h-[20px] w-auto opacity-75 hover:opacity-100 transition-opacity duration-200"
                       />
                     ) : link.platform === 'youtube' ? (

@@ -8,6 +8,7 @@ import { ServicesListingPageContent } from '../services/page-content'
 import type { HomePage as HomePageType, Page, SeoSetting, Service } from '@/payload-types'
 import { isSupportedLocale, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { buildSeoMetadata, type SeoAlternates } from '@/lib/seoMetadata'
+import { getConfiguredSiteUrl } from '@/lib/seo'
 
 type RouteDoc = Pick<
   Page,
@@ -58,6 +59,14 @@ async function fetchLocalizedDocPaths(
   collection: 'pages' | 'services',
   slug: string,
 ): Promise<SeoAlternates> {
+  if (collection === 'pages' && slug === 'home') {
+    return {
+      es: '/',
+      en: '/',
+      uk: '/',
+    }
+  }
+
   const payload = await getPayload({ config: configPromise })
 
   const entries = await Promise.all(
@@ -76,11 +85,82 @@ async function fetchLocalizedDocPaths(
       })
 
       const doc = result.docs[0] as { path?: string | null } | undefined
-      return [locale, doc?.path || null] as const
+      if (!doc?.path) {
+        return [locale, null] as const
+      }
+
+      if (collection === 'services') {
+        const servicesPageResult = await payload.find({
+          collection: 'pages',
+          locale,
+          fallbackLocale: false,
+          depth: 0,
+          where: {
+            slug: {
+              equals: 'services',
+            },
+          },
+          limit: 1,
+        })
+
+        const servicesPage = servicesPageResult.docs[0] as { path?: string | null } | undefined
+        const servicesBasePath = servicesPage?.path ? `/${servicesPage.path}` : '/services'
+
+        return [locale, `${servicesBasePath}/${doc.path}`] as const
+      }
+
+      return [locale, doc.path] as const
     }),
   )
 
   return Object.fromEntries(entries.filter(([, path]) => Boolean(path))) as SeoAlternates
+}
+
+function resolveSeoPath(kind: 'page' | 'service', slug: string, path: string | null | undefined) {
+  if (kind === 'page' && slug === 'home') {
+    return '/'
+  }
+
+  return path
+}
+
+async function resolveMetadataPath({
+  kind,
+  locale,
+  slug,
+  path,
+}: {
+  kind: 'page' | 'service'
+  locale: 'es' | 'en' | 'uk'
+  slug: string
+  path: string | null | undefined
+}) {
+  if (kind === 'page') {
+    return resolveSeoPath(kind, slug, path)
+  }
+
+  if (!path) {
+    return path
+  }
+
+  const payload = await getPayload({ config: configPromise })
+  const servicesPageResult = await payload.find({
+    collection: 'pages',
+    locale,
+    fallbackLocale: false,
+    depth: 0,
+    where: {
+      slug: {
+        equals: 'services',
+      },
+    },
+    limit: 1,
+  })
+
+  const servicesPage = servicesPageResult.docs[0] as { path?: string | null } | undefined
+  const servicesBasePath = servicesPage?.path ? `/${servicesPage.path}` : '/services'
+
+  return `${servicesBasePath}/${path}`
 }
 
 async function resolveRouteDocument(locale: 'es' | 'en' | 'uk', slug: string[]) {
@@ -183,6 +263,13 @@ export async function generateMetadata({
 
   const seoSettings = await fetchSeoSettings(locale as 'es' | 'en' | 'uk')
   const homePageContent = slug.length === 0 ? await fetchHomePageContent(locale as 'es' | 'en' | 'uk') : null
+  const siteUrl = await getConfiguredSiteUrl()
+  const metadataPath = await resolveMetadataPath({
+    kind: resolved.kind,
+    locale: locale as 'es' | 'en' | 'uk',
+    slug: resolved.slug,
+    path: resolved.doc.path,
+  })
   const alternates =
     resolved.kind === 'service'
       ? await fetchLocalizedDocPaths('services', resolved.slug)
@@ -201,8 +288,9 @@ export async function generateMetadata({
       noFollow: resolved.doc.noFollow,
       twitterCard: resolved.doc.twitterCard,
     },
-    path: resolved.doc.path,
+    path: metadataPath,
     alternates,
+    siteUrl,
   })
 }
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import type { HeaderFooter, SiteContact } from '@/payload-types'
 import { buildLocalizedPath, stripLocalePrefix } from '@/lib/localizedRouting'
@@ -80,6 +81,16 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
   useEffect(() => {
     let cancelled = false
+    const strippedPath = stripLocalePrefix(pathname)
+
+    if (!strippedPath || strippedPath === '/') {
+      setLocaleLinks({
+        es: '/',
+        en: '/en',
+        uk: '/uk',
+      })
+      return
+    }
 
     const loadLocaleLinks = async () => {
       try {
@@ -177,6 +188,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
           <button
             className="uppercase font-normal cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
             onClick={() => setIsMenuOpen(true)}
+            aria-label={data?.menuButtonLabel || (currentLocale === 'uk' ? 'Відкрити меню' : currentLocale === 'es' ? 'Abrir menu' : 'Open menu')}
           >
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
           </button>
@@ -191,6 +203,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
               <button
                 className="flex items-center gap-[5px] text-[#22282b] bg-transparent border-none text-[16px] cursor-pointer hover:opacity-70 transition-opacity"
                 onClick={() => setIsMenuOpen(false)}
+                aria-label={currentLocale === 'uk' ? 'Закрити меню' : currentLocale === 'es' ? 'Cerrar menu' : 'Close menu'}
               >
                 <img src="/icons/Close.svg" alt="Close" />
               </button>
@@ -243,7 +256,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
         {/* CENTER: Logo */}
         <Link href={buildLocalizedPath(currentLocale, '/')} className="h-[44px] w-auto flex items-center justify-center max-[767px]:h-[38px]">
-          <img src={logoUrl} alt={logoAlt} className="h-[44px] w-auto object-contain max-[767px]:h-[38px]" />
+          <Image src={logoUrl} alt={logoAlt} width={176} height={44} priority className="h-[44px] w-auto object-contain max-[767px]:h-[38px]" />
         </Link>
 
         {/* RIGHT: Phones, Socials, and PC Language Switcher */}
