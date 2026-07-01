@@ -7,14 +7,13 @@ import { getNotFoundPageBlock } from '@/lib/not-found-page'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
 import {
-  PUBLIC_REVALIDATE,
   getCachedDesignSettings,
   getCachedHeaderFooter,
   getCachedSiteContacts,
   getCachedSiteSettings,
 } from '@/lib/publicData'
 
-export const revalidate = PUBLIC_REVALIDATE
+export const revalidate = 300
 
 export const metadata = {
   robots: {

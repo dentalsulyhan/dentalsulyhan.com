@@ -8,7 +8,6 @@ import { isSupportedLocale, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { buildSeoMetadata, type SeoAlternates } from '@/lib/seoMetadata'
 import { getConfiguredSiteUrl } from '@/lib/seo'
 import {
-  PUBLIC_REVALIDATE,
   getCachedHomePage,
   getCachedPageByPath,
   getCachedPageBySlug,
@@ -48,7 +47,7 @@ type RouteDoc = Pick<
     layout?: unknown[] | null
   }
 
-export const revalidate = PUBLIC_REVALIDATE
+export const revalidate = 300
 
 async function fetchLocalizedDocPaths(
   collection: 'pages' | 'services',

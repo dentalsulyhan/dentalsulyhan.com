@@ -1,11 +1,11 @@
 import type { MetadataRoute } from 'next'
 import { SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { getConfiguredSiteUrl, buildLocalizedAbsoluteUrlWithBase } from '@/lib/seo'
-import { PUBLIC_REVALIDATE, getCachedPagePathEntries, getCachedServicePathEntries } from '@/lib/publicData'
+import { getCachedPagePathEntries, getCachedServicePathEntries } from '@/lib/publicData'
 
 type SitemapEntry = MetadataRoute.Sitemap[number]
 
-export const revalidate = PUBLIC_REVALIDATE
+export const revalidate = 300
 
 function toDate(value?: string | null) {
   return value ? new Date(value) : undefined

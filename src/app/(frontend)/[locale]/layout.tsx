@@ -10,7 +10,6 @@ import { notFound } from 'next/navigation'
 import { buildOrganizationStructuredData, buildWebsiteStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
 import {
-  PUBLIC_REVALIDATE,
   getCachedDesignSettings,
   getCachedHeaderFooter,
   getCachedSeoSettings,
@@ -32,7 +31,7 @@ type TrackingData = {
   metaPixelId?: string | null
 }
 
-export const revalidate = PUBLIC_REVALIDATE
+export const revalidate = 300
 
 export default async function FrontendLayout({
   children,
