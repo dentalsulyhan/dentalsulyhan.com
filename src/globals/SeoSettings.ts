@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { revalidateSeoContent } from '@/lib/revalidation'
 
 function collapsibleField(
   label: { en: string; uk: string; es: string },
@@ -31,6 +32,13 @@ export const SeoSettings: GlobalConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [
+      async () => {
+        revalidateSeoContent()
+      },
+    ],
   },
   fields: [
     collapsibleField(
@@ -222,4 +230,3 @@ export const SeoSettings: GlobalConfig = {
     ),
   ],
 }
-

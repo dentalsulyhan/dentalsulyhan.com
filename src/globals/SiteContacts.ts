@@ -1,4 +1,5 @@
 import { GlobalConfig } from 'payload'
+import { revalidateSiteChrome } from '@/lib/revalidation'
 
 export const SiteContacts: GlobalConfig = {
   slug: 'site-contacts',
@@ -17,6 +18,13 @@ export const SiteContacts: GlobalConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [
+      async () => {
+        revalidateSiteChrome()
+      },
+    ],
   },
   fields: [
     {

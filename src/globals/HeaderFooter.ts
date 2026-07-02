@@ -1,5 +1,6 @@
 // Shared Header and Footer Configuration for DentalSulyhan
 import { GlobalConfig } from 'payload'
+import { revalidateSiteChrome } from '@/lib/revalidation'
 
 export const HeaderFooter: GlobalConfig = {
   slug: 'header-footer',
@@ -18,6 +19,13 @@ export const HeaderFooter: GlobalConfig = {
   },
   access: {
     read: () => true, // Відкриваємо для Next.js
+  },
+  hooks: {
+    afterChange: [
+      async () => {
+        revalidateSiteChrome()
+      },
+    ],
   },
   fields: [
     {
