@@ -354,7 +354,7 @@ export async function PageContent({
               const theme = getBlockTheme(block.theme)
 
               return (
-                <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className={`pt-[10px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
+                <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className={theme.section} style={getThemeBackgroundStyle(theme, 'section')}>
                   <div className="flex items-stretch min-h-[400px] min-[1400px]:min-h-[520px] min-[1800px]:min-h-[620px] max-[991px]:min-h-0 max-[991px]:flex-col">
                     <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10 ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                       <h1 className="text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
@@ -1283,7 +1283,7 @@ export async function PageContent({
         switch (section) {
           case 'hero':
             return (
-              <section key={`sec-${idx}`} id="main-block" className="pt-[10px]">
+              <section key={`sec-${idx}`} id="main-block">
                 <div className="flex items-stretch min-h-[400px] min-[1400px]:min-h-[520px] min-[1800px]:min-h-[620px] max-[991px]:flex-col">
                   {/* Left: Text */}
                   <div className="w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16">

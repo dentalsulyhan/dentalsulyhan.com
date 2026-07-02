@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { buildLocalizedPath, DEFAULT_LOCALE, detectLocaleFromPathname, stripLocalePrefix, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { getCachedPagePathEntries, getCachedServicePathEntries } from '@/lib/publicData'
 
+export const revalidate = 300
+
 const responseHeaders = {
   'Cache-Control': 'public, max-age=300, stale-while-revalidate=86400',
 }
@@ -16,6 +18,13 @@ function getDefaultLinks() {
 
 function buildResponse(links: Record<string, string>) {
   return NextResponse.json({ links, defaultLocale: DEFAULT_LOCALE }, { headers: responseHeaders })
+}
+
+function createEntryMap<T extends { slug?: string | null; path?: string | null }>(entries: T[]) {
+  return {
+    byPath: new Map(entries.filter((entry) => entry.path).map((entry) => [entry.path as string, entry])),
+    bySlug: new Map(entries.filter((entry) => entry.slug).map((entry) => [entry.slug as string, entry])),
+  }
 }
 
 export async function GET(request: Request) {
@@ -37,8 +46,13 @@ export async function GET(request: Request) {
     }
 
     const currentLocale = detectLocaleFromPathname(rawPath)
-    const currentLocalePages = await getCachedPagePathEntries(currentLocale)
-    const page = currentLocalePages.find((entry) => entry.path === segments[0])
+    const localizedPages = await Promise.all(
+      SUPPORTED_LOCALES.map((locale) => getCachedPagePathEntries(locale)),
+    )
+    const pageMaps = localizedPages.map((entries) => createEntryMap(entries))
+    const currentLocaleIndex = SUPPORTED_LOCALES.indexOf(currentLocale)
+    const currentLocalePages = pageMaps[currentLocaleIndex]
+    const page = currentLocalePages?.byPath.get(segments[0])
     if (!page) {
       return buildResponse(links)
     }
@@ -48,15 +62,11 @@ export async function GET(request: Request) {
 
       if (segments.length > 1) {
         const currentLocaleServices = await getCachedServicePathEntries(currentLocale)
-        currentServiceSlug = currentLocaleServices.find((entry) => entry.path === segments[1])?.slug || null
+        currentServiceSlug = createEntryMap(currentLocaleServices).byPath.get(segments[1])?.slug || null
       }
 
-      const localizedPages = await Promise.all(
-        SUPPORTED_LOCALES.map((locale) => getCachedPagePathEntries(locale)),
-      )
-
       for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
-        const servicesPage = localizedPages[index]?.find((entry) => entry.slug === 'services')
+        const servicesPage = pageMaps[index]?.bySlug.get('services')
         const servicesPath = `/${servicesPage?.path || 'services'}`
 
         if (segments.length === 1) {
@@ -73,10 +83,11 @@ export async function GET(request: Request) {
         const localizedServices = await Promise.all(
           SUPPORTED_LOCALES.map((locale) => getCachedServicePathEntries(locale)),
         )
+        const serviceMaps = localizedServices.map((entries) => createEntryMap(entries))
 
         for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
-          const servicesPage = localizedPages[index]?.find((entry) => entry.slug === 'services')
-          const service = localizedServices[index]?.find((entry) => entry.slug === currentServiceSlug)
+          const servicesPage = pageMaps[index]?.bySlug.get('services')
+          const service = serviceMaps[index]?.bySlug.get(currentServiceSlug)
           const servicesPath = `/${servicesPage?.path || 'services'}`
 
           if (service?.path) {
@@ -92,12 +103,8 @@ export async function GET(request: Request) {
       return buildResponse(links)
     }
 
-    const localizedPages = await Promise.all(
-      SUPPORTED_LOCALES.map((locale) => getCachedPagePathEntries(locale)),
-    )
-
     for (const [index, locale] of SUPPORTED_LOCALES.entries()) {
-      const translatedPage = localizedPages[index]?.find((entry) => entry.slug === page.slug)
+      const translatedPage = pageMaps[index]?.bySlug.get(page.slug)
       if (translatedPage?.path) {
         links[locale] = buildLocalizedPath(locale, `/${translatedPage.path}`)
       }

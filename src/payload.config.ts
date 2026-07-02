@@ -24,11 +24,14 @@ import { SiteSettings } from './globals/SiteSettings'
 import { SeoSettings } from './globals/SeoSettings'
 import { ContactSubmissions } from './collections/ContactSubmissions'
 import { DesignSettings } from './globals/DesignSettings'
+import { getBooleanEnv, requireEnv } from './lib/env'
 
 // Trigger HMR cache clear for global settings
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isMigrateCommand = process.argv.some((arg) => arg.includes('migrate'))
+const payloadSecret = requireEnv('PAYLOAD_SECRET')
+const databaseUrl = requireEnv('DATABASE_URL')
 const editor = lexicalEditor({
   features: ({ defaultFeatures }) =>
     isMigrateCommand ? defaultFeatures.filter((feature) => feature.key !== 'upload') : defaultFeatures,
@@ -39,6 +42,7 @@ const email =
     ? await nodemailerAdapter({
         defaultFromAddress: process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER,
         defaultFromName: process.env.SMTP_FROM_NAME || 'Dental Sulyhan',
+        skipVerify: getBooleanEnv('SMTP_SKIP_VERIFY', true),
         transportOptions: {
           auth: {
             user: process.env.SMTP_USER,
@@ -117,13 +121,13 @@ export default buildConfig({
   collections: [Users, Media, Pages, Pricing, Promotions, Services, TeamMembers, ContactSubmissions],
   globals: [DesignSettings, SeoSettings, SiteSettings, HomePage, HeaderFooter, SiteContacts],
   editor,
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: payloadSecret,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: databaseUrl,
     },
   }),
   email,

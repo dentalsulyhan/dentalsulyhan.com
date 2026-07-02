@@ -22,6 +22,11 @@ export function getSiteUrl() {
 
 export const getConfiguredSiteUrl = unstable_cache(
   async () => {
+    const envSiteUrl = process.env.SITE_URL?.trim() || process.env.NEXT_PUBLIC_SITE_URL?.trim()
+    if (envSiteUrl) {
+      return normalizeSiteUrl(envSiteUrl)
+    }
+
     try {
       const seoSettings = await getCachedSeoSettings(DEFAULT_LOCALE).catch((error) => {
         console.error('Error fetching seo-settings baseUrl:', error)
