@@ -396,6 +396,7 @@ export async function PageContent({
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
               const incompleteRowJustifyClass = getIncompleteRowJustifyClass(block)
+              const advantagesBottomText = (block as { bottomText?: unknown }).bottomText
               return (
                 <section
                   key={block.id || idx}
@@ -441,6 +442,11 @@ export async function PageContent({
                         <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>
+                      </div>
+                    )}
+                    {Boolean(advantagesBottomText) && (
+                      <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] text-center mt-10 max-[767px]:text-left">
+                        <RichText data={advantagesBottomText as never} />
                       </div>
                     )}
                   </div>

@@ -698,6 +698,15 @@ export const Services: CollectionConfig = {
               { en: 'Bottom Content & Button', uk: 'Нижній контент і кнопка', es: 'Contenido inferior y boton' },
               [
                 {
+                  name: 'bottomText',
+                  type: 'richText',
+                  label: {
+                    en: 'Bottom Text',
+                    uk: 'Нижній текст',
+                    es: 'Texto inferior',
+                  },
+                },
+                {
                   name: 'buttonText',
                   type: 'text',
                   label: {
