@@ -136,3 +136,24 @@ Notes:
 - `R2_ENDPOINT` must be the account S3 API endpoint only, without bucket name in the path.
 - If the full R2 env set is not present, the project continues to use local storage.
 - No database migration is required for switching media storage.
+## Deploy and migrations
+
+Vercel should deploy application code only. Do not run Payload migrations automatically during `build` when the same Supabase database has also been used from local `payload dev`, because Payload may pause for confirmation after detecting dev-mode schema pushes.
+
+Recommended workflow:
+
+1. Create or update the Payload schema locally.
+2. Create a migration if needed:
+   `npm run migrate:create -- <name>`
+3. Run migrations manually against the target Supabase database:
+   `npm run migrate`
+4. Verify the database and admin panel.
+5. Push code and let Vercel deploy without running migrations in `build`.
+
+Recommended database separation:
+
+- Local development: separate database
+- Vercel preview/staging: separate database
+- Production/VPS: separate database
+
+Avoid pointing local `payload dev` at the same database used by deployed environments.
