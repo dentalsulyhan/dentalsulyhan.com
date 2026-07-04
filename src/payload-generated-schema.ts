@@ -193,6 +193,10 @@ export const enum_pages_blocks_contact_section_theme = pgEnum(
   'enum_pages_blocks_contact_section_theme',
   ['white', 'soft', 'sand', 'sage'],
 )
+export const enum_pages_twitter_card = pgEnum('enum_pages_twitter_card', [
+  'summary',
+  'summary_large_image',
+])
 export const enum_services_blocks_hero_theme = pgEnum('enum_services_blocks_hero_theme', [
   'white',
   'soft',
@@ -326,6 +330,10 @@ export const enum_services_blocks_global_contact_section_theme = pgEnum(
   'enum_services_blocks_global_contact_section_theme',
   ['white', 'soft', 'sand', 'sage'],
 )
+export const enum_services_twitter_card = pgEnum('enum_services_twitter_card', [
+  'summary',
+  'summary_large_image',
+])
 export const enum_contact_submissions_locale = pgEnum('enum_contact_submissions_locale', [
   'es',
   'en',
@@ -338,6 +346,10 @@ export const enum_design_settings_typography_main_font_family = pgEnum(
 export const enum_design_settings_typography_second_font_family = pgEnum(
   'enum_design_settings_typography_second_font_family',
   ['"AvenirNextLTPro", sans-serif', '"Raleway", sans-serif', '"Inter", sans-serif'],
+)
+export const enum_seo_settings_default_twitter_card = pgEnum(
+  'enum_seo_settings_default_twitter_card',
+  ['summary', 'summary_large_image'],
 )
 export const enum_site_settings_social_links_platform = pgEnum(
   'enum_site_settings_social_links_platform',
@@ -455,6 +467,7 @@ export const pages_blocks_hero = pgTable(
     buttonStyle: enum_pages_blocks_hero_button_style('button_style').default('primary'),
     title: varchar('title').notNull(),
     subtitle: varchar('subtitle'),
+    bottomText: jsonb('bottom_text'),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
     image: integer('image_id').references(() => media.id, {
@@ -1055,6 +1068,13 @@ export const pages = pgTable(
   {
     id: serial('id').primaryKey(),
     slug: varchar('slug').notNull(),
+    metaImage: integer('meta_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    canonicalUrl: varchar('canonical_url'),
+    noIndex: boolean('no_index').default(false),
+    noFollow: boolean('no_follow').default(false),
+    twitterCard: enum_pages_twitter_card('twitter_card').default('summary_large_image'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -1064,6 +1084,7 @@ export const pages = pgTable(
   },
   (columns) => [
     uniqueIndex('pages_slug_idx').on(columns.slug),
+    index('pages_meta_image_idx').on(columns.metaImage),
     index('pages_updated_at_idx').on(columns.updatedAt),
     index('pages_created_at_idx').on(columns.createdAt),
   ],
@@ -1074,6 +1095,8 @@ export const pages_locales = pgTable(
   {
     title: varchar('title').notNull(),
     path: varchar('path').notNull(),
+    metaTitle: varchar('meta_title'),
+    metaDescription: varchar('meta_description'),
     id: serial('id').primaryKey(),
     _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
@@ -1448,6 +1471,7 @@ export const services_blocks_advantages = pgTable(
     incompleteRowAlignment: enum_services_blocks_advantages_incomplete_row_alignment(
       'incomplete_row_alignment',
     ).default('center'),
+    bottomText: jsonb('bottom_text'),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
     blockName: varchar('block_name'),
@@ -1825,6 +1849,13 @@ export const services = pgTable(
   {
     id: serial('id').primaryKey(),
     slug: varchar('slug').notNull(),
+    metaImage: integer('meta_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    canonicalUrl: varchar('canonical_url'),
+    noIndex: boolean('no_index').default(false),
+    noFollow: boolean('no_follow').default(false),
+    twitterCard: enum_services_twitter_card('twitter_card').default('summary_large_image'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -1834,6 +1865,7 @@ export const services = pgTable(
   },
   (columns) => [
     uniqueIndex('services_slug_idx').on(columns.slug),
+    index('services_meta_image_idx').on(columns.metaImage),
     index('services_updated_at_idx').on(columns.updatedAt),
     index('services_created_at_idx').on(columns.createdAt),
   ],
@@ -1844,6 +1876,8 @@ export const services_locales = pgTable(
   {
     title: varchar('title').notNull(),
     path: varchar('path').notNull(),
+    metaTitle: varchar('meta_title'),
+    metaDescription: varchar('meta_description'),
     id: serial('id').primaryKey(),
     _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
@@ -2207,6 +2241,57 @@ export const design_settings = pgTable('design_settings', {
   createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
 })
 
+export const seo_settings = pgTable(
+  'seo_settings',
+  {
+    id: serial('id').primaryKey(),
+    siteName: varchar('site_name').notNull().default('Dental Clinic Sulyhan'),
+    titleTemplate: varchar('title_template').notNull().default('%s | Dental Clinic Sulyhan'),
+    baseUrl: varchar('base_url'),
+    defaultOgImage: integer('default_og_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    defaultTwitterCard:
+      enum_seo_settings_default_twitter_card('default_twitter_card').default('summary_large_image'),
+    indexSite: boolean('index_site').default(true),
+    followLinks: boolean('follow_links').default(true),
+    organizationName: varchar('organization_name').default('Dental Clinic Sulyhan'),
+    organizationLogo: integer('organization_logo_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    organizationPhone: varchar('organization_phone'),
+    organizationEmail: varchar('organization_email'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
+  },
+  (columns) => [
+    index('seo_settings_default_og_image_idx').on(columns.defaultOgImage),
+    index('seo_settings_organization_logo_idx').on(columns.organizationLogo),
+  ],
+)
+
+export const seo_settings_locales = pgTable(
+  'seo_settings_locales',
+  {
+    defaultDescription: varchar('default_description'),
+    organizationAddress: varchar('organization_address'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    uniqueIndex('seo_settings_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [seo_settings.id],
+      name: 'seo_settings_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
 export const site_settings_menu_items = pgTable(
   'site_settings_menu_items',
   {
@@ -2361,6 +2446,9 @@ export const site_settings = pgTable(
     branding_logoDark: integer('branding_logo_dark_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    tracking_googleTagManagerId: varchar('tracking_google_tag_manager_id'),
+    tracking_ga4MeasurementId: varchar('tracking_ga4_measurement_id'),
+    tracking_metaPixelId: varchar('tracking_meta_pixel_id'),
     contacts_email: varchar('contacts_email').default('clinica@dentalsulyhan.com'),
     contacts_phone: varchar('contacts_phone').default('+34 665-399-280'),
     contacts_whatsapp: varchar('contacts_whatsapp').default('https://wa.me/+34665399280'),
@@ -3041,7 +3129,12 @@ export const relations_pages_rels = relations(pages_rels, ({ one }) => ({
     relationName: 'team-members',
   }),
 }))
-export const relations_pages = relations(pages, ({ many }) => ({
+export const relations_pages = relations(pages, ({ one, many }) => ({
+  metaImage: one(media, {
+    fields: [pages.metaImage],
+    references: [media.id],
+    relationName: 'metaImage',
+  }),
   _blocks_hero: many(pages_blocks_hero, {
     relationName: '_blocks_hero',
   }),
@@ -3395,7 +3488,12 @@ export const relations_services_locales = relations(services_locales, ({ one }) 
     relationName: '_locales',
   }),
 }))
-export const relations_services = relations(services, ({ many }) => ({
+export const relations_services = relations(services, ({ one, many }) => ({
+  metaImage: one(media, {
+    fields: [services.metaImage],
+    references: [media.id],
+    relationName: 'metaImage',
+  }),
   _blocks_hero: many(services_blocks_hero, {
     relationName: '_blocks_hero',
   }),
@@ -3540,6 +3638,28 @@ export const relations_payload_preferences = relations(payload_preferences, ({ m
 }))
 export const relations_payload_migrations = relations(payload_migrations, () => ({}))
 export const relations_design_settings = relations(design_settings, () => ({}))
+export const relations_seo_settings_locales = relations(seo_settings_locales, ({ one }) => ({
+  _parentID: one(seo_settings, {
+    fields: [seo_settings_locales._parentID],
+    references: [seo_settings.id],
+    relationName: '_locales',
+  }),
+}))
+export const relations_seo_settings = relations(seo_settings, ({ one, many }) => ({
+  defaultOgImage: one(media, {
+    fields: [seo_settings.defaultOgImage],
+    references: [media.id],
+    relationName: 'defaultOgImage',
+  }),
+  organizationLogo: one(media, {
+    fields: [seo_settings.organizationLogo],
+    references: [media.id],
+    relationName: 'organizationLogo',
+  }),
+  _locales: many(seo_settings_locales, {
+    relationName: '_locales',
+  }),
+}))
 export const relations_site_settings_menu_items_locales = relations(
   site_settings_menu_items_locales,
   ({ one }) => ({
@@ -3884,6 +4004,7 @@ type DatabaseSchema = {
   enum_pages_blocks_global_contact_section_theme: typeof enum_pages_blocks_global_contact_section_theme
   enum_pages_blocks_contact_section_contact_rows_order_row: typeof enum_pages_blocks_contact_section_contact_rows_order_row
   enum_pages_blocks_contact_section_theme: typeof enum_pages_blocks_contact_section_theme
+  enum_pages_twitter_card: typeof enum_pages_twitter_card
   enum_services_blocks_hero_theme: typeof enum_services_blocks_hero_theme
   enum_services_blocks_hero_button_style: typeof enum_services_blocks_hero_button_style
   enum_services_blocks_content_theme: typeof enum_services_blocks_content_theme
@@ -3914,9 +4035,11 @@ type DatabaseSchema = {
   enum_services_blocks_pricing_group_showcase_theme: typeof enum_services_blocks_pricing_group_showcase_theme
   enum_services_blocks_pricing_group_showcase_position: typeof enum_services_blocks_pricing_group_showcase_position
   enum_services_blocks_global_contact_section_theme: typeof enum_services_blocks_global_contact_section_theme
+  enum_services_twitter_card: typeof enum_services_twitter_card
   enum_contact_submissions_locale: typeof enum_contact_submissions_locale
   enum_design_settings_typography_main_font_family: typeof enum_design_settings_typography_main_font_family
   enum_design_settings_typography_second_font_family: typeof enum_design_settings_typography_second_font_family
+  enum_seo_settings_default_twitter_card: typeof enum_seo_settings_default_twitter_card
   enum_site_settings_social_links_platform: typeof enum_site_settings_social_links_platform
   enum_home_page_section_order_section: typeof enum_home_page_section_order_section
   enum_site_contacts_social_links_platform: typeof enum_site_contacts_social_links_platform
@@ -3983,6 +4106,8 @@ type DatabaseSchema = {
   payload_preferences_rels: typeof payload_preferences_rels
   payload_migrations: typeof payload_migrations
   design_settings: typeof design_settings
+  seo_settings: typeof seo_settings
+  seo_settings_locales: typeof seo_settings_locales
   site_settings_menu_items: typeof site_settings_menu_items
   site_settings_menu_items_locales: typeof site_settings_menu_items_locales
   site_settings_social_links: typeof site_settings_social_links
@@ -4070,6 +4195,8 @@ type DatabaseSchema = {
   relations_payload_preferences: typeof relations_payload_preferences
   relations_payload_migrations: typeof relations_payload_migrations
   relations_design_settings: typeof relations_design_settings
+  relations_seo_settings_locales: typeof relations_seo_settings_locales
+  relations_seo_settings: typeof relations_seo_settings
   relations_site_settings_menu_items_locales: typeof relations_site_settings_menu_items_locales
   relations_site_settings_menu_items: typeof relations_site_settings_menu_items
   relations_site_settings_social_links: typeof relations_site_settings_social_links

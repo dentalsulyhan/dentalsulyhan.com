@@ -230,6 +230,21 @@ export interface Page {
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
             title: string;
             subtitle?: string | null;
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             buttonText?: string | null;
             buttonLink?: string | null;
             image?: (number | null) | Media;
@@ -1061,6 +1076,21 @@ export interface Service {
               } | null;
               id?: string | null;
             }[];
+            bottomText?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
             buttonText?: string | null;
             buttonLink?: string | null;
             id?: string | null;
@@ -1639,6 +1669,7 @@ export interface PagesSelect<T extends boolean = true> {
               buttonStyle?: T;
               title?: T;
               subtitle?: T;
+              bottomText?: T;
               buttonText?: T;
               buttonLink?: T;
               image?: T;
@@ -2004,6 +2035,7 @@ export interface ServicesSelect<T extends boolean = true> {
                     text?: T;
                     id?: T;
                   };
+              bottomText?: T;
               buttonText?: T;
               buttonLink?: T;
               id?: T;
