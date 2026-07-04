@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
 import { normalizeLexicalValue } from '@/lib/lexical'
 
 function collapsibleField(
@@ -62,6 +63,13 @@ export const SiteSettings: GlobalConfig = {
     read: () => true,
   },
   hooks: {
+    afterChange: [
+      createGlobalRevalidationHook([
+        'public-site-settings:es',
+        'public-site-settings:en',
+        'public-site-settings:uk',
+      ]),
+    ],
     afterRead: [
       ({ doc }) => {
         return normalizeFormNotificationEditors(doc)

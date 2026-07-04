@@ -1,5 +1,6 @@
 import type { CollectionConfig, Field } from 'payload'
 import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
+import { createPageRevalidationHooks } from '@/lib/cacheRevalidation'
 import { seoFields } from '@/lib/seoFields'
 
 const sectionSpacingField = {
@@ -66,6 +67,10 @@ function collapsibleField(
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  hooks: {
+    afterChange: [createPageRevalidationHooks().afterChange],
+    afterDelete: [createPageRevalidationHooks().afterDelete],
+  },
   labels: {
     singular: {
       en: 'Page',

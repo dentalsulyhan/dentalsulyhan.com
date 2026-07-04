@@ -1,5 +1,6 @@
 import type { CollectionConfig, Field } from 'payload'
 import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
+import { createServiceRevalidationHooks } from '@/lib/cacheRevalidation'
 import { seoFields } from '@/lib/seoFields'
 
 const sectionSpacingField = {
@@ -66,6 +67,10 @@ function collapsibleField(
 
 export const Services: CollectionConfig = {
   slug: 'services',
+  hooks: {
+    afterChange: [createServiceRevalidationHooks().afterChange],
+    afterDelete: [createServiceRevalidationHooks().afterDelete],
+  },
   labels: {
     singular: {
       en: 'Service',

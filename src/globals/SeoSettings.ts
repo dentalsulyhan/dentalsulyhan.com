@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
 
 function collapsibleField(
   label: { en: string; uk: string; es: string },
@@ -17,6 +18,16 @@ function collapsibleField(
 
 export const SeoSettings: GlobalConfig = {
   slug: 'seo-settings',
+  hooks: {
+    afterChange: [
+      createGlobalRevalidationHook([
+        'public-seo-settings:es',
+        'public-seo-settings:en',
+        'public-seo-settings:uk',
+        'configured-site-url',
+      ]),
+    ],
+  },
   label: {
     en: 'SEO Settings',
     uk: 'SEO Налаштування',
@@ -222,4 +233,3 @@ export const SeoSettings: GlobalConfig = {
     ),
   ],
 }
-

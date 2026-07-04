@@ -1,7 +1,20 @@
 import { GlobalConfig } from 'payload'
+import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
+  hooks: {
+    afterChange: [
+      createGlobalRevalidationHook([
+        'public-home-page:es',
+        'public-home-page:en',
+        'public-home-page:uk',
+        'public-pages:es',
+        'public-pages:en',
+        'public-pages:uk',
+      ]),
+    ],
+  },
   label: {
     en: 'Home Page',
     uk: 'Головна сторінка',

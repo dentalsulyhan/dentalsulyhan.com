@@ -1,8 +1,18 @@
 // Shared Header and Footer Configuration for DentalSulyhan
 import { GlobalConfig } from 'payload'
+import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
 
 export const HeaderFooter: GlobalConfig = {
   slug: 'header-footer',
+  hooks: {
+    afterChange: [
+      createGlobalRevalidationHook([
+        'public-header-footer:es',
+        'public-header-footer:en',
+        'public-header-footer:uk',
+      ]),
+    ],
+  },
   label: {
     en: 'Header and Footer',
     uk: 'Шапка та підвал',

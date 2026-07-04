@@ -1,4 +1,5 @@
 import type { Field, GlobalConfig } from 'payload'
+import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
 import { defaultDesignSettings } from '@/lib/designSettings'
 
 function textField(name: string, label: { en: string; uk: string; es: string }, defaultValue: string): Field {
@@ -79,6 +80,15 @@ function collapsibleField(
 
 export const DesignSettings: GlobalConfig = {
   slug: 'design-settings',
+  hooks: {
+    afterChange: [
+      createGlobalRevalidationHook([
+        'public-design-settings:es',
+        'public-design-settings:en',
+        'public-design-settings:uk',
+      ]),
+    ],
+  },
   label: {
     en: 'Design Settings',
     uk: 'Дизайн-налаштування',

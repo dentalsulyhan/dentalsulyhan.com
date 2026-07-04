@@ -1,7 +1,17 @@
 import { GlobalConfig } from 'payload'
+import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
 
 export const SiteContacts: GlobalConfig = {
   slug: 'site-contacts',
+  hooks: {
+    afterChange: [
+      createGlobalRevalidationHook([
+        'public-site-contacts:es',
+        'public-site-contacts:en',
+        'public-site-contacts:uk',
+      ]),
+    ],
+  },
   label: {
     en: 'Site Contacts',
     uk: 'Контактні дані сайту',

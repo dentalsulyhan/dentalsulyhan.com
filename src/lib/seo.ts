@@ -46,7 +46,7 @@ export const getConfiguredSiteUrl = unstable_cache(
   ['configured-site-url'],
   {
     revalidate: PUBLIC_REVALIDATE,
-    tags: ['configured-site-url'],
+    tags: ['configured-site-url', 'public-seo-settings:es', 'public-seo-settings:en', 'public-seo-settings:uk'],
   },
 )
 
