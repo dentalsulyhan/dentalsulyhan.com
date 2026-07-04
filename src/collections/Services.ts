@@ -1,7 +1,6 @@
 import type { CollectionConfig, Field } from 'payload'
 import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
 import { seoFields } from '@/lib/seoFields'
-import { revalidateServiceContent } from '@/lib/revalidation'
 
 const sectionSpacingField = {
   name: 'compactSpacing',
@@ -89,18 +88,6 @@ export const Services: CollectionConfig = {
   },
   access: {
     read: () => true,
-  },
-  hooks: {
-    afterChange: [
-      async () => {
-        revalidateServiceContent()
-      },
-    ],
-    afterDelete: [
-      async () => {
-        revalidateServiceContent()
-      },
-    ],
   },
   fields: [
     {

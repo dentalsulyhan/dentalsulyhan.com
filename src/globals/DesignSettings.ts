@@ -1,6 +1,5 @@
 import type { Field, GlobalConfig } from 'payload'
 import { defaultDesignSettings } from '@/lib/designSettings'
-import { revalidateSiteChrome } from '@/lib/revalidation'
 
 function textField(name: string, label: { en: string; uk: string; es: string }, defaultValue: string): Field {
   return {
@@ -94,13 +93,6 @@ export const DesignSettings: GlobalConfig = {
   },
   access: {
     read: () => true,
-  },
-  hooks: {
-    afterChange: [
-      async () => {
-        revalidateSiteChrome()
-      },
-    ],
   },
   fields: [
     collapsibleField(

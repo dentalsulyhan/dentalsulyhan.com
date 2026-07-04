@@ -180,7 +180,7 @@ export async function getCachedPagePathEntries(locale: SupportedLocale) {
 
       return result.docs as PagePathEntry[]
     },
-    [`public-page-path-entries:${locale}`, `public-pages:${locale}`],
+    [`public-page-path-entries:${locale}`],
   )
 }
 
@@ -206,7 +206,7 @@ export async function getCachedServicePathEntries(locale: SupportedLocale) {
 
       return result.docs as ServicePathEntry[]
     },
-    [`public-service-path-entries:${locale}`, `public-services:${locale}`],
+    [`public-service-path-entries:${locale}`],
   )
 }
 
@@ -230,7 +230,7 @@ export async function getCachedServicesPage(locale: SupportedLocale, depth: 0 | 
 
       return (result.docs[0] as Page | undefined) || null
     },
-    [`public-services-page:${locale}`, `public-pages:${locale}`],
+    [`public-services-page:${locale}`],
   )
 }
 
@@ -258,7 +258,7 @@ export async function getCachedPageBySlug(
 
       return (result.docs[0] as Page | undefined) || null
     },
-    [`public-page:${locale}:${slug}`, `public-pages:${locale}`],
+    [`public-page:${locale}:${slug}`],
   )
 }
 
@@ -286,7 +286,7 @@ export async function getCachedPageByPath(
 
       return (result.docs[0] as Page | undefined) || null
     },
-    [`public-page-path:${locale}:${path}`, `public-pages:${locale}`],
+    [`public-page-path:${locale}:${path}`],
   )
 }
 
@@ -314,6 +314,6 @@ export async function getCachedServiceByPath(
 
       return (result.docs[0] as Service | undefined) || null
     },
-    [`public-service-path:${locale}:${path}`, `public-services:${locale}`],
+    [`public-service-path:${locale}:${path}`],
   )
 }

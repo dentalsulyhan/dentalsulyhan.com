@@ -1,5 +1,4 @@
 import { GlobalConfig } from 'payload'
-import { revalidateHomePageContent } from '@/lib/revalidation'
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
@@ -18,13 +17,6 @@ export const HomePage: GlobalConfig = {
   },
   access: {
     read: () => true,
-  },
-  hooks: {
-    afterChange: [
-      async () => {
-        revalidateHomePageContent()
-      },
-    ],
   },
   fields: [
     // ─── Section Order & Visibility ───

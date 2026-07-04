@@ -1,6 +1,5 @@
 import type { GlobalConfig } from 'payload'
 import { normalizeLexicalValue } from '@/lib/lexical'
-import { revalidateSiteChrome } from '@/lib/revalidation'
 
 function collapsibleField(
   label: { en: string; uk: string; es: string },
@@ -66,11 +65,6 @@ export const SiteSettings: GlobalConfig = {
     afterRead: [
       ({ doc }) => {
         return normalizeFormNotificationEditors(doc)
-      },
-    ],
-    afterChange: [
-      async () => {
-        revalidateSiteChrome()
       },
     ],
     beforeChange: [
