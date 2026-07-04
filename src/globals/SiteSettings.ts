@@ -68,7 +68,7 @@ export const SiteSettings: GlobalConfig = {
         'public-site-settings:es',
         'public-site-settings:en',
         'public-site-settings:uk',
-      ]),
+      ], ['/', '/en', '/uk']),
     ],
     afterRead: [
       ({ doc }) => {

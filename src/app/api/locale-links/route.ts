@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { buildLocalizedPath, DEFAULT_LOCALE, detectLocaleFromPathname, stripLocalePrefix, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { getCachedPagePathEntries, getCachedServicePathEntries } from '@/lib/publicData'
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 const responseHeaders = {
   'Cache-Control': 'public, max-age=300, stale-while-revalidate=86400',

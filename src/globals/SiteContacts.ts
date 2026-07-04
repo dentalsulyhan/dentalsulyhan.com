@@ -9,7 +9,7 @@ export const SiteContacts: GlobalConfig = {
         'public-site-contacts:es',
         'public-site-contacts:en',
         'public-site-contacts:uk',
-      ]),
+      ], ['/', '/en', '/uk']),
     ],
   },
   label: {

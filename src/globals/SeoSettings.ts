@@ -25,7 +25,7 @@ export const SeoSettings: GlobalConfig = {
         'public-seo-settings:en',
         'public-seo-settings:uk',
         'configured-site-url',
-      ]),
+      ], ['/', '/en', '/uk']),
     ],
   },
   label: {

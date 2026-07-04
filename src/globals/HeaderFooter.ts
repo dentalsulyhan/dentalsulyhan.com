@@ -10,7 +10,7 @@ export const HeaderFooter: GlobalConfig = {
         'public-header-footer:es',
         'public-header-footer:en',
         'public-header-footer:uk',
-      ]),
+      ], ['/', '/en', '/uk']),
     ],
   },
   label: {

@@ -86,7 +86,7 @@ export const DesignSettings: GlobalConfig = {
         'public-design-settings:es',
         'public-design-settings:en',
         'public-design-settings:uk',
-      ]),
+      ], ['/', '/en', '/uk']),
     ],
   },
   label: {

@@ -12,7 +12,7 @@ export const HomePage: GlobalConfig = {
         'public-pages:es',
         'public-pages:en',
         'public-pages:uk',
-      ]),
+      ], ['/', '/en', '/uk']),
     ],
   },
   label: {
