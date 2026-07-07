@@ -115,6 +115,19 @@ function getGridItemClass(
   return baseClass
 }
 
+function isCustomH1Block(block: unknown): block is { title?: string | null; useAsPageTitle?: boolean | null } {
+  if (typeof block !== 'object' || block === null) return false
+
+  const candidate = block as { blockType?: string; title?: string | null; useAsPageTitle?: boolean | null }
+
+  return (
+    (candidate.blockType === 'content' || candidate.blockType === 'contentImage') &&
+    typeof candidate.title === 'string' &&
+    candidate.title.trim().length > 0 &&
+    Boolean(candidate.useAsPageTitle)
+  )
+}
+
 function getDefaultPatientTypeOptions(locale: string) {
   if (locale === 'uk') return [{ label: 'Новий пацієнт' }, { label: 'Існуючий пацієнт' }]
   if (locale === 'en') return [{ label: 'New patient' }, { label: 'Existing patient' }]
@@ -257,6 +270,8 @@ export async function ServiceDetailPageContent({
       locale === 'uk' ? 'Детальніше' : locale === 'en' ? 'Learn more' : 'Mas informacion',
   }
 
+  const customH1BlockIndex = serviceLayout.findIndex(isCustomH1Block)
+
   return (
     <>
       {breadcrumbStructuredData && (
@@ -316,6 +331,8 @@ export async function ServiceDetailPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
+            const isPageH1 = idx === customH1BlockIndex
+            const HeadingTag = isPageH1 ? 'h1' : 'h2'
             const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const hasBackgroundImage = Boolean(backgroundImageUrl)
@@ -343,9 +360,9 @@ export async function ServiceDetailPageContent({
                 )}
                 <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                   {block.title && (
-                    <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold text-center ${hasBackgroundImage ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'} ${block.content || block.bottomText ? 'mb-6' : 'mb-0'}`}>
+                    <HeadingTag className={`text-[32px] max-[767px]:text-[24px] font-semibold text-center ${hasBackgroundImage ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'} ${block.content || block.bottomText ? 'mb-6' : 'mb-0'}`}>
                       {block.title}
-                    </h2>
+                    </HeadingTag>
                   )}
                   {block.content && (
                     <div
@@ -391,6 +408,8 @@ export async function ServiceDetailPageContent({
             const isImageContained = (block as { imageWidth?: unknown }).imageWidth === 'contained'
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
+            const isPageH1 = idx === customH1BlockIndex
+            const HeadingTag = isPageH1 ? 'h1' : 'h2'
 
             return (
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
@@ -400,7 +419,7 @@ export async function ServiceDetailPageContent({
                   </div>
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
-                  {block.title && <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</h2>}
+                  {block.title && <HeadingTag className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>}
                   <div className="prose max-w-none text-[#22282b]">
                     <RichText data={block.text} />
                   </div>

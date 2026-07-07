@@ -537,6 +537,10 @@ export interface Page {
             imageWidth?: ('full' | 'contained') | null;
             title?: string | null;
             /**
+             * Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.
+             */
+            useAsPageTitle?: boolean | null;
+            /**
              * Supports bold, italic and underline formatting.
              */
             text: {
@@ -587,6 +591,10 @@ export interface Page {
              */
             compactSpacing?: boolean | null;
             title?: string | null;
+            /**
+             * Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.
+             */
+            useAsPageTitle?: boolean | null;
             /**
              * Supports bold, italic and underline formatting.
              */
@@ -949,6 +957,10 @@ export interface Service {
              */
             compactSpacing?: boolean | null;
             title?: string | null;
+            /**
+             * Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.
+             */
+            useAsPageTitle?: boolean | null;
             content?: {
               root: {
                 type: string;
@@ -1001,6 +1013,10 @@ export interface Service {
             position?: ('left' | 'right') | null;
             imageWidth?: ('full' | 'contained') | null;
             title?: string | null;
+            /**
+             * Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.
+             */
+            useAsPageTitle?: boolean | null;
             text: {
               root: {
                 type: string;
@@ -1815,6 +1831,7 @@ export interface PagesSelect<T extends boolean = true> {
               position?: T;
               imageWidth?: T;
               title?: T;
+              useAsPageTitle?: T;
               text?: T;
               buttonText?: T;
               buttonLink?: T;
@@ -1839,6 +1856,7 @@ export interface PagesSelect<T extends boolean = true> {
               buttonStyle?: T;
               compactSpacing?: T;
               title?: T;
+              useAsPageTitle?: T;
               content?: T;
               fullWidthContent?: T;
               bottomText?: T;
@@ -1989,6 +2007,7 @@ export interface ServicesSelect<T extends boolean = true> {
               buttonStyle?: T;
               compactSpacing?: T;
               title?: T;
+              useAsPageTitle?: T;
               content?: T;
               fullWidthContent?: T;
               bottomText?: T;
@@ -2008,6 +2027,7 @@ export interface ServicesSelect<T extends boolean = true> {
               position?: T;
               imageWidth?: T;
               title?: T;
+              useAsPageTitle?: T;
               text?: T;
               buttonText?: T;
               buttonLink?: T;

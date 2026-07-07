@@ -271,6 +271,23 @@ export const Services: CollectionConfig = {
                   },
                 },
                 {
+                  name: 'useAsPageTitle',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Use title as H1',
+                    uk: 'Використати заголовок як H1',
+                    es: 'Usar el titulo como H1',
+                  },
+                  admin: {
+                    description: {
+                      en: 'Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.',
+                      uk: 'Позначає цей заголовок як основний H1 сторінки. Якщо позначити кілька блоків, H1 отримає лише перший.',
+                      es: 'Marca este titulo como el H1 principal de la pagina. Si se marcan varios bloques, solo el primero se renderizara como H1.',
+                    },
+                  },
+                },
+                {
                   name: 'content',
                   type: 'richText',
                   label: {
@@ -459,6 +476,23 @@ export const Services: CollectionConfig = {
                     en: 'Title',
                     uk: 'Заголовок',
                     es: 'Titulo',
+                  },
+                },
+                {
+                  name: 'useAsPageTitle',
+                  type: 'checkbox',
+                  defaultValue: false,
+                  label: {
+                    en: 'Use title as H1',
+                    uk: 'Використати заголовок як H1',
+                    es: 'Usar el titulo como H1',
+                  },
+                  admin: {
+                    description: {
+                      en: 'Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.',
+                      uk: 'Позначає цей заголовок як основний H1 сторінки. Якщо позначити кілька блоків, H1 отримає лише перший.',
+                      es: 'Marca este titulo como el H1 principal de la pagina. Si se marcan varios bloques, solo el primero se renderizara como H1.',
+                    },
                   },
                 },
                 {

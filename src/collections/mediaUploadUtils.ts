@@ -23,26 +23,32 @@ export function buildMediaPrefix(category: MediaCategory, date = new Date()) {
   return `${category}/${year}/${month}`
 }
 
-export function normalizeMediaFilename(filename: string, category: MediaCategory, date = new Date()) {
+export function normalizeMediaFilename(filename: string, category: MediaCategory) {
   const dotIndex = filename.lastIndexOf('.')
   const rawBase = dotIndex > 0 ? filename.slice(0, dotIndex) : filename
   const rawExtension = dotIndex > 0 ? filename.slice(dotIndex + 1) : ''
 
   const base = slugify(rawBase) || category
   const extension = slugify(rawExtension).toLowerCase()
-  const timestamp = [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, '0'),
-    String(date.getDate()).padStart(2, '0'),
-    String(date.getHours()).padStart(2, '0'),
-    String(date.getMinutes()).padStart(2, '0'),
-    String(date.getSeconds()).padStart(2, '0'),
-  ].join('')
-  const randomSuffix = Math.random().toString(36).slice(2, 8)
 
   return extension
-    ? `${base.slice(0, 60)}-${timestamp}-${randomSuffix}.${extension}`
-    : `${base.slice(0, 60)}-${timestamp}-${randomSuffix}`
+    ? `${base.slice(0, 60)}.${extension}`
+    : `${base.slice(0, 60)}`
+}
+
+export function withNumericFilenameSuffix(filename: string, suffix: number) {
+  if (suffix < 1) return filename
+
+  const dotIndex = filename.lastIndexOf('.')
+
+  if (dotIndex <= 0) {
+    return `${filename}-${suffix}`
+  }
+
+  const base = filename.slice(0, dotIndex)
+  const extension = filename.slice(dotIndex)
+
+  return `${base}-${suffix}${extension}`
 }
 
 function slugify(value: string) {

@@ -5,6 +5,7 @@ import {
   DEFAULT_MEDIA_CATEGORY,
   isMediaCategory,
   normalizeMediaFilename,
+  withNumericFilenameSuffix,
 } from './mediaUploadUtils'
 
 export const Media: CollectionConfig = {
@@ -34,7 +35,7 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [
-      ({ args, req }) => {
+      async ({ args, req, operation }) => {
         if (!req.file?.name) {
           return args
         }
@@ -47,7 +48,39 @@ export const Media: CollectionConfig = {
         const incomingCategory = data?.mediaCategory
         const mediaCategory = isMediaCategory(incomingCategory) ? incomingCategory : DEFAULT_MEDIA_CATEGORY
 
-        req.file.name = normalizeMediaFilename(req.file.name, mediaCategory)
+        const baseFilename = normalizeMediaFilename(req.file.name, mediaCategory)
+        const currentDocId =
+          operation === 'update' && 'id' in args && (typeof args.id === 'number' || typeof args.id === 'string')
+            ? args.id
+            : null
+
+        let nextFilename = baseFilename
+        let suffix = 0
+
+        while (true) {
+          const existing = await req.payload.find({
+            collection: 'media',
+            depth: 0,
+            limit: 1,
+            pagination: false,
+            where: {
+              filename: {
+                equals: nextFilename,
+              },
+            },
+          })
+
+          const existingDoc = existing.docs[0]
+
+          if (!existingDoc || (currentDocId !== null && String(existingDoc.id) === String(currentDocId))) {
+            break
+          }
+
+          suffix += 1
+          nextFilename = withNumericFilenameSuffix(baseFilename, suffix)
+        }
+
+        req.file.name = nextFilename
 
         return {
           ...args,
