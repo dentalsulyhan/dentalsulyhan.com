@@ -193,6 +193,7 @@ export async function generateMetadata({
     settings: seoSettings,
     target: {
       title: resolved.doc.metaTitle || resolved.doc.title,
+      appendSiteNameToTitle: !resolved.doc.metaTitle,
       description: resolved.doc.metaDescription,
       content: homePageContent || resolved.doc.layout,
       image: resolved.doc.metaImage,

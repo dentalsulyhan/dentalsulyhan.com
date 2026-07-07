@@ -5,6 +5,7 @@ import { buildAbsoluteUrlWithBase, buildLocalizedAbsoluteUrlWithBase } from '@/l
 
 export type SeoTarget = {
   title?: string | null
+  appendSiteNameToTitle?: boolean
   description?: string | null
   content?: unknown
   image?: number | Media | null
@@ -24,12 +25,18 @@ function getMediaUrl(field: SeoTarget['image'] | SeoSetting['defaultOgImage']): 
   return null
 }
 
-function resolveTitle(title: string | null | undefined, settings: SeoSetting | null | undefined) {
+function resolveTitle(
+  title: string | null | undefined,
+  settings: SeoSetting | null | undefined,
+  appendSiteName = true,
+) {
   const siteName = settings?.siteName?.trim() || 'Dental Clinic Sulyhan'
   const template = settings?.titleTemplate?.trim() || '%s | Dental Clinic Sulyhan'
   const cleanTitle = title?.trim()
 
   if (!cleanTitle) return siteName
+
+  if (!appendSiteName) return cleanTitle
 
   if (template.includes('%s')) {
     return template.replace('%s', cleanTitle)
@@ -193,7 +200,7 @@ export function buildSeoMetadata({
   alternates?: SeoAlternates
   siteUrl?: string
 }): Metadata {
-  const title = resolveTitle(target.title, settings)
+  const title = resolveTitle(target.title, settings, target.appendSiteNameToTitle ?? true)
   const description = resolveDescription(target.description, settings, target.content)
   const canonical = resolveCanonicalUrl(locale, path, target.canonicalUrl, siteUrl)
   const robots = resolveRobots(settings, target.noIndex, target.noFollow)
