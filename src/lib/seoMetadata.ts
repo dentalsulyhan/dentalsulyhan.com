@@ -200,6 +200,7 @@ export function buildSeoMetadata({
   alternates?: SeoAlternates
   siteUrl?: string
 }): Metadata {
+  const siteName = settings?.siteName?.trim() || 'Dental Clinic Sulyhan'
   const title = resolveTitle(target.title, settings, target.appendSiteNameToTitle ?? true)
   const description = resolveDescription(target.description, settings, target.content)
   const canonical = resolveCanonicalUrl(locale, path, target.canonicalUrl, siteUrl)
@@ -227,6 +228,7 @@ export function buildSeoMetadata({
     },
     openGraph: {
       type: 'website',
+      siteName,
       title,
       description,
       url: canonical,
