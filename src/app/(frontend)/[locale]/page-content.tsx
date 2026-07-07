@@ -1,4 +1,5 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import type { HomePage as HomePageType, Page, TeamMember, Media, SiteContact, SiteSetting, Promotion, SeoSetting } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -19,10 +20,22 @@ import {
   getCachedSiteSettings,
   getCachedTeamMembers,
 } from '@/lib/publicData'
-import TeamSlider from '../../../components/TeamSlider'
-import GallerySlider from '../../../components/GallerySlider'
 import ContactForm from '../../../components/ContactForm'
-import GoogleReviews from '../../../components/GoogleReviews'
+
+const TeamSlider = dynamic(() => import('../../../components/TeamSlider'), {
+  ssr: false,
+  loading: () => <div className="min-h-[280px] w-full rounded-[20px] bg-[#e8e0d8]" aria-hidden="true" />,
+})
+
+const GallerySlider = dynamic(() => import('../../../components/GallerySlider'), {
+  ssr: false,
+  loading: () => <div className="h-full min-h-[320px] w-full bg-[#e8e0d8]" aria-hidden="true" />,
+})
+
+const GoogleReviews = dynamic(() => import('../../../components/GoogleReviews'), {
+  ssr: false,
+  loading: () => <div className="min-h-[280px] w-full rounded-[28px] border border-[#22282b]/10 bg-white" aria-hidden="true" />,
+})
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {

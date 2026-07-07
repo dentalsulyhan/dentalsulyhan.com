@@ -16,12 +16,20 @@ import type {
 } from '@/payload-types'
 import type { SupportedLocale } from '@/lib/localizedRouting'
 
-export const PUBLIC_REVALIDATE = 300
+export const PUBLIC_REVALIDATE = 3600
 
 const getPayloadClient = cache(async () => getPayload({ config: configPromise }))
 
 type PagePathEntry = Pick<Page, 'slug' | 'path' | 'title' | 'noIndex' | 'updatedAt'>
 type ServicePathEntry = Pick<Service, 'slug' | 'path' | 'title' | 'noIndex' | 'updatedAt'>
+type FrontendShellData = {
+  siteSettings: SiteSetting
+  headerFooter: HeaderFooter
+  siteContacts: SiteContact
+  designSettings: Record<string, unknown> & DesignSetting
+  seoSettings: SeoSetting
+  servicesPage: Page | null
+}
 
 function cached<T>(
   keyParts: string[],
@@ -45,6 +53,68 @@ export async function getCachedSiteSettings(locale: SupportedLocale) {
       })) as SiteSetting
     },
     [`public-site-settings:${locale}`],
+  )
+}
+
+export async function getCachedFrontendShellData(locale: SupportedLocale) {
+  return cached(
+    ['public-frontend-shell', locale],
+    async () => {
+      const payload = await getPayloadClient()
+      const [siteSettings, headerFooter, siteContacts, designSettings, seoSettings, servicesPageResult] =
+        await Promise.all([
+          payload.findGlobal({
+            slug: 'site-settings',
+            locale,
+          }) as Promise<SiteSetting>,
+          payload.findGlobal({
+            slug: 'header-footer',
+            locale,
+          }) as Promise<HeaderFooter>,
+          payload.findGlobal({
+            slug: 'site-contacts',
+            locale,
+          }) as Promise<SiteContact>,
+          payload.findGlobal({
+            slug: 'design-settings',
+            locale,
+          }) as Promise<Record<string, unknown> & DesignSetting>,
+          payload.findGlobal({
+            slug: 'seo-settings',
+            locale,
+          }) as Promise<SeoSetting>,
+          payload.find({
+            collection: 'pages',
+            locale,
+            fallbackLocale: false,
+            depth: 0,
+            where: {
+              slug: {
+                equals: 'services',
+              },
+            },
+            limit: 1,
+          }),
+        ])
+
+      return {
+        siteSettings,
+        headerFooter,
+        siteContacts,
+        designSettings,
+        seoSettings,
+        servicesPage: (servicesPageResult.docs[0] as Page | undefined) || null,
+      } satisfies FrontendShellData
+    },
+    [
+      `public-site-settings:${locale}`,
+      `public-header-footer:${locale}`,
+      `public-site-contacts:${locale}`,
+      `public-design-settings:${locale}`,
+      `public-seo-settings:${locale}`,
+      `public-services-page:${locale}`,
+      `public-pages:${locale}`,
+    ],
   )
 }
 

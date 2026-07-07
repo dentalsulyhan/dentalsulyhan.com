@@ -47,7 +47,7 @@ type RouteDoc = Pick<
     layout?: unknown[] | null
   }
 
-export const revalidate = 300
+export const revalidate = 3600
 
 async function fetchLocalizedDocPaths(
   collection: 'pages' | 'services',
