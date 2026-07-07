@@ -157,3 +157,25 @@ Recommended database separation:
 - Production/VPS: separate database
 
 Avoid pointing local `payload dev` at the same database used by deployed environments.
+
+## Plerdy
+
+Plerdy can be enabled independently from GTM through an environment variable. This is useful when the client's GTM container is managed by someone else and you want to control Plerdy yourself.
+
+Set one of these variables in the target environment:
+
+```env
+PLERDY_SCRIPT_URL=https://cdn.plerdy.com/your-plerdy-script.js
+```
+
+or
+
+```env
+NEXT_PUBLIC_PLERDY_SCRIPT_URL=https://cdn.plerdy.com/your-plerdy-script.js
+```
+
+Notes:
+
+- Use only one Plerdy installation path: either direct script envs here or via GTM, not both.
+- The script loads with `afterInteractive`.
+- If GTM is present, Plerdy still loads separately and does not depend on the GTM container.

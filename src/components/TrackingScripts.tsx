@@ -15,6 +15,9 @@ export default function TrackingScripts({ tracking }: { tracking?: TrackingSetti
   const gtmId = normalizeId(tracking?.googleTagManagerId)
   const ga4Id = normalizeId(tracking?.ga4MeasurementId)
   const metaPixelId = normalizeId(tracking?.metaPixelId)
+  const plerdyScriptUrl = normalizeId(
+    process.env.PLERDY_SCRIPT_URL || process.env.NEXT_PUBLIC_PLERDY_SCRIPT_URL,
+  )
 
   if (gtmId) {
     return (
@@ -35,11 +38,18 @@ export default function TrackingScripts({ tracking }: { tracking?: TrackingSetti
             title="Google Tag Manager"
           />
         </noscript>
+        {plerdyScriptUrl ? (
+          <Script
+            id="plerdy-script"
+            src={plerdyScriptUrl}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </>
     )
   }
 
-  if (!ga4Id && !metaPixelId) {
+  if (!ga4Id && !metaPixelId && !plerdyScriptUrl) {
     return null
   }
 
@@ -81,6 +91,14 @@ export default function TrackingScripts({ tracking }: { tracking?: TrackingSetti
               fbq('track', 'PageView');
             `,
           }}
+        />
+      ) : null}
+
+      {plerdyScriptUrl ? (
+        <Script
+          id="plerdy-script"
+          src={plerdyScriptUrl}
+          strategy="afterInteractive"
         />
       ) : null}
     </>
