@@ -1,5 +1,4 @@
 import React from 'react'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import type { HomePage as HomePageType, Page, TeamMember, Media, SiteContact, SiteSetting, Promotion, SeoSetting } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
@@ -21,21 +20,9 @@ import {
   getCachedTeamMembers,
 } from '@/lib/publicData'
 import ContactForm from '../../../components/ContactForm'
-
-const TeamSlider = dynamic(() => import('../../../components/TeamSlider'), {
-  ssr: false,
-  loading: () => <div className="min-h-[280px] w-full rounded-[20px] bg-[#e8e0d8]" aria-hidden="true" />,
-})
-
-const GallerySlider = dynamic(() => import('../../../components/GallerySlider'), {
-  ssr: false,
-  loading: () => <div className="h-full min-h-[320px] w-full bg-[#e8e0d8]" aria-hidden="true" />,
-})
-
-const GoogleReviews = dynamic(() => import('../../../components/GoogleReviews'), {
-  ssr: false,
-  loading: () => <div className="min-h-[280px] w-full rounded-[28px] border border-[#22282b]/10 bg-white" aria-hidden="true" />,
-})
+import LazyGallerySlider from '../../../components/LazyGallerySlider'
+import LazyGoogleReviews from '../../../components/LazyGoogleReviews'
+import LazyTeamSlider from '../../../components/LazyTeamSlider'
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {
@@ -700,7 +687,7 @@ export async function PageContent({
                     )}
                     <div className="relative">
                       {membersToShow.length > 4 ? (
-                        <TeamSlider members={membersToShow} />
+                        <LazyTeamSlider members={membersToShow} />
                       ) : membersToShow.length > 0 ? (
                         <div className="grid grid-cols-4 max-[991px]:grid-cols-3 max-[767px]:grid-cols-2 max-[567px]:grid-cols-1 gap-[30px] max-[1100px]:gap-[20px]">
                           {membersToShow.map((member, memberIndex) => {
@@ -798,7 +785,7 @@ export async function PageContent({
                         dangerouslySetInnerHTML={{ __html: block.embedCode }}
                       />
                     ) : (
-                      <GoogleReviews
+                      <LazyGoogleReviews
                         locale={locale as 'es' | 'en' | 'uk'}
                         desktopSlides={parseInt(block.desktopSlides || '2')}
                         summaryTitle={reviewsBlock.summaryTitle}
@@ -822,7 +809,7 @@ export async function PageContent({
                 <section key={block.id || idx} id="gallery" className={`flex max-[991px]:flex-col ${theme.panel}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                   <div className={`w-1/2 max-[991px]:w-full h-[600px] max-[991px]:h-auto max-[991px]:aspect-[4/3] ${isSliderLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                     {block.images.length > 0 ? (
-                      <GallerySlider images={block.images} />
+                      <LazyGallerySlider images={block.images} />
                     ) : (
                       <ImagePlaceholder label="Gallery Placeholder" className="w-full h-full" />
                     )}
@@ -1603,7 +1590,7 @@ export async function PageContent({
                 <h2 className="text-[32px] font-semibold text-center mb-[50px]">{teamTitle}</h2>
                 <div className="max-w-[1200px] mx-auto relative px-[30px] max-[1230px]:px-[30px]">
                   {team.length > 0 ? (
-                    <TeamSlider members={team} />
+                    <LazyTeamSlider members={team} />
                   ) : (
                     <div className="grid grid-cols-4 max-[991px]:grid-cols-3 max-[767px]:grid-cols-2 max-[567px]:grid-cols-1 gap-[30px]">
                       {Array.from({ length: 4 }).map((_, i) => (
@@ -1664,7 +1651,7 @@ export async function PageContent({
                 {/* Right: Slider */}
                 <div className="w-1/2 max-[991px]:w-full h-[600px] max-[991px]:h-[400px]">
                   {galleryImages.length > 0 ? (
-                    <GallerySlider images={galleryImages} />
+                    <LazyGallerySlider images={galleryImages} />
                   ) : (
                     <ImagePlaceholder label="Gallery Placeholder" className="w-full h-full" />
                   )}

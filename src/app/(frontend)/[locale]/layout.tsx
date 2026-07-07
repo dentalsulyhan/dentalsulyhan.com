@@ -1,8 +1,8 @@
 import React from 'react'
-import dynamic from 'next/dynamic'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TrackingScripts from '@/components/TrackingScripts'
+import AnalyticsListener from '@/components/AnalyticsListener'
 import type { HeaderFooter, Page, SeoSetting, SiteContact, SiteSetting } from '@/payload-types'
 import { getDesignSettingsVars } from '@/lib/designSettings'
 import { isSupportedLocale } from '@/lib/localizedRouting'
@@ -25,10 +25,6 @@ type TrackingData = {
   ga4MeasurementId?: string | null
   metaPixelId?: string | null
 }
-
-const AnalyticsListener = dynamic(() => import('@/components/AnalyticsListener'), {
-  ssr: false,
-})
 
 export const revalidate = 3600
 
