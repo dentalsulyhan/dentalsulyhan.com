@@ -18,6 +18,33 @@ export default function TrackingScripts({ tracking }: { tracking?: TrackingSetti
   const plerdyScriptUrl = normalizeId(
     process.env.PLERDY_SCRIPT_URL || process.env.NEXT_PUBLIC_PLERDY_SCRIPT_URL,
   )
+  const plerdySiteHash = normalizeId(
+    process.env.PLERDY_SITE_HASH || process.env.NEXT_PUBLIC_PLERDY_SITE_HASH,
+  )
+  const plerdySuid = normalizeId(
+    process.env.PLERDY_SUID || process.env.NEXT_PUBLIC_PLERDY_SUID,
+  )
+  const hasPlerdyConfig = Boolean(plerdySiteHash && plerdySuid)
+
+  const plerdyScript = hasPlerdyConfig
+    ? `
+      window._site_hash_code = '${plerdySiteHash}';
+      window._suid = ${JSON.stringify(plerdySuid)};
+      var plerdyScript = document.createElement('script');
+      plerdyScript.setAttribute('defer', '');
+      plerdyScript.dataset.plerdymainscript = 'plerdymainscript';
+      plerdyScript.src = 'https://a.plerdy.com/public/js/click/main.js?v=' + Math.random();
+      var existingPlerdyScript = document.querySelector("[data-plerdymainscript='plerdymainscript']");
+      if (existingPlerdyScript && existingPlerdyScript.parentNode) {
+        existingPlerdyScript.parentNode.removeChild(existingPlerdyScript);
+      }
+      try {
+        document.head.appendChild(plerdyScript);
+      } catch (error) {
+        console.log(error, 'unable add script tag');
+      }
+    `
+    : null
 
   if (gtmId) {
     return (
@@ -38,18 +65,20 @@ export default function TrackingScripts({ tracking }: { tracking?: TrackingSetti
             title="Google Tag Manager"
           />
         </noscript>
-        {plerdyScriptUrl ? (
+        {plerdyScript ? (
           <Script
             id="plerdy-script"
-            src={plerdyScriptUrl}
             strategy="afterInteractive"
+            dangerouslySetInnerHTML={{ __html: plerdyScript }}
           />
+        ) : plerdyScriptUrl ? (
+          <Script id="plerdy-script" src={plerdyScriptUrl} strategy="afterInteractive" />
         ) : null}
       </>
     )
   }
 
-  if (!ga4Id && !metaPixelId && !plerdyScriptUrl) {
+  if (!ga4Id && !metaPixelId && !plerdyScriptUrl && !plerdyScript) {
     return null
   }
 
@@ -94,12 +123,14 @@ export default function TrackingScripts({ tracking }: { tracking?: TrackingSetti
         />
       ) : null}
 
-      {plerdyScriptUrl ? (
+      {plerdyScript ? (
         <Script
           id="plerdy-script"
-          src={plerdyScriptUrl}
           strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: plerdyScript }}
         />
+      ) : plerdyScriptUrl ? (
+        <Script id="plerdy-script" src={plerdyScriptUrl} strategy="afterInteractive" />
       ) : null}
     </>
   )

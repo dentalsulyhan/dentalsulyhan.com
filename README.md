@@ -162,13 +162,14 @@ Avoid pointing local `payload dev` at the same database used by deployed environ
 
 Plerdy can be enabled independently from GTM through an environment variable. This is useful when the client's GTM container is managed by someone else and you want to control Plerdy yourself.
 
-Set one of these variables in the target environment:
+Recommended Plerdy setup:
 
 ```env
-PLERDY_SCRIPT_URL=https://cdn.plerdy.com/your-plerdy-script.js
+PLERDY_SITE_HASH=8cf293f7737d83814bcf4c86fba32199
+PLERDY_SUID=78331
 ```
 
-or
+Optional fallback if Plerdy gives you a plain script URL instead of the standard snippet:
 
 ```env
 NEXT_PUBLIC_PLERDY_SCRIPT_URL=https://cdn.plerdy.com/your-plerdy-script.js
@@ -176,6 +177,7 @@ NEXT_PUBLIC_PLERDY_SCRIPT_URL=https://cdn.plerdy.com/your-plerdy-script.js
 
 Notes:
 
+- `PLERDY_SITE_HASH` and `PLERDY_SUID` are the preferred option for the standard Plerdy install code.
 - Use only one Plerdy installation path: either direct script envs here or via GTM, not both.
 - The script loads with `afterInteractive`.
 - If GTM is present, Plerdy still loads separately and does not depend on the GTM container.
