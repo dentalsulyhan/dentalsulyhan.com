@@ -57,6 +57,7 @@ export function seoFields(): Field {
     {
       name: 'canonicalUrl',
       type: 'text',
+      localized: true,
       label: {
         en: 'Canonical URL Override',
         uk: 'Перезапис canonical URL',
@@ -106,4 +107,3 @@ export function seoFields(): Field {
     },
   ])
 }
-

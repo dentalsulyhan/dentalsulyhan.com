@@ -1071,7 +1071,6 @@ export const pages = pgTable(
     metaImage: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    canonicalUrl: varchar('canonical_url'),
     noIndex: boolean('no_index').default(false),
     noFollow: boolean('no_follow').default(false),
     twitterCard: enum_pages_twitter_card('twitter_card').default('summary_large_image'),
@@ -1097,6 +1096,7 @@ export const pages_locales = pgTable(
     path: varchar('path').notNull(),
     metaTitle: varchar('meta_title'),
     metaDescription: varchar('meta_description'),
+    canonicalUrl: varchar('canonical_url'),
     id: serial('id').primaryKey(),
     _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
@@ -1852,7 +1852,6 @@ export const services = pgTable(
     metaImage: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    canonicalUrl: varchar('canonical_url'),
     noIndex: boolean('no_index').default(false),
     noFollow: boolean('no_follow').default(false),
     twitterCard: enum_services_twitter_card('twitter_card').default('summary_large_image'),
@@ -1878,6 +1877,7 @@ export const services_locales = pgTable(
     path: varchar('path').notNull(),
     metaTitle: varchar('meta_title'),
     metaDescription: varchar('meta_description'),
+    canonicalUrl: varchar('canonical_url'),
     id: serial('id').primaryKey(),
     _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
