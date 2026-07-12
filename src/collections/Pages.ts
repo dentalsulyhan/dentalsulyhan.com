@@ -1,6 +1,7 @@
 import type { CollectionConfig, Field } from 'payload'
 import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
 import { createPageRevalidationHooks } from '@/lib/cacheRevalidation'
+import { buildIconChoiceFields } from '@/lib/fontAwesomeIcons'
 import { seoFields } from '@/lib/seoFields'
 
 const sectionSpacingField = {
@@ -333,16 +334,7 @@ export const Pages: CollectionConfig = {
                 },
               },
               fields: [
-                {
-                  name: 'icon',
-                  type: 'upload',
-                  relationTo: 'media',
-                  label: {
-                    en: 'Icon',
-                    uk: 'Іконка',
-                    es: 'Icono',
-                  },
-                },
+                ...buildIconChoiceFields(),
                 {
                   name: 'title',
                   type: 'text',
@@ -628,16 +620,7 @@ export const Pages: CollectionConfig = {
                 },
               },
               fields: [
-                {
-                  name: 'icon',
-                  type: 'upload',
-                  relationTo: 'media',
-                  label: {
-                    en: 'Icon',
-                    uk: 'Іконка',
-                    es: 'Icono',
-                  },
-                },
+                ...buildIconChoiceFields(),
                 {
                   name: 'title',
                   type: 'text',

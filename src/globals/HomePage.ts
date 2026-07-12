@@ -1,5 +1,6 @@
 import { GlobalConfig } from 'payload'
 import { createGlobalRevalidationHook } from '@/lib/cacheRevalidation'
+import { buildIconChoiceFields } from '@/lib/fontAwesomeIcons'
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
@@ -196,17 +197,7 @@ export const HomePage: GlobalConfig = {
             es: 'Descripción',
           },
         },
-        {
-          name: 'icon',
-          type: 'upload',
-          localized: false,
-          relationTo: 'media',
-          label: {
-            en: 'Icon',
-            uk: 'Іконка',
-            es: 'Icono',
-          },
-        },
+        ...buildIconChoiceFields({ localized: false }),
       ],
     },
 
@@ -346,17 +337,7 @@ export const HomePage: GlobalConfig = {
                 es: 'Descripción',
               },
             },
-            {
-              name: 'icon',
-              type: 'upload',
-              localized: false,
-              relationTo: 'media',
-              label: {
-                en: 'Icon',
-                uk: 'Іконка',
-                es: 'Icono',
-              },
-            },
+            ...buildIconChoiceFields({ localized: false }),
           ],
         },
       ],

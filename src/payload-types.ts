@@ -269,7 +269,35 @@ export interface Page {
             itemLayout?: ('column' | 'row') | null;
             incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
+              iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
+              /**
+               * Choose one of the free built-in Font Awesome icons.
+               */
+              fontAwesomeIcon?:
+                | (
+                    | 'tooth'
+                    | 'teeth-open'
+                    | 'smile'
+                    | 'star'
+                    | 'heart'
+                    | 'shield'
+                    | 'circle-check'
+                    | 'check'
+                    | 'award'
+                    | 'medal'
+                    | 'clock'
+                    | 'calendar-check'
+                    | 'stethoscope'
+                    | 'user-doctor'
+                    | 'hand-holding-heart'
+                    | 'lightbulb'
+                    | 'location-dot'
+                    | 'phone'
+                    | 'thumbs-up'
+                    | 'sparkles'
+                  )
+                | null;
               title: string;
               /**
                * Supports bold, italic and underline formatting.
@@ -358,7 +386,35 @@ export interface Page {
             itemLayout?: ('column' | 'row') | null;
             incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
+              iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
+              /**
+               * Choose one of the free built-in Font Awesome icons.
+               */
+              fontAwesomeIcon?:
+                | (
+                    | 'tooth'
+                    | 'teeth-open'
+                    | 'smile'
+                    | 'star'
+                    | 'heart'
+                    | 'shield'
+                    | 'circle-check'
+                    | 'check'
+                    | 'award'
+                    | 'medal'
+                    | 'clock'
+                    | 'calendar-check'
+                    | 'stethoscope'
+                    | 'user-doctor'
+                    | 'hand-holding-heart'
+                    | 'lightbulb'
+                    | 'location-dot'
+                    | 'phone'
+                    | 'thumbs-up'
+                    | 'sparkles'
+                  )
+                | null;
               title: string;
               /**
                * Supports bold, italic and underline formatting.
@@ -1073,7 +1129,35 @@ export interface Service {
             columns?: ('2' | '3' | '4') | null;
             incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
+              iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
+              /**
+               * Choose one of the free built-in Font Awesome icons.
+               */
+              fontAwesomeIcon?:
+                | (
+                    | 'tooth'
+                    | 'teeth-open'
+                    | 'smile'
+                    | 'star'
+                    | 'heart'
+                    | 'shield'
+                    | 'circle-check'
+                    | 'check'
+                    | 'award'
+                    | 'medal'
+                    | 'clock'
+                    | 'calendar-check'
+                    | 'stethoscope'
+                    | 'user-doctor'
+                    | 'hand-holding-heart'
+                    | 'lightbulb'
+                    | 'location-dot'
+                    | 'phone'
+                    | 'thumbs-up'
+                    | 'sparkles'
+                  )
+                | null;
               title?: string | null;
               text?: {
                 root: {
@@ -1146,7 +1230,35 @@ export interface Service {
               [k: string]: unknown;
             } | null;
             items: {
+              iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
+              /**
+               * Choose one of the free built-in Font Awesome icons.
+               */
+              fontAwesomeIcon?:
+                | (
+                    | 'tooth'
+                    | 'teeth-open'
+                    | 'smile'
+                    | 'star'
+                    | 'heart'
+                    | 'shield'
+                    | 'circle-check'
+                    | 'check'
+                    | 'award'
+                    | 'medal'
+                    | 'clock'
+                    | 'calendar-check'
+                    | 'stethoscope'
+                    | 'user-doctor'
+                    | 'hand-holding-heart'
+                    | 'lightbulb'
+                    | 'location-dot'
+                    | 'phone'
+                    | 'thumbs-up'
+                    | 'sparkles'
+                  )
+                | null;
               title?: string | null;
               text?: {
                 root: {
@@ -1704,7 +1816,9 @@ export interface PagesSelect<T extends boolean = true> {
               items?:
                 | T
                 | {
+                    iconSource?: T;
                     icon?: T;
+                    fontAwesomeIcon?: T;
                     title?: T;
                     text?: T;
                     id?: T;
@@ -1747,7 +1861,9 @@ export interface PagesSelect<T extends boolean = true> {
               items?:
                 | T
                 | {
+                    iconSource?: T;
                     icon?: T;
+                    fontAwesomeIcon?: T;
                     title?: T;
                     text?: T;
                     id?: T;
@@ -2050,7 +2166,9 @@ export interface ServicesSelect<T extends boolean = true> {
               items?:
                 | T
                 | {
+                    iconSource?: T;
                     icon?: T;
+                    fontAwesomeIcon?: T;
                     title?: T;
                     text?: T;
                     id?: T;
@@ -2075,7 +2193,9 @@ export interface ServicesSelect<T extends boolean = true> {
               items?:
                 | T
                 | {
+                    iconSource?: T;
                     icon?: T;
+                    fontAwesomeIcon?: T;
                     title?: T;
                     text?: T;
                     id?: T;
@@ -2792,7 +2912,35 @@ export interface HomePage {
           };
           [k: string]: unknown;
         };
+        iconSource?: ('upload' | 'fontAwesome') | null;
         icon?: (number | null) | Media;
+        /**
+         * Choose one of the free built-in Font Awesome icons.
+         */
+        fontAwesomeIcon?:
+          | (
+              | 'tooth'
+              | 'teeth-open'
+              | 'smile'
+              | 'star'
+              | 'heart'
+              | 'shield'
+              | 'circle-check'
+              | 'check'
+              | 'award'
+              | 'medal'
+              | 'clock'
+              | 'calendar-check'
+              | 'stethoscope'
+              | 'user-doctor'
+              | 'hand-holding-heart'
+              | 'lightbulb'
+              | 'location-dot'
+              | 'phone'
+              | 'thumbs-up'
+              | 'sparkles'
+            )
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -2828,7 +2976,35 @@ export interface HomePage {
             };
             [k: string]: unknown;
           };
+          iconSource?: ('upload' | 'fontAwesome') | null;
           icon?: (number | null) | Media;
+          /**
+           * Choose one of the free built-in Font Awesome icons.
+           */
+          fontAwesomeIcon?:
+            | (
+                | 'tooth'
+                | 'teeth-open'
+                | 'smile'
+                | 'star'
+                | 'heart'
+                | 'shield'
+                | 'circle-check'
+                | 'check'
+                | 'award'
+                | 'medal'
+                | 'clock'
+                | 'calendar-check'
+                | 'stethoscope'
+                | 'user-doctor'
+                | 'hand-holding-heart'
+                | 'lightbulb'
+                | 'location-dot'
+                | 'phone'
+                | 'thumbs-up'
+                | 'sparkles'
+              )
+            | null;
           id?: string | null;
         }[]
       | null;
@@ -3206,7 +3382,9 @@ export interface HomePageSelect<T extends boolean = true> {
     | {
         title?: T;
         description?: T;
+        iconSource?: T;
         icon?: T;
+        fontAwesomeIcon?: T;
         id?: T;
       };
   aboutUs?:
@@ -3232,7 +3410,9 @@ export interface HomePageSelect<T extends boolean = true> {
           | {
               title?: T;
               description?: T;
+              iconSource?: T;
               icon?: T;
+              fontAwesomeIcon?: T;
               id?: T;
             };
       };

@@ -20,6 +20,7 @@ import {
   getCachedTeamMembers,
 } from '@/lib/publicData'
 import ContactForm from '../../../components/ContactForm'
+import ContentIcon from '../../../components/ContentIcon'
 import LazyGallerySlider from '../../../components/LazyGallerySlider'
 import LazyGoogleReviews from '../../../components/LazyGoogleReviews'
 import LazyTeamSlider from '../../../components/LazyTeamSlider'
@@ -426,15 +427,23 @@ export async function PageContent({
                     )}
                     <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
                       {block.items.map((item, itemIndex) => {
-                        const iconUrl = mediaUrl(item.icon)
+                        const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
+                        const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                         return (
                           <div
                             key={item.id || itemIndex}
                             className={`flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full ${isRowLayout ? 'max-[767px]:items-center max-[767px]:text-center' : 'max-[767px]:items-start max-[767px]:text-left'}`}
                           >
                             <div className={`flex max-[767px]:w-full ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : 'w-full flex-col items-center gap-5 text-center max-[767px]:justify-start max-[767px]:text-left'}`}>
-                              {iconUrl ? (
-                                <Image src={iconUrl} alt={item.title} width={50} height={50} className="w-auto h-[50px] shrink-0" />
+                              {hasCustomIcon ? (
+                                <ContentIcon
+                                  icon={item.icon}
+                                  fontAwesomeIcon={fontAwesomeIcon}
+                                  alt={item.title}
+                                  size={50}
+                                  imageClassName="w-auto h-[50px] shrink-0"
+                                  iconClassName="text-[#3c5557] shrink-0"
+                                />
                               ) : (
                                 <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
                                   <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -566,15 +575,23 @@ export async function PageContent({
                     )}
                     <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
                       {block.items.map((item, itemIndex) => {
-                        const iconUrl = mediaUrl(item.icon)
+                        const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
+                        const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                         return (
                           <div
                             key={item.id || itemIndex}
                             className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
                           >
                             <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-start max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
-                              {iconUrl ? (
-                                <Image src={iconUrl} alt={item.title} width={50} height={50} className="w-auto h-[50px] shrink-0" />
+                              {hasCustomIcon ? (
+                                <ContentIcon
+                                  icon={item.icon}
+                                  fontAwesomeIcon={fontAwesomeIcon}
+                                  alt={item.title}
+                                  size={50}
+                                  imageClassName="w-auto h-[50px] shrink-0"
+                                  iconClassName="text-[#3c5557] shrink-0"
+                                />
                               ) : (
                                 <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
                                   <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -1352,14 +1369,22 @@ export async function PageContent({
                 <div className={`px-[max(30px,calc((100vw-1200px)/2))] flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.advantages)} max-[767px]:flex-col max-[767px]:items-center`}>
                   {advantages.length > 0 ? (
                     advantages.map((adv, i) => {
-                      const iconUrl = mediaUrl(adv.icon)
+                      const fontAwesomeIcon = (adv as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
+                      const hasCustomIcon = Boolean(mediaUrl(adv.icon) || fontAwesomeIcon)
                       return (
                         <div
                           key={adv.id || i}
                           className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full"
                         >
-                          {iconUrl ? (
-                            <Image src={iconUrl} alt={adv.title} width={50} height={50} className="w-auto h-[50px]" />
+                          {hasCustomIcon ? (
+                            <ContentIcon
+                              icon={adv.icon}
+                              fontAwesomeIcon={fontAwesomeIcon}
+                              alt={adv.title}
+                              size={50}
+                              imageClassName="w-auto h-[50px]"
+                              iconClassName="text-[#3c5557]"
+                            />
                           ) : (
                             <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center">
                               <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -1496,14 +1521,22 @@ export async function PageContent({
                   <div className={`flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.philosophy)} max-[767px]:flex-col max-[767px]:items-center`}>
                     {homeData.philosophy?.cards && homeData.philosophy.cards.length > 0 ? (
                       homeData.philosophy.cards.map((card, i) => {
-                        const iconUrl = mediaUrl(card.icon)
+                        const fontAwesomeIcon = (card as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
+                        const hasCustomIcon = Boolean(mediaUrl(card.icon) || fontAwesomeIcon)
                         return (
                           <div
                             key={card.id || i}
                             className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
                           >
-                            {iconUrl ? (
-                              <Image src={iconUrl} alt={card.title} width={50} height={50} className="w-auto h-[50px]" />
+                            {hasCustomIcon ? (
+                              <ContentIcon
+                                icon={card.icon}
+                                fontAwesomeIcon={fontAwesomeIcon}
+                                alt={card.title}
+                                size={50}
+                                imageClassName="w-auto h-[50px]"
+                                iconClassName="text-[#3c5557]"
+                              />
                             ) : (
                               <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center">
                                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">

@@ -17,6 +17,7 @@ import {
   getCachedSiteSettings,
 } from '@/lib/publicData'
 import ContactForm from '../../../../../components/ContactForm'
+import ContentIcon from '../../../../../components/ContentIcon'
 import AccordionList from '../../../../../components/AccordionList'
 
 function mediaUrl(field: unknown): string | null {
@@ -465,15 +466,23 @@ export async function ServiceDetailPageContent({
                   )}
                   <div className="grid grid-cols-12 gap-x-8 gap-y-10 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-8 max-[1200px]:gap-y-8 max-[767px]:grid-cols-1 max-[767px]:gap-y-6">
                     {items.map((item, itemIndex) => {
-                      const iconUrl = mediaUrl(item.icon)
+                      const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
+                      const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                       return (
                         <div
                           key={item.id || itemIndex}
                           className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 max-[767px]:items-center max-[767px]:text-center`}
                         >
                           <div className={`flex w-full ${isRowLayout ? 'flex-row items-center gap-4 text-left max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'} max-[767px]:flex-col max-[767px]:justify-center max-[767px]:text-center`}`}>
-                            {iconUrl ? (
-                              <Image src={iconUrl} alt={item.title || 'Advantage icon'} width={50} height={50} className="w-auto h-[50px] shrink-0" />
+                            {hasCustomIcon ? (
+                              <ContentIcon
+                                icon={item.icon}
+                                fontAwesomeIcon={fontAwesomeIcon}
+                                alt={item.title || 'Advantage icon'}
+                                size={50}
+                                imageClassName="w-auto h-[50px] shrink-0"
+                                iconClassName="text-[#3c5557] shrink-0"
+                              />
                             ) : (
                               <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
                                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
@@ -530,17 +539,25 @@ export async function ServiceDetailPageContent({
                   )}
                   <div className="grid grid-cols-12 gap-x-6 gap-y-8 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-6 max-[1200px]:gap-y-6 max-[767px]:grid-cols-1 max-[767px]:gap-y-4">
                     {items.map((item, itemIndex) => {
-                      const iconUrl = mediaUrl(item.icon)
+                      const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
+                      const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                       return (
                         <div
                           key={item.id || itemIndex}
                           className={`relative h-full border-t border-[#3c5557]/[0.16] pt-4 max-[767px]:pt-3 ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1`}
                         >
-                          {(iconUrl || item.title) && (
+                          {(hasCustomIcon || item.title) && (
                             <div className={`flex ${itemLayout === 'row' ? `items-start ${item.title ? 'gap-3' : 'gap-2'}` : `flex-col ${item.title ? 'gap-2' : 'gap-1'}`} ${item.title ? 'mb-3' : 'mb-2'}`}>
-                              {iconUrl && (
+                              {hasCustomIcon && (
                                 <div className={`w-[38px] h-[38px] rounded-[12px] bg-[#3c5557]/[0.05] flex items-center justify-center shrink-0 ${item.title ? 'mt-[2px]' : 'mt-0'}`}>
-                                  <Image src={iconUrl} alt={item.title || 'Card icon'} width={20} height={20} className="w-[20px] h-[20px] object-contain shrink-0" />
+                                  <ContentIcon
+                                    icon={item.icon}
+                                    fontAwesomeIcon={fontAwesomeIcon}
+                                    alt={item.title || 'Card icon'}
+                                    size={20}
+                                    imageClassName="w-[20px] h-[20px] object-contain shrink-0"
+                                    iconClassName="text-[#3c5557] shrink-0"
+                                  />
                                 </div>
                               )}
                               {item.title && <h3 className="text-[16px] max-[767px]:text-[14px] font-semibold text-[#2d4447] mb-0 leading-snug tracking-[-0.01em]">{item.title}</h3>}
