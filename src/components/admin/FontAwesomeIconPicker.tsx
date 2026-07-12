@@ -1,7 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { useField, useFieldPath, useLocale } from '@payloadcms/ui'
+import { useField, useLocale } from '@payloadcms/ui'
+import type { TextFieldClientComponent } from 'payload'
 
 import {
   FONT_AWESOME_ICON_OPTIONS,
@@ -59,15 +60,14 @@ function FontAwesomeSvgPreview({
   )
 }
 
-export function FontAwesomeIconPicker() {
+export const FontAwesomeIconPicker: TextFieldClientComponent = ({ field, path }) => {
   const locale = (useLocale()?.code || 'en') as LocaleCode
-  const currentFieldPath = useFieldPath()
-  const iconSourcePath = getSiblingPath(currentFieldPath, 'iconSource')
-  const fontAwesomeIconPath = getSiblingPath(currentFieldPath, 'fontAwesomeIcon')
+  const iconPath = getSiblingPath(path, 'icon')
+  const iconSourcePath = getSiblingPath(path, 'iconSource')
 
-  const { value: uploadedIconValue, setValue: setUploadedIconValue } = useField<unknown>({ path: currentFieldPath })
+  const { value: uploadedIconValue, setValue: setUploadedIconValue } = useField<unknown>({ path: iconPath })
   const { value: iconSource, setValue: setIconSource } = useField<string>({ path: iconSourcePath })
-  const { value: rawFontAwesomeIcon, setValue: setFontAwesomeIcon } = useField<string>({ path: fontAwesomeIconPath })
+  const { value: rawFontAwesomeIcon, setValue: setFontAwesomeIcon } = useField<string>({ path })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -124,15 +124,27 @@ export function FontAwesomeIconPicker() {
   }
 
   return (
-    <div
-      style={{
-        borderTop: '1px solid var(--theme-elevation-100)',
-        marginTop: '12px',
-        paddingTop: '12px',
-      }}
-    >
+    <div style={{ marginBottom: '24px', marginTop: '8px' }}>
+      <div style={{ marginBottom: '10px' }}>
+        <label
+          htmlFor={`${path}-open`}
+          style={{
+            color: 'var(--theme-text)',
+            display: 'block',
+            fontSize: '13px',
+            fontWeight: 600,
+            marginBottom: '6px',
+          }}
+        >
+          {getLocalizedLabel(field.label || 'Font Awesome Icon', locale)}
+        </label>
+      </div>
+
+      <input id={path} type="hidden" value={selectedIcon || ''} readOnly />
+
       <div style={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
         <button
+          id={`${path}-open`}
           type="button"
           onClick={openModal}
           style={{

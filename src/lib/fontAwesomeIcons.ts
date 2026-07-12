@@ -215,21 +215,20 @@ export function buildIconChoiceFields({
         uk: 'Іконка',
         es: 'Icono',
       },
-      admin: {
-        components: {
-          afterInput: ['/components/admin/FontAwesomeIconPicker#FontAwesomeIconPicker'],
-        },
-      },
       ...sharedLocalized,
     },
     {
       name: 'fontAwesomeIcon',
       type: 'text',
-      hidden: true,
       label: {
         en: 'Font Awesome Icon',
         uk: 'Іконка Font Awesome',
         es: 'Icono de Font Awesome',
+      },
+      admin: {
+        components: {
+          Field: '/components/admin/FontAwesomeIconPicker#FontAwesomeIconPicker',
+        },
       },
       ...sharedLocalized,
     },
