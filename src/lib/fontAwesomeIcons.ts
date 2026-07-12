@@ -1,27 +1,188 @@
+import iconFamilies from '@fortawesome/fontawesome-free/metadata/icon-families.json'
 import type { Field } from 'payload'
 
-export const FONT_AWESOME_ICON_OPTIONS = [
-  { value: 'tooth', label: { en: 'Tooth', uk: 'Зуб', es: 'Diente' } },
-  { value: 'teeth-open', label: { en: 'Open Teeth', uk: 'Відкриті зуби', es: 'Dientes abiertos' } },
-  { value: 'smile', label: { en: 'Smile', uk: 'Посмішка', es: 'Sonrisa' } },
-  { value: 'star', label: { en: 'Star', uk: 'Зірка', es: 'Estrella' } },
-  { value: 'heart', label: { en: 'Heart', uk: 'Серце', es: 'Corazon' } },
-  { value: 'shield', label: { en: 'Shield', uk: 'Щит', es: 'Escudo' } },
-  { value: 'circle-check', label: { en: 'Check Circle', uk: 'Коло з галочкою', es: 'Circulo con check' } },
-  { value: 'check', label: { en: 'Check', uk: 'Галочка', es: 'Check' } },
-  { value: 'award', label: { en: 'Award', uk: 'Нагорода', es: 'Premio' } },
-  { value: 'medal', label: { en: 'Medal', uk: 'Медаль', es: 'Medalla' } },
-  { value: 'clock', label: { en: 'Clock', uk: 'Годинник', es: 'Reloj' } },
-  { value: 'calendar-check', label: { en: 'Calendar Check', uk: 'Календар', es: 'Calendario con check' } },
-  { value: 'stethoscope', label: { en: 'Stethoscope', uk: 'Стетоскоп', es: 'Estetoscopio' } },
-  { value: 'user-doctor', label: { en: 'Doctor', uk: 'Лікар', es: 'Doctor' } },
-  { value: 'hand-holding-heart', label: { en: 'Care', uk: 'Турбота', es: 'Cuidado' } },
-  { value: 'lightbulb', label: { en: 'Lightbulb', uk: 'Лампочка', es: 'Bombilla' } },
-  { value: 'location-dot', label: { en: 'Location', uk: 'Локація', es: 'Ubicacion' } },
-  { value: 'phone', label: { en: 'Phone', uk: 'Телефон', es: 'Telefono' } },
-  { value: 'thumbs-up', label: { en: 'Thumbs Up', uk: 'Вподобайка', es: 'Pulgar arriba' } },
-  { value: 'sparkles', label: { en: 'Sparkles', uk: 'Іскри', es: 'Destellos' } },
-] as const
+type LocalizedLabel = {
+  en: string
+  es: string
+  uk: string
+}
+
+type FontAwesomeStyle = 'brands' | 'regular' | 'solid'
+
+type FontAwesomeMetadataEntry = {
+  familyStylesByLicense?: {
+    free?: Array<{
+      family: string
+      style: string
+    }>
+  }
+  label?: string
+  search?: {
+    terms?: string[]
+  }
+  svgs?: Record<
+    string,
+    Record<
+      string,
+      {
+        raw: string
+        viewBox: number[]
+      }
+    >
+  >
+}
+
+export type FontAwesomeIconOption = {
+  label: string
+  searchText: string
+  style: FontAwesomeStyle
+  title: string
+  value: string
+}
+
+type FontAwesomeSvgEntry = { raw: string }
+
+const STYLE_LABELS: Record<FontAwesomeStyle, LocalizedLabel> = {
+  brands: {
+    en: 'Brands',
+    es: 'Marcas',
+    uk: 'Бренди',
+  },
+  regular: {
+    en: 'Regular',
+    es: 'Regular',
+    uk: 'Regular',
+  },
+  solid: {
+    en: 'Solid',
+    es: 'Solid',
+    uk: 'Solid',
+  },
+}
+
+const STYLE_ORDER: FontAwesomeStyle[] = ['solid', 'regular', 'brands']
+
+const iconMetadata = iconFamilies as unknown as Record<string, FontAwesomeMetadataEntry>
+
+function titleCaseFromSlug(value: string) {
+  return value
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+function buildFreeIconData() {
+  const options: FontAwesomeIconOption[] = []
+  const svgMap: Record<string, FontAwesomeSvgEntry> = {}
+
+  for (const [iconName, iconEntry] of Object.entries(iconMetadata)) {
+    const freeVariants = iconEntry.familyStylesByLicense?.free || []
+
+    for (const variant of freeVariants) {
+      if (variant.family !== 'classic') {
+        continue
+      }
+
+      if (!STYLE_ORDER.includes(variant.style as FontAwesomeStyle)) {
+        continue
+      }
+
+      const style = variant.style as FontAwesomeStyle
+      const svg = iconEntry.svgs?.[variant.family]?.[variant.style]
+
+      if (!svg?.raw) {
+        continue
+      }
+
+      const value = `${style}:${iconName}`
+      const title = iconEntry.label?.trim() || titleCaseFromSlug(iconName)
+      const searchTerms = iconEntry.search?.terms?.join(' ') || ''
+
+      options.push({
+        label: `${title} (${style})`,
+        searchText: `${title} ${iconName.replaceAll('-', ' ')} ${style} ${searchTerms}`.toLowerCase(),
+        style,
+        title,
+        value,
+      })
+
+      svgMap[value] = {
+        raw: svg.raw,
+      }
+    }
+  }
+
+  options.sort((a, b) => {
+    const styleOrderDifference = STYLE_ORDER.indexOf(a.style) - STYLE_ORDER.indexOf(b.style)
+
+    if (styleOrderDifference !== 0) {
+      return styleOrderDifference
+    }
+
+    return a.title.localeCompare(b.title)
+  })
+
+  return { options, svgMap }
+}
+
+const { options: freeIconOptions, svgMap: freeIconSvgMap } = buildFreeIconData()
+
+export const FONT_AWESOME_ICON_OPTIONS = freeIconOptions
+
+export const FONT_AWESOME_STYLE_OPTIONS = STYLE_ORDER.map((style) => ({
+  label: STYLE_LABELS[style],
+  value: style,
+}))
+
+export function normalizeFontAwesomeIconValue(icon: string | null | undefined) {
+  const normalized = icon?.trim()
+
+  if (!normalized) {
+    return null
+  }
+
+  if (normalized.includes(':')) {
+    return normalized
+  }
+
+  const fallback = `solid:${normalized}`
+  return freeIconSvgMap[fallback] ? fallback : normalized
+}
+
+export function getFontAwesomeIconClass(icon: string | null | undefined) {
+  const normalized = normalizeFontAwesomeIconValue(icon)
+
+  if (!normalized) {
+    return null
+  }
+
+  const [style, iconName] = normalized.split(':')
+
+  if (!style || !iconName) {
+    return `fa-solid fa-${normalized}`
+  }
+
+  return `fa-${style} fa-${iconName}`
+}
+
+export function getFontAwesomeIconSvg(icon: string | null | undefined) {
+  const normalized = normalizeFontAwesomeIconValue(icon)
+  return normalized ? freeIconSvgMap[normalized] || null : null
+}
+
+export function getSizedFontAwesomeIconMarkup(icon: string | null | undefined, size: number) {
+  const svg = getFontAwesomeIconSvg(icon)
+
+  if (!svg) {
+    return null
+  }
+
+  return svg.raw.replace(
+    '<svg ',
+    `<svg width="${size}" height="${size}" style="display:block" `,
+  )
+}
 
 export function buildIconChoiceFields({
   localized,
@@ -78,8 +239,8 @@ export function buildIconChoiceFields({
       name: 'fontAwesomeIcon',
       type: 'select',
       options: FONT_AWESOME_ICON_OPTIONS.map((option) => ({
-        value: option.value,
         label: option.label,
+        value: option.value,
       })),
       label: {
         en: 'Font Awesome Icon',
@@ -89,20 +250,15 @@ export function buildIconChoiceFields({
       admin: {
         condition: (_, siblingData) => siblingData?.iconSource === 'fontAwesome',
         description: {
-          en: 'Choose one of the free built-in Font Awesome icons.',
-          uk: 'Оберіть одну з безкоштовних вбудованих іконок Font Awesome.',
-          es: 'Elige uno de los iconos gratuitos integrados de Font Awesome.',
+          en: 'Search across all free Font Awesome icons and choose one icon.',
+          uk: 'Шукайте серед усіх безкоштовних іконок Font Awesome та оберіть одну.',
+          es: 'Busca entre todos los iconos gratuitos de Font Awesome y elige uno.',
         },
         components: {
-          afterInput: ['/components/admin/FontAwesomeIconPreview#FontAwesomeIconPreview'],
+          Field: '/components/admin/FontAwesomeIconField#FontAwesomeIconField',
         },
       },
       ...sharedLocalized,
     },
   ]
-}
-
-export function getFontAwesomeIconClass(icon: string | null | undefined) {
-  const normalized = icon?.trim()
-  return normalized ? `fa-solid fa-${normalized}` : null
 }

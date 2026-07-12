@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import type { Media } from '@/payload-types'
-import { getFontAwesomeIconClass } from '@/lib/fontAwesomeIcons'
+import { getSizedFontAwesomeIconMarkup } from '@/lib/fontAwesomeIcons'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -26,7 +26,7 @@ export default function ContentIcon({
   iconClassName?: string
 }) {
   const iconUrl = mediaUrl(icon)
-  const fontAwesomeClass = getFontAwesomeIconClass(fontAwesomeIcon)
+  const fontAwesomeMarkup = getSizedFontAwesomeIconMarkup(fontAwesomeIcon, size)
 
   if (iconUrl) {
     return (
@@ -40,12 +40,17 @@ export default function ContentIcon({
     )
   }
 
-  if (fontAwesomeClass) {
+  if (fontAwesomeMarkup) {
     return (
-      <i
-        className={`${fontAwesomeClass} ${iconClassName || ''}`.trim()}
+      <span
         aria-hidden="true"
-        style={{ fontSize: `${size}px`, lineHeight: 1 }}
+        className={iconClassName}
+        style={{
+          color: 'currentColor',
+          display: 'inline-flex',
+          lineHeight: 1,
+        }}
+        dangerouslySetInnerHTML={{ __html: fontAwesomeMarkup }}
       />
     )
   }
