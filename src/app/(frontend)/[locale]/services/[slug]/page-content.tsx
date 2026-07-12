@@ -466,6 +466,7 @@ export async function ServiceDetailPageContent({
                   )}
                   <div className="grid grid-cols-12 gap-x-8 gap-y-10 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-8 max-[1200px]:gap-y-8 max-[767px]:grid-cols-1 max-[767px]:gap-y-6">
                     {items.map((item, itemIndex) => {
+                      const iconSource = (item as { iconSource?: string | null }).iconSource
                       const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
                       const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                       return (
@@ -477,6 +478,7 @@ export async function ServiceDetailPageContent({
                             {hasCustomIcon ? (
                               <ContentIcon
                                 icon={item.icon}
+                                iconSource={iconSource}
                                 fontAwesomeIcon={fontAwesomeIcon}
                                 alt={item.title || 'Advantage icon'}
                                 size={50}
@@ -539,6 +541,7 @@ export async function ServiceDetailPageContent({
                   )}
                   <div className="grid grid-cols-12 gap-x-6 gap-y-8 max-[1200px]:grid-cols-2 max-[1200px]:gap-x-6 max-[1200px]:gap-y-6 max-[767px]:grid-cols-1 max-[767px]:gap-y-4">
                     {items.map((item, itemIndex) => {
+                      const iconSource = (item as { iconSource?: string | null }).iconSource
                       const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
                       const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                       return (
@@ -552,6 +555,7 @@ export async function ServiceDetailPageContent({
                                 <div className={`w-[38px] h-[38px] rounded-[12px] bg-[#3c5557]/[0.05] flex items-center justify-center shrink-0 ${item.title ? 'mt-[2px]' : 'mt-0'}`}>
                                   <ContentIcon
                                     icon={item.icon}
+                                    iconSource={iconSource}
                                     fontAwesomeIcon={fontAwesomeIcon}
                                     alt={item.title || 'Card icon'}
                                     size={20}

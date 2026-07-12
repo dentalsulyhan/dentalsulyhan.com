@@ -150,22 +150,6 @@ export function normalizeFontAwesomeIconValue(icon: string | null | undefined) {
   return freeIconSvgMap[fallback] ? fallback : normalized
 }
 
-export function getFontAwesomeIconClass(icon: string | null | undefined) {
-  const normalized = normalizeFontAwesomeIconValue(icon)
-
-  if (!normalized) {
-    return null
-  }
-
-  const [style, iconName] = normalized.split(':')
-
-  if (!style || !iconName) {
-    return `fa-solid fa-${normalized}`
-  }
-
-  return `fa-${style} fa-${iconName}`
-}
-
 export function getFontAwesomeIconSvg(icon: string | null | undefined) {
   const normalized = normalizeFontAwesomeIconValue(icon)
   return normalized ? freeIconSvgMap[normalized] || null : null
@@ -195,6 +179,7 @@ export function buildIconChoiceFields({
     {
       name: 'iconSource',
       type: 'select',
+      hidden: true,
       defaultValue: 'upload',
       options: [
         {
@@ -231,32 +216,20 @@ export function buildIconChoiceFields({
         es: 'Icono',
       },
       admin: {
-        condition: (_, siblingData) => siblingData?.iconSource !== 'fontAwesome',
+        components: {
+          afterInput: ['/components/admin/FontAwesomeIconPicker#FontAwesomeIconPicker'],
+        },
       },
       ...sharedLocalized,
     },
     {
       name: 'fontAwesomeIcon',
-      type: 'select',
-      options: FONT_AWESOME_ICON_OPTIONS.map((option) => ({
-        label: option.label,
-        value: option.value,
-      })),
+      type: 'text',
+      hidden: true,
       label: {
         en: 'Font Awesome Icon',
         uk: 'Іконка Font Awesome',
         es: 'Icono de Font Awesome',
-      },
-      admin: {
-        condition: (_, siblingData) => siblingData?.iconSource === 'fontAwesome',
-        description: {
-          en: 'Search across all free Font Awesome icons and choose one icon.',
-          uk: 'Шукайте серед усіх безкоштовних іконок Font Awesome та оберіть одну.',
-          es: 'Busca entre todos los iconos gratuitos de Font Awesome y elige uno.',
-        },
-        components: {
-          Field: '/components/admin/FontAwesomeIconField#FontAwesomeIconField',
-        },
       },
       ...sharedLocalized,
     },

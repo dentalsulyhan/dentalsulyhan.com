@@ -271,33 +271,7 @@ export interface Page {
             items: {
               iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
-              /**
-               * Choose one of the free built-in Font Awesome icons.
-               */
-              fontAwesomeIcon?:
-                | (
-                    | 'tooth'
-                    | 'teeth-open'
-                    | 'smile'
-                    | 'star'
-                    | 'heart'
-                    | 'shield'
-                    | 'circle-check'
-                    | 'check'
-                    | 'award'
-                    | 'medal'
-                    | 'clock'
-                    | 'calendar-check'
-                    | 'stethoscope'
-                    | 'user-doctor'
-                    | 'hand-holding-heart'
-                    | 'lightbulb'
-                    | 'location-dot'
-                    | 'phone'
-                    | 'thumbs-up'
-                    | 'sparkles'
-                  )
-                | null;
+              fontAwesomeIcon?: string | null;
               title: string;
               /**
                * Supports bold, italic and underline formatting.
@@ -388,33 +362,7 @@ export interface Page {
             items: {
               iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
-              /**
-               * Choose one of the free built-in Font Awesome icons.
-               */
-              fontAwesomeIcon?:
-                | (
-                    | 'tooth'
-                    | 'teeth-open'
-                    | 'smile'
-                    | 'star'
-                    | 'heart'
-                    | 'shield'
-                    | 'circle-check'
-                    | 'check'
-                    | 'award'
-                    | 'medal'
-                    | 'clock'
-                    | 'calendar-check'
-                    | 'stethoscope'
-                    | 'user-doctor'
-                    | 'hand-holding-heart'
-                    | 'lightbulb'
-                    | 'location-dot'
-                    | 'phone'
-                    | 'thumbs-up'
-                    | 'sparkles'
-                  )
-                | null;
+              fontAwesomeIcon?: string | null;
               title: string;
               /**
                * Supports bold, italic and underline formatting.
@@ -1131,33 +1079,7 @@ export interface Service {
             items: {
               iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
-              /**
-               * Choose one of the free built-in Font Awesome icons.
-               */
-              fontAwesomeIcon?:
-                | (
-                    | 'tooth'
-                    | 'teeth-open'
-                    | 'smile'
-                    | 'star'
-                    | 'heart'
-                    | 'shield'
-                    | 'circle-check'
-                    | 'check'
-                    | 'award'
-                    | 'medal'
-                    | 'clock'
-                    | 'calendar-check'
-                    | 'stethoscope'
-                    | 'user-doctor'
-                    | 'hand-holding-heart'
-                    | 'lightbulb'
-                    | 'location-dot'
-                    | 'phone'
-                    | 'thumbs-up'
-                    | 'sparkles'
-                  )
-                | null;
+              fontAwesomeIcon?: string | null;
               title?: string | null;
               text?: {
                 root: {
@@ -1232,33 +1154,7 @@ export interface Service {
             items: {
               iconSource?: ('upload' | 'fontAwesome') | null;
               icon?: (number | null) | Media;
-              /**
-               * Choose one of the free built-in Font Awesome icons.
-               */
-              fontAwesomeIcon?:
-                | (
-                    | 'tooth'
-                    | 'teeth-open'
-                    | 'smile'
-                    | 'star'
-                    | 'heart'
-                    | 'shield'
-                    | 'circle-check'
-                    | 'check'
-                    | 'award'
-                    | 'medal'
-                    | 'clock'
-                    | 'calendar-check'
-                    | 'stethoscope'
-                    | 'user-doctor'
-                    | 'hand-holding-heart'
-                    | 'lightbulb'
-                    | 'location-dot'
-                    | 'phone'
-                    | 'thumbs-up'
-                    | 'sparkles'
-                  )
-                | null;
+              fontAwesomeIcon?: string | null;
               title?: string | null;
               text?: {
                 root: {
@@ -2914,33 +2810,7 @@ export interface HomePage {
         };
         iconSource?: ('upload' | 'fontAwesome') | null;
         icon?: (number | null) | Media;
-        /**
-         * Choose one of the free built-in Font Awesome icons.
-         */
-        fontAwesomeIcon?:
-          | (
-              | 'tooth'
-              | 'teeth-open'
-              | 'smile'
-              | 'star'
-              | 'heart'
-              | 'shield'
-              | 'circle-check'
-              | 'check'
-              | 'award'
-              | 'medal'
-              | 'clock'
-              | 'calendar-check'
-              | 'stethoscope'
-              | 'user-doctor'
-              | 'hand-holding-heart'
-              | 'lightbulb'
-              | 'location-dot'
-              | 'phone'
-              | 'thumbs-up'
-              | 'sparkles'
-            )
-          | null;
+        fontAwesomeIcon?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -2978,33 +2848,7 @@ export interface HomePage {
           };
           iconSource?: ('upload' | 'fontAwesome') | null;
           icon?: (number | null) | Media;
-          /**
-           * Choose one of the free built-in Font Awesome icons.
-           */
-          fontAwesomeIcon?:
-            | (
-                | 'tooth'
-                | 'teeth-open'
-                | 'smile'
-                | 'star'
-                | 'heart'
-                | 'shield'
-                | 'circle-check'
-                | 'check'
-                | 'award'
-                | 'medal'
-                | 'clock'
-                | 'calendar-check'
-                | 'stethoscope'
-                | 'user-doctor'
-                | 'hand-holding-heart'
-                | 'lightbulb'
-                | 'location-dot'
-                | 'phone'
-                | 'thumbs-up'
-                | 'sparkles'
-              )
-            | null;
+          fontAwesomeIcon?: string | null;
           id?: string | null;
         }[]
       | null;

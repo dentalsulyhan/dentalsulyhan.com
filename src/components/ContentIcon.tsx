@@ -12,6 +12,7 @@ function mediaUrl(field: unknown): string | null {
 
 export default function ContentIcon({
   icon,
+  iconSource,
   fontAwesomeIcon,
   alt = '',
   size = 50,
@@ -19,6 +20,7 @@ export default function ContentIcon({
   iconClassName,
 }: {
   icon?: unknown
+  iconSource?: string | null
   fontAwesomeIcon?: string | null
   alt?: string
   size?: number
@@ -27,6 +29,21 @@ export default function ContentIcon({
 }) {
   const iconUrl = mediaUrl(icon)
   const fontAwesomeMarkup = getSizedFontAwesomeIconMarkup(fontAwesomeIcon, size)
+
+  if (iconSource === 'fontAwesome' && fontAwesomeMarkup) {
+    return (
+      <span
+        aria-hidden="true"
+        className={iconClassName}
+        style={{
+          color: 'currentColor',
+          display: 'inline-flex',
+          lineHeight: 1,
+        }}
+        dangerouslySetInnerHTML={{ __html: fontAwesomeMarkup }}
+      />
+    )
+  }
 
   if (iconUrl) {
     return (

@@ -427,6 +427,7 @@ export async function PageContent({
                     )}
                     <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
                       {block.items.map((item, itemIndex) => {
+                        const iconSource = (item as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
                         const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                         return (
@@ -438,6 +439,7 @@ export async function PageContent({
                               {hasCustomIcon ? (
                                 <ContentIcon
                                   icon={item.icon}
+                                  iconSource={iconSource}
                                   fontAwesomeIcon={fontAwesomeIcon}
                                   alt={item.title}
                                   size={50}
@@ -575,6 +577,7 @@ export async function PageContent({
                     )}
                     <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
                       {block.items.map((item, itemIndex) => {
+                        const iconSource = (item as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
                         const hasCustomIcon = Boolean(mediaUrl(item.icon) || fontAwesomeIcon)
                         return (
@@ -586,6 +589,7 @@ export async function PageContent({
                               {hasCustomIcon ? (
                                 <ContentIcon
                                   icon={item.icon}
+                                  iconSource={iconSource}
                                   fontAwesomeIcon={fontAwesomeIcon}
                                   alt={item.title}
                                   size={50}
@@ -1369,6 +1373,7 @@ export async function PageContent({
                 <div className={`px-[max(30px,calc((100vw-1200px)/2))] flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.advantages)} max-[767px]:flex-col max-[767px]:items-center`}>
                   {advantages.length > 0 ? (
                     advantages.map((adv, i) => {
+                      const iconSource = (adv as { iconSource?: string | null }).iconSource
                       const fontAwesomeIcon = (adv as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
                       const hasCustomIcon = Boolean(mediaUrl(adv.icon) || fontAwesomeIcon)
                       return (
@@ -1379,6 +1384,7 @@ export async function PageContent({
                           {hasCustomIcon ? (
                             <ContentIcon
                               icon={adv.icon}
+                              iconSource={iconSource}
                               fontAwesomeIcon={fontAwesomeIcon}
                               alt={adv.title}
                               size={50}
@@ -1521,6 +1527,7 @@ export async function PageContent({
                   <div className={`flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.philosophy)} max-[767px]:flex-col max-[767px]:items-center`}>
                     {homeData.philosophy?.cards && homeData.philosophy.cards.length > 0 ? (
                       homeData.philosophy.cards.map((card, i) => {
+                        const iconSource = (card as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (card as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
                         const hasCustomIcon = Boolean(mediaUrl(card.icon) || fontAwesomeIcon)
                         return (
@@ -1531,6 +1538,7 @@ export async function PageContent({
                             {hasCustomIcon ? (
                               <ContentIcon
                                 icon={card.icon}
+                                iconSource={iconSource}
                                 fontAwesomeIcon={fontAwesomeIcon}
                                 alt={card.title}
                                 size={50}
