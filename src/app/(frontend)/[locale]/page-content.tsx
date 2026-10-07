@@ -1437,7 +1437,7 @@ export async function PageContent({
 
           case 'aboutUs':
             return (
-              <section key={`sec-${idx}`} id="about_us" className="flex flex-col">
+              <section key={`sec-${idx}`} id="about_us" className="flex flex-col min-[992px]:grid min-[992px]:auto-rows-fr">
                 {aboutBlocks.length > 0 ? (
                   aboutBlocks.map((block, i) => {
                     const imgUrl = mediaUrl(block.image)

@@ -29,6 +29,10 @@ interface FooterProps {
 
 export default function Footer({ data, contacts, headerLogo, currentLocale, servicesPath = '/services', branding }: FooterProps) {
   const currentYear = new Date().getFullYear()
+  const copyrightText = (data.copyright || `©${currentYear} - All right reserved`).replace(
+    /\b(?:19|20)\d{2}(?:\s*[-–]\s*(?:19|20)\d{2})?\b/,
+    String(currentYear),
+  )
   const localizedServicesPath = buildLocalizedPath(currentLocale, servicesPath)
 
   const resolveMenuLink = (link?: string | null) => {
@@ -135,7 +139,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
             style={{ fontFamily: 'var(--second-font)' }}
             className="text-[#909da2] text-[14px] text-center w-full hidden max-[991px]:block"
           >
-            {data.copyright || `©2024-${currentYear} All right reserved`}
+            {copyrightText}
           </p>
         </div>
       </div>
@@ -145,7 +149,7 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
             style={{ fontFamily: 'var(--second-font)' }}
             className="text-[#909da2] text-[14px] text-center w-full max-[991px]:hidden"
           >
-            {data.copyright || `©2024-${currentYear} All right reserved`}
+            {copyrightText}
           </p>
         </div>
       </div>
