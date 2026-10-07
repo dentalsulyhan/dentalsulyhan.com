@@ -59,6 +59,10 @@ export const enum_pages_blocks_advantages_item_layout = pgEnum(
   'enum_pages_blocks_advantages_item_layout',
   ['column', 'row'],
 )
+export const enum_pages_blocks_advantages_content_alignment = pgEnum(
+  'enum_pages_blocks_advantages_content_alignment',
+  ['left', 'center'],
+)
 export const enum_pages_blocks_advantages_incomplete_row_alignment = pgEnum(
   'enum_pages_blocks_advantages_incomplete_row_alignment',
   ['center', 'start'],
@@ -528,6 +532,7 @@ export const pages_blocks_advantages = pgTable(
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
     itemLayout: enum_pages_blocks_advantages_item_layout('item_layout').default('column'),
+    contentAlignment: enum_pages_blocks_advantages_content_alignment('content_alignment').default('left'),
     incompleteRowAlignment: enum_pages_blocks_advantages_incomplete_row_alignment(
       'incomplete_row_alignment',
     ).default('center'),
@@ -2190,7 +2195,7 @@ export const design_settings = pgTable('design_settings', {
   buttons_paddingYMobile: varchar('buttons_padding_y_mobile').default('0.65rem'),
   buttons_paddingXMobile: varchar('buttons_padding_x_mobile').default('1.25rem'),
   buttons_fontSizeMobile: varchar('buttons_font_size_mobile').default('14px'),
-  buttons_radius: varchar('buttons_radius').default('9999px'),
+  buttons_radius: varchar('buttons_radius').default('10px'),
   buttons_primaryBg: varchar('buttons_primary_bg').default('#3c5557'),
   buttons_primaryBorder: varchar('buttons_primary_border').default('#3c5557'),
   buttons_primaryText: varchar('buttons_primary_text').default('#fafafa'),

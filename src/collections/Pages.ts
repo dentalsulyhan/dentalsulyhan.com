@@ -308,6 +308,41 @@ export const Pages: CollectionConfig = {
                     es: 'Disposicion de icono y titulo',
                   },
                 },
+                {
+                  name: 'contentAlignment',
+                  type: 'select',
+                  defaultValue: 'left',
+                  options: [
+                    {
+                      label: {
+                        en: 'Left',
+                        uk: 'Ліворуч',
+                        es: 'Izquierda',
+                      },
+                      value: 'left',
+                    },
+                    {
+                      label: {
+                        en: 'Center',
+                        uk: 'По центру',
+                        es: 'Centrado',
+                      },
+                      value: 'center',
+                    },
+                  ],
+                  label: {
+                    en: 'Content Alignment',
+                    uk: 'Вирівнювання контенту',
+                    es: 'Alineacion del contenido',
+                  },
+                  admin: {
+                    description: {
+                      en: 'Controls the alignment of the heading, cards, text, and button in this block.',
+                      uk: 'Керує вирівнюванням заголовка, карток, тексту та кнопки у цьому блоці.',
+                      es: 'Controla la alineacion del titulo, las tarjetas, el texto y el boton de este bloque.',
+                    },
+                  },
+                },
                 incompleteRowAlignmentField,
               ],
             ),

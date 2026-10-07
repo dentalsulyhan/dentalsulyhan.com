@@ -369,7 +369,7 @@
   justify-content: center;
   min-height: var(--button-min-height-desktop);
   padding: var(--button-padding-y-desktop) var(--button-padding-x-desktop);
-  border-radius: var(--button-radius);
+  border-radius: 10px !important;
   border: 1px solid var(--button-primary-border);
   background: transparent;
   box-sizing: border-box;

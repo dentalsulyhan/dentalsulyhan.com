@@ -59,7 +59,7 @@ export const defaultDesignSettings = {
     paddingYMobile: '0.65rem',
     paddingXMobile: '1.25rem',
     fontSizeMobile: '14px',
-    radius: '9999px',
+    radius: '10px',
     primaryBg: '#3c5557',
     primaryBorder: '#3c5557',
     primaryText: '#fafafa',
