@@ -60,16 +60,6 @@ export const SiteContacts: GlobalConfig = {
       defaultValue: 'https://wa.me/+34665399280',
     },
     {
-      name: 'telegram',
-      type: 'text',
-      label: {
-        en: 'Telegram Link',
-        uk: 'Посилання на Telegram',
-        es: 'Enlace de Telegram',
-      },
-      defaultValue: 'https://t.me/+34665399280',
-    },
-    {
       name: 'address',
       type: 'text',
       localized: true,

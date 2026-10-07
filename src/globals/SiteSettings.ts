@@ -468,16 +468,6 @@ export const SiteSettings: GlobalConfig = {
           },
         },
         {
-          name: 'telegram',
-          type: 'text',
-          defaultValue: 'https://t.me/+34665399280',
-          label: {
-            en: 'Telegram Link',
-            uk: 'Посилання Telegram',
-            es: 'Enlace de Telegram',
-          },
-        },
-        {
           name: 'address',
           type: 'text',
           localized: true,

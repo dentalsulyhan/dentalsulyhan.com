@@ -2642,7 +2642,6 @@ export interface SiteSetting {
     email?: string | null;
     phone?: string | null;
     whatsapp?: string | null;
-    telegram?: string | null;
     address?: string | null;
     transport?: string | null;
     googleMapsUrl?: string | null;
@@ -2946,7 +2945,6 @@ export interface SiteContact {
   email?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
-  telegram?: string | null;
   address?: string | null;
   transport?: string | null;
   socialLinks?:
@@ -3145,7 +3143,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         email?: T;
         phone?: T;
         whatsapp?: T;
-        telegram?: T;
         address?: T;
         transport?: T;
         googleMapsUrl?: T;
@@ -3336,7 +3333,6 @@ export interface SiteContactsSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   whatsapp?: T;
-  telegram?: T;
   address?: T;
   transport?: T;
   socialLinks?:

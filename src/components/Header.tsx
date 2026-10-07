@@ -170,7 +170,6 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
   const phone = contacts?.phone || '+34 665-399-280'
   const whatsapp = contacts?.whatsapp || 'https://wa.me/+34665399280'
-  const telegram = contacts?.telegram || 'https://t.me/+34665399280'
 
   return (
     <header
@@ -192,6 +191,15 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
           >
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
           </button>
+
+          <button
+            type="button"
+            aria-label={currentLocale === 'uk' ? 'Закрити меню' : currentLocale === 'es' ? 'Cerrar menu' : 'Close menu'}
+            onClick={() => setIsMenuOpen(false)}
+            className={`fixed inset-0 z-[1005] cursor-default bg-[#22282b]/20 transition-opacity duration-300 ${
+              isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
+            }`}
+          />
 
           {/* Mobile slide-out drawer (menuBody) */}
           <div
@@ -263,14 +271,6 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
         <div className="flex items-center justify-end gap-[16px] max-[1100px]:gap-[12px] max-[767px]:gap-[12px]">
           {/* Social Icons */}
           <div className="flex items-center gap-[12px] max-[1100px]:gap-[10px] max-[767px]:gap-[10px]">
-            <a
-              href={telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:scale-105 transition-transform max-[991px]:hidden flex items-center"
-            >
-              <img src="/icons/telegram.svg" alt="Telegram" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
-            </a>
             <a
               href={whatsapp}
               target="_blank"

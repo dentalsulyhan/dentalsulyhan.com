@@ -71,7 +71,7 @@
   --button-padding-y-mobile: 0.65rem;
   --button-padding-x-mobile: 1.25rem;
   --button-font-size-mobile: 14px;
-  --button-radius: 9999px;
+  --button-radius: 10px;
 
   --button-primary-bg: #3c5557;
   --button-primary-border: #3c5557;

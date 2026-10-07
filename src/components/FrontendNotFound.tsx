@@ -122,7 +122,7 @@ export default function FrontendNotFound({ locale: forcedLocale, splitContent }:
               </div>
               {splitContent.buttonText && (
                 <div>
-                  <Link href={splitContent.buttonLink || buildLocalizedPath(locale, '/')} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#3c5557] text-[#3c5557] text-[15px] font-medium hover:bg-[#3c5557] hover:text-white transition-colors no-underline bg-white/80">
+                  <Link href={splitContent.buttonLink || buildLocalizedPath(locale, '/')} className="inline-flex items-center justify-center px-7 py-3 rounded-[10px] border border-[#3c5557] text-[#3c5557] text-[15px] font-medium hover:bg-[#3c5557] hover:text-white transition-colors no-underline bg-white/80">
                     {splitContent.buttonText}
                   </Link>
                 </div>
@@ -147,13 +147,13 @@ export default function FrontendNotFound({ locale: forcedLocale, splitContent }:
               {t.text}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={buildLocalizedPath(locale, '/')} className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#3c5557] text-white border border-[#3c5557] text-[15px] font-medium hover:bg-transparent hover:text-[#3c5557] transition-colors no-underline">
+              <Link href={buildLocalizedPath(locale, '/')} className="inline-flex items-center justify-center px-7 py-3 rounded-[10px] bg-[#3c5557] text-white border border-[#3c5557] text-[15px] font-medium hover:bg-transparent hover:text-[#3c5557] transition-colors no-underline">
                 {t.home}
               </Link>
-              <Link href={buildLocalizedPath(locale, '/services')} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
+              <Link href={buildLocalizedPath(locale, '/services')} className="inline-flex items-center justify-center px-7 py-3 rounded-[10px] border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
                 {t.services}
               </Link>
-              <Link href={buildLocalizedPath(locale, '/#contact_us')} className="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
+              <Link href={buildLocalizedPath(locale, '/#contact_us')} className="inline-flex items-center justify-center px-7 py-3 rounded-[10px] border border-[#22282b]/15 text-[#22282b] text-[15px] font-medium hover:border-[#3c5557] hover:text-[#3c5557] transition-colors no-underline">
                 {t.contact}
               </Link>
             </div>

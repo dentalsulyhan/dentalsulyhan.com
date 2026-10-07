@@ -963,11 +963,6 @@ export async function PageContent({
                             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{phoneLabel}</span>
                             <div className="flex items-center gap-4 flex-wrap">
                               <div className="flex items-center gap-3">
-                                {contacts.telegram && (
-                                  <a href={contacts.telegram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title="Telegram">
-                                    <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
-                                  </a>
-                                )}
                                 {contacts.whatsapp && (
                                   <a href={contacts.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title="WhatsApp">
                                     <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-[18px] h-[18px]" />
@@ -1163,11 +1158,6 @@ export async function PageContent({
                                 <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{phoneLabel}</span>
                                 <div className="flex items-center gap-4 flex-wrap">
                                   <div className="flex items-center gap-3">
-                                    {contacts.telegram && (
-                                      <a href={contacts.telegram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title="Telegram">
-                                        <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
-                                      </a>
-                                    )}
                                     {contacts.whatsapp && (
                                       <a href={contacts.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title="WhatsApp">
                                         <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-[18px] h-[18px]" />
@@ -1726,7 +1716,7 @@ export async function PageContent({
                     )}
 
                     <div className="flex flex-col gap-6 text-[#22282b]">
-                      {/* Phone with WhatsApp and Telegram icons */}
+                      {/* Phone with WhatsApp icon */}
                       {contacts?.phone && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">
@@ -1749,17 +1739,6 @@ export async function PageContent({
                                   title="WhatsApp"
                                 >
                                   <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-[18px] h-[18px]" />
-                                </a>
-                              )}
-                              {contacts.telegram && (
-                                <a
-                                  href={contacts.telegram}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
-                                  title="Telegram"
-                                >
-                                  <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
                                 </a>
                               )}
                             </div>

@@ -973,17 +973,6 @@ export async function ServiceDetailPageContent({
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.phoneLabel}</span>
                           <div className="flex items-center gap-4 flex-wrap">
                             <div className="flex items-center gap-3">
-                              {contacts.telegram && (
-                                <a
-                                  href={contacts.telegram}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex items-center justify-center hover:scale-105 transition-transform"
-                                  title="Telegram"
-                                >
-                                  <img src="/icons/telegram.svg" alt="Telegram" className="w-[18px] h-[18px]" />
-                                </a>
-                              )}
                               {contacts.whatsapp && (
                                 <a
                                   href={contacts.whatsapp}

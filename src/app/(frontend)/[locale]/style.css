@@ -577,7 +577,7 @@ form {
   color: var(--main-bg-color);
   padding: 14px 28px;
   border: 1px solid var(--main-button-bg-color);
-  border-radius: 999px;
+  border-radius: 10px;
   cursor: pointer;
   width: 100%;
   transition: 0.3s;
