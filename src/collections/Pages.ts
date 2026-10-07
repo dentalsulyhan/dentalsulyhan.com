@@ -845,33 +845,64 @@ export const Pages: CollectionConfig = {
               { en: 'Layout & Content', uk: 'Розкладка і контент', es: 'Disposicion y contenido' },
               [
                 {
+                  name: 'layout',
+                  type: 'select',
+                  defaultValue: 'split',
+                  options: [
+                    {
+                      label: {
+                        en: 'Split: text and slider side by side',
+                        uk: 'Шахматний: текст і слайдер поруч',
+                        es: 'Dividido: texto y slider uno al lado del otro',
+                      },
+                      value: 'split',
+                    },
+                    {
+                      label: {
+                        en: 'Stacked: text above slider',
+                        uk: 'Вертикальний: текст над слайдером',
+                        es: 'Vertical: texto encima del slider',
+                      },
+                      value: 'stacked',
+                    },
+                  ],
+                  label: {
+                    en: 'Gallery Layout',
+                    uk: 'Варіант галереї',
+                    es: 'Disposición de la galería',
+                  },
+                },
+                {
                   name: 'position',
-              type: 'select',
-              defaultValue: 'right',
-              options: [
-                {
+                  type: 'select',
+                  defaultValue: 'right',
+                  options: [
+                    {
+                      label: {
+                        en: 'Slider on Left',
+                        uk: 'Слайдер зліва',
+                        es: 'Slider a la izquierda',
+                      },
+                      value: 'left',
+                    },
+                    {
+                      label: {
+                        en: 'Slider on Right',
+                        uk: 'Слайдер справа',
+                        es: 'Slider a la derecha',
+                      },
+                      value: 'right',
+                    },
+                  ],
                   label: {
-                    en: 'Slider on Left',
-                    uk: 'Слайдер зліва',
-                    es: 'Slider a la izquierda',
+                    en: 'Slider Position',
+                    uk: 'Позиція слайдера',
+                    es: 'Posicion del slider',
                   },
-                  value: 'left',
-                },
-                {
-                  label: {
-                    en: 'Slider on Right',
-                    uk: 'Слайдер справа',
-                    es: 'Slider a la derecha',
+                  admin: {
+                    condition: (_, siblingData) => siblingData?.layout !== 'stacked',
                   },
-                  value: 'right',
                 },
-              ],
-              label: {
-                en: 'Slider Position',
-                uk: 'Позиція слайдера',
-                es: 'Posicion del slider',
-              },
-            },
                 {
                   name: 'title',
                   type: 'text',

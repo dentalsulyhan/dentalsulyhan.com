@@ -428,6 +428,7 @@ export interface Page {
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            layout?: ('split' | 'stacked') | null;
             position?: ('left' | 'right') | null;
             title?: string | null;
             description?: {
@@ -1797,6 +1798,7 @@ export interface PagesSelect<T extends boolean = true> {
               theme?: T;
               buttonStyle?: T;
               compactSpacing?: T;
+              layout?: T;
               position?: T;
               title?: T;
               description?: T;

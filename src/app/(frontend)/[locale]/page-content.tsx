@@ -21,6 +21,7 @@ import {
 } from '@/lib/publicData'
 import ContactForm from '../../../components/ContactForm'
 import ContentIcon from '../../../components/ContentIcon'
+import EqualizeElementHeights from '../../../components/EqualizeElementHeights'
 import LazyGallerySlider from '../../../components/LazyGallerySlider'
 import LazyGoogleReviews from '../../../components/LazyGoogleReviews'
 import LazyTeamSlider from '../../../components/LazyTeamSlider'
@@ -326,10 +327,12 @@ export async function PageContent({
 
   const pageLayout = pageData?.layout || []
   const customH1BlockIndex = pageLayout.findIndex(isCustomH1Block)
+  const isHomePage = pageData?.slug === 'home'
 
   if (pageLayout.length > 0) {
     return (
       <>
+        {isHomePage && <EqualizeElementHeights selector='[data-equal-height-group="home-content-images"]' />}
         {pageLayout.map((block, idx) => {
           switch (block.blockType) {
             case 'hero': {
@@ -825,10 +828,49 @@ export async function PageContent({
             }
 
             case 'gallery': {
+              const galleryLayout = (block as { layout?: unknown }).layout === 'stacked' ? 'stacked' : 'split'
               const isSliderLeft = (block.position || 'right') === 'left'
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
+
+              if (galleryLayout === 'stacked') {
+                return (
+                  <section
+                    key={block.id || idx}
+                    id="gallery"
+                    className={`${theme.panel} ${compactSpacing ? 'py-[64px] max-[767px]:py-[44px]' : 'py-[100px] max-[767px]:py-[64px]'}`}
+                    style={getThemeBackgroundStyle(theme, 'panel')}
+                  >
+                    <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                      <div className="max-w-[900px]">
+                        {block.title && (
+                          <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-6">{block.title}</h2>
+                        )}
+                        {block.description && (
+                          <div className="text-[16px] text-[#909da2] leading-relaxed prose max-w-none">
+                            <RichText data={block.description} />
+                          </div>
+                        )}
+                        {block.buttonText && (
+                          <div className="mt-6">
+                            <a href={resolveHref(block.buttonLink)} className={buttonClass}>
+                              {block.buttonText}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-10 h-[600px] max-[991px]:h-auto max-[991px]:aspect-[4/3]">
+                        {block.images.length > 0 ? (
+                          <LazyGallerySlider images={block.images} />
+                        ) : (
+                          <ImagePlaceholder label="Gallery Placeholder" className="w-full h-full" />
+                        )}
+                      </div>
+                    </div>
+                  </section>
+                )
+              }
 
               return (
                 <section key={block.id || idx} id="gallery" className={`flex max-[991px]:flex-col ${theme.panel}`} style={getThemeBackgroundStyle(theme, 'panel')}>
@@ -1074,7 +1116,11 @@ export async function PageContent({
               const HeadingTag = isPageH1 ? 'h1' : 'h2'
 
               return (
-                <section key={block.id || idx} className="flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0">
+                <section
+                  key={block.id || idx}
+                  data-equal-height-group={isHomePage ? 'home-content-images' : undefined}
+                  className="flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0"
+                >
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>
                     <div className={isImageContained ? 'w-full max-w-[520px] h-full max-[991px]:max-w-none overflow-hidden rounded-[24px] shadow-[0_18px_40px_rgba(34,40,43,0.08)]' : 'w-full h-full'}>
                       {imageUrl ? (
@@ -1437,7 +1483,7 @@ export async function PageContent({
 
           case 'aboutUs':
             return (
-              <section key={`sec-${idx}`} id="about_us" className="flex flex-col min-[992px]:grid min-[992px]:auto-rows-fr">
+              <section key={`sec-${idx}`} id="about_us" className="flex flex-col">
                 {aboutBlocks.length > 0 ? (
                   aboutBlocks.map((block, i) => {
                     const imgUrl = mediaUrl(block.image)
