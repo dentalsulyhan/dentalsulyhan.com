@@ -479,6 +479,22 @@ export const SiteSettings: GlobalConfig = {
           },
         },
         {
+          name: 'addressUrl',
+          type: 'text',
+          label: {
+            en: 'Address Link',
+            uk: 'Посилання адреси',
+            es: 'Enlace de la direccion',
+          },
+          admin: {
+            description: {
+              en: 'URL opened when a visitor clicks the address, for example a Google Maps place link.',
+              uk: 'URL, який відкриється після кліку на адресу, наприклад посилання на місце в Google Maps.',
+              es: 'URL que se abre al hacer clic en la dirección, por ejemplo un enlace de Google Maps.',
+            },
+          },
+        },
+        {
           name: 'transport',
           type: 'text',
           localized: true,

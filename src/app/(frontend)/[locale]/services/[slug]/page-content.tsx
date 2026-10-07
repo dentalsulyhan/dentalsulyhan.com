@@ -19,6 +19,7 @@ import {
 import ContactForm from '../../../../../components/ContactForm'
 import ContentIcon from '../../../../../components/ContentIcon'
 import AccordionList from '../../../../../components/AccordionList'
+import SocialIcon from '../../../../../components/SocialIcon'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -1000,7 +1001,13 @@ export async function ServiceDetailPageContent({
                       {contacts.address && (
                         <div className="flex flex-col gap-2">
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.addressLabel}</span>
-                          <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                          {contacts.addressUrl ? (
+                            <a href={contacts.addressUrl} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium hover:opacity-80 transition-opacity">
+                              {contacts.address}
+                            </a>
+                          ) : (
+                            <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                          )}
                         </div>
                       )}
                       {contacts.transport && (
@@ -1014,8 +1021,8 @@ export async function ServiceDetailPageContent({
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{copy.socialLabel}</span>
                           <div className="flex items-center gap-3 flex-wrap">
                             {contacts.socialLinks.map((link, linkIndex) => (
-                              <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-medium text-[#3c5557] hover:opacity-80 no-underline">
-                                {link.platform}
+                              <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title={link.platform}>
+                                <SocialIcon platform={link.platform} />
                               </a>
                             ))}
                           </div>

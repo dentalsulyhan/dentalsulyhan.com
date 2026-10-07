@@ -2463,6 +2463,7 @@ export const site_settings = pgTable(
     contacts_phone: varchar('contacts_phone').default('+34 665-399-280'),
     contacts_whatsapp: varchar('contacts_whatsapp').default('https://wa.me/+34665399280'),
     contacts_telegram: varchar('contacts_telegram').default('https://t.me/+34665399280'),
+    contacts_addressUrl: varchar('contacts_address_url'),
     contacts_googleMapsUrl: varchar('contacts_google_maps_url'),
     formNotifications_recipientEmail: varchar('form_notifications_recipient_email'),
     formNotifications_sendConfirmationToUser: boolean(
@@ -2827,6 +2828,7 @@ export const site_contacts = pgTable('site_contacts', {
   phone: varchar('phone').default('+34 665-399-280'),
   whatsapp: varchar('whatsapp').default('https://wa.me/+34665399280'),
   telegram: varchar('telegram').default('https://t.me/+34665399280'),
+  addressUrl: varchar('address_url'),
   googleMapsUrl: varchar('google_maps_url'),
   updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
   createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),

@@ -2653,6 +2653,10 @@ export interface SiteSetting {
     phone?: string | null;
     whatsapp?: string | null;
     address?: string | null;
+    /**
+     * URL opened when a visitor clicks the address, for example a Google Maps place link.
+     */
+    addressUrl?: string | null;
     transport?: string | null;
     googleMapsUrl?: string | null;
   };
@@ -2956,6 +2960,10 @@ export interface SiteContact {
   phone?: string | null;
   whatsapp?: string | null;
   address?: string | null;
+  /**
+   * URL opened when a visitor clicks the address, for example a Google Maps place link.
+   */
+  addressUrl?: string | null;
   transport?: string | null;
   socialLinks?:
     | {
@@ -3154,6 +3162,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         phone?: T;
         whatsapp?: T;
         address?: T;
+        addressUrl?: T;
         transport?: T;
         googleMapsUrl?: T;
       };
@@ -3344,6 +3353,7 @@ export interface SiteContactsSelect<T extends boolean = true> {
   phone?: T;
   whatsapp?: T;
   address?: T;
+  addressUrl?: T;
   transport?: T;
   socialLinks?:
     | T

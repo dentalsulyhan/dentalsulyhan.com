@@ -24,6 +24,7 @@ import ContentIcon from '../../../components/ContentIcon'
 import LazyGallerySlider from '../../../components/LazyGallerySlider'
 import LazyGoogleReviews from '../../../components/LazyGoogleReviews'
 import LazyTeamSlider from '../../../components/LazyTeamSlider'
+import SocialIcon from '../../../components/SocialIcon'
 
 /* ─── helper: extract URL from a Payload media relation ─── */
 function mediaUrl(field: unknown): string | null {
@@ -83,37 +84,6 @@ function isCustomH1Block(block: unknown): block is { title?: string | null; useA
     candidate.title.trim().length > 0 &&
     Boolean(candidate.useAsPageTitle)
   )
-}
-
-function SocialIcon({ platform }: { platform: string }) {
-  const iconMap: Record<string, string> = {
-    instagram: '/icons/instagram.svg',
-    facebook: '/icons/facebook.svg',
-    twitter: '/icons/twitter.svg',
-  }
-  const iconSrc = iconMap[platform]
-
-  if (iconSrc) {
-    return <img src={iconSrc} alt={platform} className="w-[20px] h-[20px]" />
-  }
-
-  if (platform === 'youtube') {
-    return (
-      <svg className="w-[20px] h-[20px] fill-[#22282b]" viewBox="0 0 24 24">
-        <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.555a3.003 3.003 0 0 0-2.11 2.108C0 8.017 0 12 0 12s0 3.983.502 5.837a3.003 3.003 0 0 0 2.11 2.108C4.47 20.5 12 20.5 12 20.5s7.53 0 9.388-.555a3.003 3.003 0 0 0 2.11-2.108C24 15.983 24 12 24 12s0-3.983-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-      </svg>
-    )
-  }
-
-  if (platform === 'tiktok') {
-    return (
-      <svg className="w-[20px] h-[20px] fill-[#22282b]" viewBox="0 0 24 24">
-        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.58 4.22.95 1.1 2.27 1.83 3.73 2.05v3.83c-1.39-.03-2.74-.51-3.87-1.37a8.09 8.09 0 0 1-2.22-2.58v9.42c.04 1.48-.3 2.96-1.01 4.26-.71 1.29-1.78 2.37-3.08 3.08a8.312 8.312 0 0 1-8.52 0A8.09 8.09 0 0 1 .74 19.86a8.21 8.21 0 0 1 0-8.52c.71-1.29 1.78-2.37 3.08-3.08a8.32 8.32 0 0 1 7.21-.49c.03.65.01 1.31.02 1.97-.68-.2-1.4-.23-2.1-.08a4.11 4.11 0 0 0-3.13 3.13c-.22.94-.12 1.93.28 2.8.39.87 1.09 1.58 1.96 1.97a4.17 4.17 0 0 0 4.14 0 4.2 4.2 0 0 0 1.97-1.97 4.131 4.131 0 0 0-.01-4.14V.02z" />
-      </svg>
-    )
-  }
-
-  return <span className="text-[12px] uppercase font-semibold">{platform}</span>
 }
 
 const primaryButtonClass = getButtonStyle('primary')
@@ -1018,7 +988,13 @@ export async function PageContent({
                         {contacts.address && (
                           <div className="flex flex-col gap-2">
                             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{addressLabel}</span>
-                            <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                            {contacts.addressUrl ? (
+                              <a href={contacts.addressUrl} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium hover:opacity-80 transition-opacity">
+                                {contacts.address}
+                              </a>
+                            ) : (
+                              <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                            )}
                           </div>
                         )}
                         {contacts.transport && (
@@ -1032,8 +1008,8 @@ export async function PageContent({
                             <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{socialLabel}</span>
                             <div className="flex items-center gap-3 flex-wrap">
                               {contacts.socialLinks.map((link, linkIndex) => (
-                                <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-medium text-[#3c5557] hover:opacity-80 no-underline">
-                                  {link.platform}
+                                <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title={link.platform}>
+                                  <SocialIcon platform={link.platform} />
                                 </a>
                               ))}
                             </div>
@@ -1216,7 +1192,13 @@ export async function PageContent({
                             return (
                               <div key={`${row}-${rowIndex}`} className="flex flex-col gap-2">
                                 <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">{addressLabel}</span>
-                                <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                                {contacts.addressUrl ? (
+                                  <a href={contacts.addressUrl} target="_blank" rel="noopener noreferrer" style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium hover:opacity-80 transition-opacity">
+                                    {contacts.address}
+                                  </a>
+                                ) : (
+                                  <p style={{ fontFamily: 'var(--second-font)' }} className="text-[16px] leading-relaxed font-medium">{contacts.address}</p>
+                                )}
                               </div>
                             )
                           }
@@ -1801,9 +1783,15 @@ export async function PageContent({
                           <span className="text-[12px] font-semibold uppercase tracking-wider text-[#909da2]">
                             {addressLabel}
                           </span>
-                          <p className="text-[16px] leading-relaxed font-medium">
-                            {contacts.address}
-                          </p>
+                          {contacts.addressUrl ? (
+                            <a href={contacts.addressUrl} target="_blank" rel="noopener noreferrer" className="text-[16px] leading-relaxed font-medium hover:opacity-80 transition-opacity">
+                              {contacts.address}
+                            </a>
+                          ) : (
+                            <p className="text-[16px] leading-relaxed font-medium">
+                              {contacts.address}
+                            </p>
+                          )}
                         </div>
                       )}
 
@@ -1826,38 +1814,18 @@ export async function PageContent({
                             {socialLabel}
                           </span>
                           <div className="flex items-center gap-3">
-                            {contacts.socialLinks.map((link, idx) => {
-                              const iconMap: Record<string, string> = {
-                                instagram: '/icons/instagram.svg',
-                                facebook: '/icons/facebook.svg',
-                                twitter: '/icons/twitter.svg',
-                              }
-                              const iconSrc = iconMap[link.platform]
-                              return (
-                                <a
-                                  key={idx}
-                                  href={link.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
-                                  title={link.platform}
-                                >
-                                  {iconSrc ? (
-                                    <img src={iconSrc} alt={link.platform} className="w-[20px] h-[20px]" />
-                                  ) : link.platform === 'youtube' ? (
-                                    <svg className="w-[20px] h-[20px] fill-[#22282b]" viewBox="0 0 24 24">
-                                      <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.555a3.003 3.003 0 0 0-2.11 2.108C0 8.017 0 12 0 12s0 3.983.502 5.837a3.003 3.003 0 0 0 2.11 2.108C4.47 20.5 12 20.5 12 20.5s7.53 0 9.388-.555a3.003 3.003 0 0 0 2.11-2.108C24 15.983 24 12 24 12s0-3.983-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                                    </svg>
-                                  ) : link.platform === 'tiktok' ? (
-                                    <svg className="w-[20px] h-[20px] fill-[#22282b]" viewBox="0 0 24 24">
-                                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.58 4.22.95 1.1 2.27 1.83 3.73 2.05v3.83c-1.39-.03-2.74-.51-3.87-1.37a8.09 8.09 0 0 1-2.22-2.58v9.42c.04 1.48-.3 2.96-1.01 4.26-.71 1.29-1.78 2.37-3.08 3.08a8.312 8.312 0 0 1-8.52 0A8.09 8.09 0 0 1 .74 19.86a8.21 8.21 0 0 1 0-8.52c.71-1.29 1.78-2.37 3.08-3.08a8.32 8.32 0 0 1 7.21-.49c.03.65.01 1.31.02 1.97-.68-.2-1.4-.23-2.1-.08a4.11 4.11 0 0 0-3.13 3.13c-.22.94-.12 1.93.28 2.8.39.87 1.09 1.58 1.96 1.97a4.17 4.17 0 0 0 4.14 0 4.2 4.2 0 0 0 1.97-1.97 4.131 4.131 0 0 0-.01-4.14V.02z" />
-                                    </svg>
-                                  ) : (
-                                    <span className="text-[12px] uppercase font-semibold">{link.platform}</span>
-                                  )}
-                                </a>
-                              )
-                            })}
+                            {contacts.socialLinks.map((link, idx) => (
+                              <a
+                                key={idx}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
+                                title={link.platform}
+                              >
+                                <SocialIcon platform={link.platform} />
+                              </a>
+                            ))}
                           </div>
                         </div>
                       )}

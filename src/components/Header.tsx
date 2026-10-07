@@ -268,23 +268,23 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
         </Link>
 
         {/* RIGHT: Phones, Socials, and PC Language Switcher */}
-        <div className="flex items-center justify-end gap-[16px] max-[1100px]:gap-[12px] max-[767px]:gap-[12px]">
+        <div className="flex items-center justify-end gap-[16px] max-[1100px]:gap-[12px] max-[767px]:gap-[16px]">
           {/* Social Icons */}
-          <div className="flex items-center gap-[12px] max-[1100px]:gap-[10px] max-[767px]:gap-[10px]">
+          <div className="flex items-center gap-[12px] max-[1100px]:gap-[10px] max-[767px]:gap-[14px]">
             <a
               href={whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:scale-105 transition-transform flex items-center"
+              className="hover:scale-105 transition-transform flex items-center max-[767px]:w-11 max-[767px]:h-11 max-[767px]:justify-center"
             >
-              <img src="/icons/whatsapp.svg" alt="WhatsApp" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
+              <img src="/icons/whatsapp.svg" alt="WhatsApp" className="h-[15px] max-[991px]:h-[18px] max-[767px]:h-[24px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
             </a>
           </div>
 
           {/* Phone */}
-          <div className="flex items-center border-[#22282b]/15 min-[992px]:border-l min-[992px]:pl-[12px] h-[20px]">
-            <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b]">
-              <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
+          <div className="flex items-center border-[#22282b]/15 min-[992px]:border-l min-[992px]:pl-[12px] h-[20px] max-[767px]:h-11">
+            <a href={`tel:${phone.replace(/\s+/g, '')}`} className="flex items-center gap-[6px] text-decoration-none text-[#22282b] max-[767px]:w-11 max-[767px]:h-11 max-[767px]:justify-center">
+              <img src="/icons/phone.svg" alt="Phone" className="h-[15px] max-[991px]:h-[18px] max-[767px]:h-[24px] w-auto opacity-85 hover:opacity-100 transition-opacity" />
               <span
                 style={{ fontFamily: 'var(--second-font)' }}
                 className="text-[14px] max-[1100px]:hidden font-medium tracking-[0.03em] text-[#22282b] hover:opacity-80 transition-opacity"

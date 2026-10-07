@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { HeaderFooter, Media, SiteContact } from '@/payload-types'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
+import SocialIcon from './SocialIcon'
 
 type ContactData = Partial<SiteContact> & {
   socialLinks?: SiteContact['socialLinks']
@@ -115,58 +116,19 @@ export default function Footer({ data, contacts, headerLogo, currentLocale, serv
           {/* Social Links */}
           {contacts?.socialLinks && contacts.socialLinks.length > 0 && (
             <div className="flex items-center gap-[16px] max-[991px]:justify-center">
-              {contacts.socialLinks.map((link, i) => {
-                const iconMap: Record<string, string> = {
-                  instagram: '/icons/instagram.svg',
-                  facebook: '/icons/facebook.svg',
-                  twitter: '/icons/twitter.svg',
-                }
-                const iconSrc = iconMap[link.platform]
-
-                return (
-                  <a
-                    key={i}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={link.platform}
-                    className="hover:scale-110 transition-transform duration-200 flex items-center"
-                    title={link.platform}
-                  >
-                    {iconSrc ? (
-                      <Image
-                        src={iconSrc}
-                        alt={link.platform}
-                        width={20}
-                        height={20}
-                        className="h-[20px] w-auto opacity-75 hover:opacity-100 transition-opacity duration-200"
-                      />
-                    ) : link.platform === 'youtube' ? (
-                      <svg
-                        className="h-[20px] w-auto fill-[#22282b]/75 hover:fill-[#22282b] transition-colors duration-200"
-                        viewBox="0 0 24 24"
-                        width="20"
-                        height="20"
-                      >
-                        <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.555a3.003 3.003 0 0 0-2.11 2.108C0 8.017 0 12 0 12s0 3.983.502 5.837a3.003 3.003 0 0 0 2.11 2.108C4.47 20.5 12 20.5 12 20.5s7.53 0 9.388-.555a3.003 3.003 0 0 0 2.11-2.108C24 15.983 24 12 24 12s0-3.983-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                      </svg>
-                    ) : link.platform === 'tiktok' ? (
-                      <svg
-                        className="h-[20px] w-auto fill-[#22282b]/75 hover:fill-[#22282b] transition-colors duration-200"
-                        viewBox="0 0 24 24"
-                        width="20"
-                        height="20"
-                      >
-                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.58 4.22.95 1.1 2.27 1.83 3.73 2.05v3.83c-1.39-.03-2.74-.51-3.87-1.37a8.09 8.09 0 0 1-2.22-2.58v9.42c.04 1.48-.3 2.96-1.01 4.26-.71 1.29-1.78 2.37-3.08 3.08a8.312 8.312 0 0 1-8.52 0A8.09 8.09 0 0 1 .74 19.86a8.21 8.21 0 0 1 0-8.52c.71-1.29 1.78-2.37 3.08-3.08a8.32 8.32 0 0 1 7.21-.49c.03.65.01 1.31.02 1.97-.68-.2-1.4-.23-2.1-.08a4.11 4.11 0 0 0-3.13 3.13c-.22.94-.12 1.93.28 2.8.39.87 1.09 1.58 1.96 1.97a4.17 4.17 0 0 0 4.14 0 4.2 4.2 0 0 0 1.97-1.97 4.131 4.131 0 0 0-.01-4.14V.02z" />
-                      </svg>
-                    ) : (
-                      <span className="text-[14px] uppercase font-medium text-[#22282b]/75 hover:text-[#22282b] transition-colors duration-200">
-                        {link.platform}
-                      </span>
-                    )}
-                  </a>
-                )
-              })}
+              {contacts.socialLinks.map((link, i) => (
+                <a
+                  key={i}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.platform}
+                  className="hover:scale-110 transition-transform duration-200 flex items-center"
+                  title={link.platform}
+                >
+                  <SocialIcon platform={link.platform} />
+                </a>
+              ))}
             </div>
           )}
           <p
