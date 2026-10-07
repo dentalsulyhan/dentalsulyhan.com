@@ -579,6 +579,23 @@ export async function PageContent({
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
               const incompleteRowJustifyClass = getIncompleteRowJustifyClass(block)
+              const isLeftAligned = (block as { contentAlignment?: 'left' | 'center' }).contentAlignment !== 'center'
+              const cardAlignmentClass = isLeftAligned ? 'items-start text-left' : 'items-center text-center'
+              const mobileCardAlignmentClass = isLeftAligned || !isRowLayout
+                ? 'max-[767px]:items-start max-[767px]:text-left'
+                : 'max-[767px]:items-center max-[767px]:text-center'
+              const cardHeaderClass = isRowLayout
+                ? isLeftAligned
+                  ? 'flex-row items-center justify-start gap-4 text-left max-[767px]:flex-col max-[767px]:justify-start max-[767px]:items-start max-[767px]:gap-3 max-[767px]:text-left'
+                  : 'flex-row items-center justify-center gap-4 text-center max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center'
+                : isLeftAligned
+                  ? 'w-full flex-col items-start gap-5 text-left max-[767px]:justify-start max-[767px]:text-left'
+                  : 'w-full flex-col items-center gap-5 text-center max-[767px]:justify-start max-[767px]:text-left'
+              const cardTextAlignmentClass = isLeftAligned
+                ? 'text-left [&_p]:text-left [&_li]:text-left'
+                : isRowLayout
+                  ? 'text-center'
+                  : 'mobile-richtext-left max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
               return (
                 <section
                   key={block.id || idx}
@@ -588,11 +605,11 @@ export async function PageContent({
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
-                      <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] text-[#3c5557]">
+                      <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold mb-[60px] text-[#3c5557] ${isLeftAligned ? 'text-left' : 'text-center'}`}>
                         {block.sectionTitle}
                       </h2>
                     )}
-                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col max-[767px]:items-center`}>
+                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${isLeftAligned ? 'justify-start' : incompleteRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
                       {block.items.map((item, itemIndex) => {
                         const iconSource = (item as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
@@ -600,29 +617,29 @@ export async function PageContent({
                         return (
                           <div
                             key={item.id || itemIndex}
-                            className="flex flex-col items-center text-center gap-5 w-full max-w-[320px] max-[767px]:max-w-full max-[767px]:items-start max-[767px]:text-left"
+                            className={`flex flex-col gap-5 w-full max-w-[320px] max-[767px]:max-w-full ${cardAlignmentClass} ${mobileCardAlignmentClass}`}
                           >
-                            <div className={`flex max-[767px]:w-full max-[767px]:flex-row max-[767px]:items-center max-[767px]:justify-start max-[767px]:gap-4 max-[767px]:text-left ${isRowLayout ? 'flex-row items-center justify-center gap-4 text-center' : 'w-full flex-col items-center gap-5 text-center'}`}>
+                            <div className={`flex max-[767px]:w-full ${cardHeaderClass}`}>
                               {hasCustomIcon ? (
                                 <ContentIcon
                                   icon={item.icon}
                                   iconSource={iconSource}
                                   fontAwesomeIcon={fontAwesomeIcon}
                                   alt={item.title}
-                                  size={50}
-                                  imageClassName="w-auto h-[50px] shrink-0"
+                                  size={56}
+                                  imageClassName="w-auto h-[56px] shrink-0"
                                   iconClassName="text-[#3c5557] shrink-0"
                                 />
                               ) : (
-                                <div className="w-[50px] h-[50px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
-                                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
+                                <div className="w-[56px] h-[56px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
+                                  <svg width="26" height="26" fill="none" viewBox="0 0 24 24" className="text-[#3c5557]">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="currentColor"/>
                                   </svg>
                                 </div>
                               )}
                               <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
                             </div>
-                            <div className="mobile-richtext-left text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left">
+                            <div className={`${cardTextAlignmentClass} text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0`}>
                               <RichText data={item.text} />
                             </div>
                           </div>
@@ -630,7 +647,7 @@ export async function PageContent({
                       })}
                     </div>
                     {block.buttonText && (
-                      <div className="mt-[50px] text-center">
+                      <div className={`mt-[50px] ${isLeftAligned ? 'text-left' : 'text-center'}`}>
                         <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>

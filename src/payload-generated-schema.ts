@@ -89,6 +89,10 @@ export const enum_pages_blocks_philosophy_item_layout = pgEnum(
   'enum_pages_blocks_philosophy_item_layout',
   ['column', 'row'],
 )
+export const enum_pages_blocks_philosophy_content_alignment = pgEnum(
+  'enum_pages_blocks_philosophy_content_alignment',
+  ['left', 'center'],
+)
 export const enum_pages_blocks_philosophy_incomplete_row_alignment = pgEnum(
   'enum_pages_blocks_philosophy_incomplete_row_alignment',
   ['center', 'start'],
@@ -650,6 +654,7 @@ export const pages_blocks_philosophy = pgTable(
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
     itemLayout: enum_pages_blocks_philosophy_item_layout('item_layout').default('column'),
+    contentAlignment: enum_pages_blocks_philosophy_content_alignment('content_alignment').default('left'),
     incompleteRowAlignment: enum_pages_blocks_philosophy_incomplete_row_alignment(
       'incomplete_row_alignment',
     ).default('center'),
@@ -3979,12 +3984,14 @@ type DatabaseSchema = {
   enum_pages_blocks_advantages_theme: typeof enum_pages_blocks_advantages_theme
   enum_pages_blocks_advantages_button_style: typeof enum_pages_blocks_advantages_button_style
   enum_pages_blocks_advantages_item_layout: typeof enum_pages_blocks_advantages_item_layout
+  enum_pages_blocks_advantages_content_alignment: typeof enum_pages_blocks_advantages_content_alignment
   enum_pages_blocks_advantages_incomplete_row_alignment: typeof enum_pages_blocks_advantages_incomplete_row_alignment
   enum_pages_blocks_about_us_grid_theme: typeof enum_pages_blocks_about_us_grid_theme
   enum_pages_blocks_about_us_grid_button_style: typeof enum_pages_blocks_about_us_grid_button_style
   enum_pages_blocks_philosophy_theme: typeof enum_pages_blocks_philosophy_theme
   enum_pages_blocks_philosophy_button_style: typeof enum_pages_blocks_philosophy_button_style
   enum_pages_blocks_philosophy_item_layout: typeof enum_pages_blocks_philosophy_item_layout
+  enum_pages_blocks_philosophy_content_alignment: typeof enum_pages_blocks_philosophy_content_alignment
   enum_pages_blocks_philosophy_incomplete_row_alignment: typeof enum_pages_blocks_philosophy_incomplete_row_alignment
   enum_pages_blocks_promotions_theme: typeof enum_pages_blocks_promotions_theme
   enum_pages_blocks_promotions_button_style: typeof enum_pages_blocks_promotions_button_style

@@ -362,6 +362,10 @@ export interface Page {
             compactSpacing?: boolean | null;
             sectionTitle?: string | null;
             itemLayout?: ('column' | 'row') | null;
+            /**
+             * Controls the alignment of the heading, cards, text, and button in this block.
+             */
+            contentAlignment?: ('left' | 'center') | null;
             incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
               iconSource?: ('upload' | 'fontAwesome') | null;
@@ -1758,6 +1762,7 @@ export interface PagesSelect<T extends boolean = true> {
               compactSpacing?: T;
               sectionTitle?: T;
               itemLayout?: T;
+              contentAlignment?: T;
               incompleteRowAlignment?: T;
               items?:
                 | T
