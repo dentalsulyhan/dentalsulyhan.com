@@ -641,14 +641,16 @@ export async function ServiceDetailPageContent({
                       <RichText data={block.intro} />
                     </div>
                   )}
-                  <AccordionList
-                    items={block.items}
-                    columns={faqColumns ? 2 : 1}
-                    itemClassName={`rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
-                    headingClassName="text-[18px] max-[767px]:text-[16px] font-semibold text-[#22282b]"
-                    iconClassName="text-[24px] text-[#3c5557]"
-                    contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
-                  />
+                  <div className={faqColumns ? '' : 'max-w-[600px] mx-auto max-[767px]:max-w-none'}>
+                    <AccordionList
+                      items={block.items}
+                      columns={faqColumns ? 2 : 1}
+                      itemClassName={`rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
+                      headingClassName="text-[18px] max-[767px]:text-[16px] font-semibold text-[#22282b]"
+                      iconClassName="text-[24px] text-[#3c5557]"
+                      contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
+                    />
+                  </div>
                   {Boolean(faqBottomText) && (
                     <div className={`prose prose-lg ${textWidthClass} mx-auto text-[#505a5e] mt-10 text-center max-[767px]:text-left`}>
                       <RichText data={faqBottomText as never} />

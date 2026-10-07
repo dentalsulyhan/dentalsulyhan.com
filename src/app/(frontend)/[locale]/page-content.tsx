@@ -836,6 +836,11 @@ export async function PageContent({
                 : galleryContentAlignment === 'right'
                   ? 'text-right [&_p]:text-right [&_li]:text-right'
                   : 'text-left [&_p]:text-left [&_li]:text-left'
+              const galleryContentContainerAlignmentClass = galleryContentAlignment === 'center'
+                ? 'mx-auto'
+                : galleryContentAlignment === 'right'
+                  ? 'ml-auto'
+                  : ''
               const isSliderLeft = (block.position || 'right') === 'left'
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
@@ -850,7 +855,7 @@ export async function PageContent({
                     style={getThemeBackgroundStyle(theme, 'panel')}
                   >
                     <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
-                      <div className={`max-w-[900px] ${galleryTextAlignmentClass}`}>
+                      <div className={`max-w-[900px] ${galleryContentContainerAlignmentClass} ${galleryTextAlignmentClass}`}>
                         {block.title && (
                           <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold mb-6">{block.title}</h2>
                         )}
