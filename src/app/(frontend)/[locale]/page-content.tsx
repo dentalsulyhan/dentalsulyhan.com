@@ -327,12 +327,10 @@ export async function PageContent({
 
   const pageLayout = pageData?.layout || []
   const customH1BlockIndex = pageLayout.findIndex(isCustomH1Block)
-  const isHomePage = pageData?.slug === 'home'
 
   if (pageLayout.length > 0) {
     return (
       <>
-        {isHomePage && <EqualizeElementHeights selector='[data-equal-height-group="home-content-images"]' />}
         {pageLayout.map((block, idx) => {
           switch (block.blockType) {
             case 'hero': {
@@ -472,8 +470,10 @@ export async function PageContent({
             case 'aboutUsGrid': {
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
+              const heightGroupId = `about-us-grid-${block.id || idx}`
               return (
                 <section key={block.id || idx} id="about_us" className="flex flex-col">
+                  <EqualizeElementHeights selector={`[data-equal-height-group="${heightGroupId}"]`} />
                   {block.sectionTitle && (
                     <div className={`${theme.section} py-[40px] px-[30px] max-[1100px]:px-[24px]`} style={getThemeBackgroundStyle(theme, 'section')}>
                       <div className="max-w-[1200px] mx-auto">
@@ -492,6 +492,7 @@ export async function PageContent({
                     return (
                       <div
                         key={item.id || itemIndex}
+                        data-equal-height-group={heightGroupId}
                         className="flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0"
                       >
                         <div
@@ -829,6 +830,12 @@ export async function PageContent({
 
             case 'gallery': {
               const galleryLayout = (block as { layout?: unknown }).layout === 'stacked' ? 'stacked' : 'split'
+              const galleryContentAlignment = (block as { contentAlignment?: unknown }).contentAlignment
+              const galleryTextAlignmentClass = galleryContentAlignment === 'center'
+                ? 'text-center [&_p]:text-center [&_li]:text-center'
+                : galleryContentAlignment === 'right'
+                  ? 'text-right [&_p]:text-right [&_li]:text-right'
+                  : 'text-left [&_p]:text-left [&_li]:text-left'
               const isSliderLeft = (block.position || 'right') === 'left'
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
@@ -843,9 +850,9 @@ export async function PageContent({
                     style={getThemeBackgroundStyle(theme, 'panel')}
                   >
                     <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
-                      <div className="max-w-[900px]">
+                      <div className={`max-w-[900px] ${galleryTextAlignmentClass}`}>
                         {block.title && (
-                          <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-6">{block.title}</h2>
+                          <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold mb-6">{block.title}</h2>
                         )}
                         {block.description && (
                           <div className="text-[16px] text-[#909da2] leading-relaxed prose max-w-none">
@@ -881,9 +888,9 @@ export async function PageContent({
                       <ImagePlaceholder label="Gallery Placeholder" className="w-full h-full" />
                     )}
                   </div>
-                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center ${compactSpacing ? 'py-6 max-[1100px]:py-5 max-[991px]:py-4' : 'py-10 max-[1100px]:py-8 max-[991px]:py-6'} ${isSliderLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
+                  <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center ${galleryTextAlignmentClass} ${compactSpacing ? 'py-6 max-[1100px]:py-5 max-[991px]:py-4' : 'py-10 max-[1100px]:py-8 max-[991px]:py-6'} ${isSliderLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`}>
                     {block.title && (
-                      <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-[30px]">{block.title}</h2>
+                      <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold mb-[30px]">{block.title}</h2>
                     )}
                     {block.description && (
                       <div className="text-[16px] text-[#909da2] leading-relaxed prose max-w-none">
@@ -1118,7 +1125,6 @@ export async function PageContent({
               return (
                 <section
                   key={block.id || idx}
-                  data-equal-height-group={isHomePage ? 'home-content-images' : undefined}
                   className="flex items-stretch min-h-[420px] max-[991px]:block max-[991px]:min-h-0"
                 >
                   <div className={`w-1/2 max-[991px]:w-full min-h-[320px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'} ${isImageContained ? 'flex items-center justify-center p-[24px] max-[1100px]:p-[20px] max-[767px]:p-[16px]' : ''}`}>

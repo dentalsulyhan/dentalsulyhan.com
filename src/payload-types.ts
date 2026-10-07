@@ -429,6 +429,7 @@ export interface Page {
              */
             compactSpacing?: boolean | null;
             layout?: ('split' | 'stacked') | null;
+            contentAlignment?: ('left' | 'center' | 'right') | null;
             position?: ('left' | 'right') | null;
             title?: string | null;
             description?: {
@@ -1799,6 +1800,7 @@ export interface PagesSelect<T extends boolean = true> {
               buttonStyle?: T;
               compactSpacing?: T;
               layout?: T;
+              contentAlignment?: T;
               position?: T;
               title?: T;
               description?: T;

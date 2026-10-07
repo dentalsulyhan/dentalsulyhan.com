@@ -129,6 +129,10 @@ export const enum_pages_blocks_gallery_layout = pgEnum('enum_pages_blocks_galler
   'split',
   'stacked',
 ])
+export const enum_pages_blocks_gallery_content_alignment = pgEnum(
+  'enum_pages_blocks_gallery_content_alignment',
+  ['left', 'center', 'right'],
+)
 export const enum_pages_blocks_team_theme = pgEnum('enum_pages_blocks_team_theme', [
   'white',
   'soft',
@@ -751,6 +755,7 @@ export const pages_blocks_gallery = pgTable(
     buttonStyle: enum_pages_blocks_gallery_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
     layout: enum_pages_blocks_gallery_layout('layout').default('split'),
+    contentAlignment: enum_pages_blocks_gallery_content_alignment('content_alignment').default('left'),
     position: enum_pages_blocks_gallery_position('position').default('right'),
     title: varchar('title'),
     description: jsonb('description'),
@@ -4007,6 +4012,7 @@ type DatabaseSchema = {
   enum_pages_blocks_gallery_button_style: typeof enum_pages_blocks_gallery_button_style
   enum_pages_blocks_gallery_position: typeof enum_pages_blocks_gallery_position
   enum_pages_blocks_gallery_layout: typeof enum_pages_blocks_gallery_layout
+  enum_pages_blocks_gallery_content_alignment: typeof enum_pages_blocks_gallery_content_alignment
   enum_pages_blocks_team_theme: typeof enum_pages_blocks_team_theme
   enum_pages_blocks_team_button_style: typeof enum_pages_blocks_team_button_style
   enum_pages_blocks_team_source: typeof enum_pages_blocks_team_source

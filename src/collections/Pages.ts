@@ -873,6 +873,42 @@ export const Pages: CollectionConfig = {
                   },
                 },
                 {
+                  name: 'contentAlignment',
+                  type: 'select',
+                  defaultValue: 'left',
+                  options: [
+                    {
+                      label: {
+                        en: 'Left',
+                        uk: 'Ліворуч',
+                        es: 'Izquierda',
+                      },
+                      value: 'left',
+                    },
+                    {
+                      label: {
+                        en: 'Center',
+                        uk: 'По центру',
+                        es: 'Centro',
+                      },
+                      value: 'center',
+                    },
+                    {
+                      label: {
+                        en: 'Right',
+                        uk: 'Праворуч',
+                        es: 'Derecha',
+                      },
+                      value: 'right',
+                    },
+                  ],
+                  label: {
+                    en: 'Title and Text Alignment',
+                    uk: 'Вирівнювання заголовка й тексту',
+                    es: 'Alineación del título y texto',
+                  },
+                },
+                {
                   name: 'position',
                   type: 'select',
                   defaultValue: 'right',
