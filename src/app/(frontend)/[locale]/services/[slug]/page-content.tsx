@@ -641,7 +641,7 @@ export async function ServiceDetailPageContent({
                       <RichText data={block.intro} />
                     </div>
                   )}
-                  <div className={faqColumns ? '' : 'max-w-[600px] mx-auto max-[767px]:max-w-none'}>
+                  <div className={faqColumns ? '' : 'max-w-[760px] mx-auto max-[767px]:max-w-none'}>
                     <AccordionList
                       items={block.items}
                       columns={faqColumns ? 2 : 1}
