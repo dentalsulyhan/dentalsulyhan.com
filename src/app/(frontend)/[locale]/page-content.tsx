@@ -682,17 +682,19 @@ export async function PageContent({
                         {typeof promotion.description === 'string' ? <p>{promotion.description}</p> : <RichText data={promotion.description} />}
                       </div>
                     ) : null}
-                    <div
-                      style={{ fontFamily: 'var(--second-font)' }}
-                      className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4"
-                    >
-                      {locale === 'uk' ? 'Діє до' : locale === 'es' ? 'Válido hasta' : 'Valid until'}:{' '}
-                      {new Date(promotion.validUntil).toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'es' ? 'es-ES' : 'en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </div>
+                    {promotion.validUntil && (
+                      <div
+                        style={{ fontFamily: 'var(--second-font)' }}
+                        className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4"
+                      >
+                        {locale === 'uk' ? 'Діє до' : locale === 'es' ? 'Válido hasta' : 'Valid until'}:{' '}
+                        {new Date(promotion.validUntil).toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'es' ? 'es-ES' : 'en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </div>
+                    )}
                     {block.buttonText && (
                       <div className="mt-2">
                         <a href={resolveHref(block.buttonLink)} className={buttonClass}>
@@ -1675,17 +1677,19 @@ export async function PageContent({
                               ) : null}
                             </div>
                           </div>
-                          <div
-                            style={{ fontFamily: 'var(--second-font)' }}
-                            className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4"
-                          >
-                            {locale === 'uk' ? 'Діє до' : locale === 'es' ? 'Válido hasta' : 'Valid until'}:{' '}
-                            {new Date(promo.validUntil).toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'es' ? 'es-ES' : 'en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </div>
+                          {promo.validUntil && (
+                            <div
+                              style={{ fontFamily: 'var(--second-font)' }}
+                              className="text-[13px] text-[#909da2] font-medium tracking-wide uppercase mt-4"
+                            >
+                              {locale === 'uk' ? 'Діє до' : locale === 'es' ? 'Válido hasta' : 'Valid until'}:{' '}
+                              {new Date(promo.validUntil).toLocaleDateString(locale === 'uk' ? 'uk-UA' : locale === 'es' ? 'es-ES' : 'en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

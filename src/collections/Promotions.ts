@@ -75,7 +75,6 @@ export const Promotions: CollectionConfig = {
         uk: 'Акція діє до:',
         es: 'Válida Hasta',
       },
-      required: true,
       admin: {
         date: {
           displayFormat: 'dd/MM/yyyy',

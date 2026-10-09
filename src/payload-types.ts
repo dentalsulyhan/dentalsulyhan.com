@@ -793,7 +793,7 @@ export interface Promotion {
     [k: string]: unknown;
   } | null;
   image?: (number | null) | Media;
-  validUntil: string;
+  validUntil?: string | null;
   isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
