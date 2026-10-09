@@ -204,6 +204,10 @@ export interface Page {
    * Visible URL segment for this language, for example servicios, about-us or contactos.
    */
   path: string;
+  /**
+   * Show a temporary page in all languages instead of this page content.
+   */
+  underConstruction?: boolean | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   /**
@@ -1688,6 +1692,7 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   path?: T;
+  underConstruction?: T;
   metaTitle?: T;
   metaDescription?: T;
   metaImage?: T;

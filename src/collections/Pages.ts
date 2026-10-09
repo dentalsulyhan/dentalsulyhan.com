@@ -143,6 +143,24 @@ export const Pages: CollectionConfig = {
         },
       },
     },
+    {
+      name: 'underConstruction',
+      type: 'checkbox',
+      defaultValue: false,
+      label: {
+        en: 'Page Under Construction',
+        uk: 'Сторінка в розробці',
+        es: 'Pagina en desarrollo',
+      },
+      admin: {
+        position: 'sidebar',
+        description: {
+          en: 'Show a temporary page in all languages instead of this page content.',
+          uk: 'Показувати тимчасову сторінку всіма мовами замість контенту цієї сторінки.',
+          es: 'Mostrar una pagina temporal en todos los idiomas en lugar del contenido de esta pagina.',
+        },
+      },
+    },
     seoFields(),
     {
       name: 'layout',

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { PageContent } from '../page-content'
 import { ServiceDetailPageContent } from '../services/[slug]/page-content'
 import { ServicesListingPageContent } from '../services/page-content'
+import UnderConstructionPage from '@/components/UnderConstructionPage'
 import type { HomePage as HomePageType, Page, SeoSetting, Service } from '@/payload-types'
 import { isSupportedLocale, SUPPORTED_LOCALES } from '@/lib/localizedRouting'
 import { buildSeoMetadata, type SeoAlternates } from '@/lib/seoMetadata'
@@ -28,6 +29,7 @@ type RouteDoc = Pick<
   | 'noFollow'
   | 'twitterCard'
   | 'title'
+  | 'underConstruction'
 > &
   Partial<
     Pick<
@@ -198,7 +200,7 @@ export async function generateMetadata({
       content: homePageContent || resolved.doc.layout,
       image: resolved.doc.metaImage,
       canonicalUrl: resolved.doc.canonicalUrl,
-      noIndex: resolved.doc.noIndex,
+      noIndex: resolved.kind === 'page' && resolved.doc.underConstruction ? true : resolved.doc.noIndex,
       noFollow: resolved.doc.noFollow,
       twitterCard: resolved.doc.twitterCard,
     },
@@ -220,12 +222,21 @@ export default async function LocalizedPageRouter({
   }
 
   if (slug.length === 0) {
+    const homePage = await getCachedPageBySlug(locale as 'es' | 'en' | 'uk', 'home', 1)
+    if (homePage?.underConstruction) {
+      return <UnderConstructionPage locale={locale} />
+    }
+
     return PageContent({ locale, slug: 'home' })
   }
 
   const page = await getCachedPageByPath(locale as 'es' | 'en' | 'uk', slug[0], 1)
   if (!page) {
     return notFound()
+  }
+
+  if (page.underConstruction) {
+    return <UnderConstructionPage locale={locale as 'es' | 'en' | 'uk'} />
   }
 
   if (page.slug === 'services') {
