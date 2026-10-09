@@ -268,6 +268,7 @@ export interface Page {
             compactSpacing?: boolean | null;
             sectionTitle?: string | null;
             itemLayout?: ('column' | 'row') | null;
+            itemsPerRow?: ('2' | '3' | '4') | null;
             /**
              * Controls the alignment of the heading, cards, text, and button in this block.
              */
@@ -1720,6 +1721,7 @@ export interface PagesSelect<T extends boolean = true> {
               compactSpacing?: T;
               sectionTitle?: T;
               itemLayout?: T;
+              itemsPerRow?: T;
               contentAlignment?: T;
               incompleteRowAlignment?: T;
               items?:

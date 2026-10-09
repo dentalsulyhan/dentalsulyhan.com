@@ -394,6 +394,12 @@ export async function PageContent({
 
             case 'advantages': {
               const isRowLayout = (block.itemLayout || 'column') === 'row'
+              const itemsPerRow = block.itemsPerRow || '3'
+              const advantageCardWidthClass = itemsPerRow === '2'
+                ? 'w-[calc((100%-50px)/2)] max-[1100px]:w-[calc((100%-32px)/2)] max-[767px]:w-full'
+                : itemsPerRow === '4'
+                  ? 'w-[calc((100%-150px)/4)] max-[1100px]:w-[calc((100%-32px)/2)] max-[767px]:w-full'
+                  : 'w-[calc((100%-100px)/3)] max-[1100px]:w-[calc((100%-32px)/2)] max-[767px]:w-full'
               const compactSpacing = isCompactSpacing(block)
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
@@ -437,7 +443,7 @@ export async function PageContent({
                         return (
                           <div
                             key={item.id || itemIndex}
-                            className={`flex flex-col gap-5 w-full max-w-[320px] max-[767px]:max-w-full ${cardAlignmentClass} ${mobileCardAlignmentClass}`}
+                            className={`flex flex-col gap-5 min-w-0 ${advantageCardWidthClass} ${cardAlignmentClass} ${mobileCardAlignmentClass}`}
                           >
                             <div className={`flex max-[767px]:w-full ${cardHeaderClass}`}>
                               {hasCustomIcon ? (

@@ -340,6 +340,42 @@ export const Pages: CollectionConfig = {
                   },
                 },
                 {
+                  name: 'itemsPerRow',
+                  type: 'select',
+                  defaultValue: '3',
+                  options: [
+                    {
+                      label: {
+                        en: '2 items per row',
+                        uk: '2 переваги в рядку',
+                        es: '2 ventajas por fila',
+                      },
+                      value: '2',
+                    },
+                    {
+                      label: {
+                        en: '3 items per row',
+                        uk: '3 переваги в рядку',
+                        es: '3 ventajas por fila',
+                      },
+                      value: '3',
+                    },
+                    {
+                      label: {
+                        en: '4 items per row',
+                        uk: '4 переваги в рядку',
+                        es: '4 ventajas por fila',
+                      },
+                      value: '4',
+                    },
+                  ],
+                  label: {
+                    en: 'Items Per Row',
+                    uk: 'Кількість переваг у рядку',
+                    es: 'Ventajas por fila',
+                  },
+                },
+                {
                   name: 'contentAlignment',
                   type: 'select',
                   defaultValue: 'left',
