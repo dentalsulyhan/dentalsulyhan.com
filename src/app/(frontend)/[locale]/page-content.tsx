@@ -338,11 +338,17 @@ export async function PageContent({
               const buttonLink = block.buttonLink || '#contact_us'
               const buttonClass = getButtonStyle(block.buttonStyle)
               const theme = getBlockTheme(block.theme)
+              const hasImageOverlap = block.imageLayout === 'overlap'
 
               return (
                 <section key={block.id || idx} id={idx === 0 ? 'main-block' : undefined} className={theme.section} style={getThemeBackgroundStyle(theme, 'section')}>
-                  <div className="relative overflow-hidden min-h-[400px] min-[1400px]:min-h-[520px] min-[1800px]:min-h-[620px] max-[991px]:min-h-0">
-                    <div className="relative z-[2] w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10">
+                  <div className={hasImageOverlap
+                    ? 'relative overflow-hidden min-h-[400px] min-[1400px]:min-h-[520px] min-[1800px]:min-h-[620px] max-[991px]:min-h-0'
+                    : 'flex items-stretch min-h-[400px] min-[1400px]:min-h-[520px] min-[1800px]:min-h-[620px] max-[991px]:min-h-0 max-[991px]:flex-col'}>
+                    <div
+                      className={`${hasImageOverlap ? 'relative z-[2]' : theme.section} w-1/2 max-[991px]:w-full flex flex-col justify-center pl-[max(30px,calc((100vw-1200px)/2))] pr-[30px] py-16 max-[1100px]:px-[24px] max-[1100px]:py-12 max-[767px]:px-[20px] max-[767px]:py-10`}
+                      style={hasImageOverlap ? undefined : getThemeBackgroundStyle(theme, 'section')}
+                    >
                       <h1 className="whitespace-pre-line text-[32px] leading-[50px] max-[767px]:text-[24px] max-[767px]:leading-[35px] font-semibold mb-5 text-[#22282b]">
                         {block.title}
                       </h1>
@@ -360,13 +366,23 @@ export async function PageContent({
                         </div>
                       )}
                     </div>
-                    <div
-                      className="absolute inset-y-0 left-[30%] w-[20%] z-[1] pointer-events-none max-[991px]:hidden"
-                      style={{ background: `linear-gradient(to right, ${theme.sectionColor} 0%, transparent 100%)` }}
-                    />
-                    <div className="absolute inset-y-0 right-0 w-[70%] z-0 overflow-hidden max-[991px]:relative max-[991px]:inset-auto max-[991px]:w-full max-[991px]:min-h-[300px] max-[991px]:aspect-[4/3]">
+                    {hasImageOverlap && (
+                      <div
+                        className="absolute inset-y-0 left-[30%] w-[35%] z-[1] pointer-events-none max-[991px]:hidden"
+                        style={{ background: `linear-gradient(to right, ${theme.sectionColor} 0%, transparent 100%)` }}
+                      />
+                    )}
+                    <div className={hasImageOverlap
+                      ? 'absolute inset-y-0 right-0 w-[70%] z-0 overflow-hidden max-[991px]:relative max-[991px]:inset-auto max-[991px]:w-full max-[991px]:min-h-[300px] max-[991px]:aspect-[4/3]'
+                      : 'w-1/2 max-[991px]:w-full relative overflow-hidden min-h-[300px] min-[1400px]:min-h-[520px] min-[1800px]:min-h-[620px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3]'}>
+                      {!hasImageOverlap && (
+                        <div
+                          className="absolute top-0 left-0 w-[10%] h-full z-[1] pointer-events-none max-[991px]:hidden"
+                          style={{ background: `linear-gradient(to right, ${theme.sectionColor} 0%, transparent 100%)` }}
+                        />
+                      )}
                       {imageUrl ? (
-                        <Image src={imageUrl} alt={block.title} fill sizes="(max-width: 991px) 100vw, 70vw" className="object-cover" priority />
+                        <Image src={imageUrl} alt={block.title} fill sizes={hasImageOverlap ? '(max-width: 991px) 100vw, 70vw' : '(max-width: 991px) 100vw, 50vw'} className="object-cover" priority />
                       ) : (
                         <ImagePlaceholder label="Hero Image" className="w-full h-full min-h-[400px]" />
                       )}
@@ -1410,7 +1426,7 @@ export async function PageContent({
                       </a>
                     </div>
                   </div>
-                  <div className="absolute inset-y-0 left-[30%] w-[20%] z-[1] bg-gradient-to-r from-[#fafafa] to-transparent pointer-events-none max-[991px]:hidden" />
+                  <div className="absolute inset-y-0 left-[30%] w-[35%] z-[1] bg-gradient-to-r from-[#fafafa] to-transparent pointer-events-none max-[991px]:hidden" />
                   {/* Right: Image */}
                   <div className="absolute inset-y-0 right-0 w-[70%] z-0 overflow-hidden max-[991px]:relative max-[991px]:inset-auto max-[991px]:w-full max-[991px]:min-h-[300px] max-[991px]:aspect-[4/3]">
                     {heroImageUrl ? (

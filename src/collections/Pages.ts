@@ -171,7 +171,38 @@ export const Pages: CollectionConfig = {
           fields: [
             collapsibleField(
               { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
-              [blockThemeField, buttonStyleField],
+              [
+                blockThemeField,
+                buttonStyleField,
+                {
+                  name: 'imageLayout',
+                  type: 'select',
+                  defaultValue: 'split',
+                  label: {
+                    en: 'Hero Layout',
+                    uk: 'Варіант Hero',
+                    es: 'Diseno del Hero',
+                  },
+                  options: [
+                    {
+                      label: {
+                        en: 'Standard: text and image 50 / 50',
+                        uk: 'Стандартний: текст і фото 50 / 50',
+                        es: 'Estandar: texto e imagen 50 / 50',
+                      },
+                      value: 'split',
+                    },
+                    {
+                      label: {
+                        en: 'Overlapping: image 70% with text fade',
+                        uk: 'Накладання: фото 70% із затуханням під текст',
+                        es: 'Superpuesto: imagen 70% con degradado bajo el texto',
+                      },
+                      value: 'overlap',
+                    },
+                  ],
+                },
+              ],
               false,
             ),
             collapsibleField(

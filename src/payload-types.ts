@@ -228,6 +228,7 @@ export interface Page {
              * Choose the visual style for the block button.
              */
             buttonStyle?: ('primary' | 'outline' | 'light' | 'text') | null;
+            imageLayout?: ('split' | 'overlap') | null;
             title: string;
             subtitle?: string | null;
             bottomText?: {
@@ -1701,6 +1702,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               theme?: T;
               buttonStyle?: T;
+              imageLayout?: T;
               title?: T;
               subtitle?: T;
               bottomText?: T;
