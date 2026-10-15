@@ -31,6 +31,7 @@ interface HeaderProps {
 export default function Header({ data, contacts, currentLocale, servicesPath = '/services', branding }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileViewport, setIsMobileViewport] = useState(false)
   const [localeLinks, setLocaleLinks] = useState<Record<string, string> | null>(null)
   const menuContainerRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
@@ -39,6 +40,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
   const langNames: Record<string, string> = { es: 'ESP', en: 'ENG', uk: 'УКР' }
   const localizedServicesPath = buildLocalizedPath(currentLocale, servicesPath)
   const menuStyle = data?.menuStyle || 'drawer'
+  const usesDrawerMenu = menuStyle === 'drawer' || isMobileViewport
 
   const resolveMenuLink = (link?: string | null) => {
     if (!link) return '#'
@@ -70,9 +72,18 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const mobileViewport = window.matchMedia('(max-width: 767px)')
+    const updateViewport = () => setIsMobileViewport(mobileViewport.matches)
+
+    updateViewport()
+    mobileViewport.addEventListener('change', updateViewport)
+    return () => mobileViewport.removeEventListener('change', updateViewport)
+  }, [])
+
   // Lock scroll when mobile menu is open
   useEffect(() => {
-    if (isMenuOpen && menuStyle === 'drawer') {
+    if (isMenuOpen && usesDrawerMenu) {
       document.body.classList.add('_lock')
     } else {
       document.body.classList.remove('_lock')
@@ -80,10 +91,10 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
     return () => {
       document.body.classList.remove('_lock')
     }
-  }, [isMenuOpen, menuStyle])
+  }, [isMenuOpen, usesDrawerMenu])
 
   useEffect(() => {
-    if (!isMenuOpen || menuStyle !== 'dropdown') return
+    if (!isMenuOpen || usesDrawerMenu) return
 
     const closeOnOutsideClick = (event: PointerEvent) => {
       if (!menuContainerRef.current?.contains(event.target as Node)) {
@@ -93,7 +104,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
     document.addEventListener('pointerdown', closeOnOutsideClick)
     return () => document.removeEventListener('pointerdown', closeOnOutsideClick)
-  }, [isMenuOpen, menuStyle])
+  }, [isMenuOpen, usesDrawerMenu])
 
   useEffect(() => {
     let cancelled = false
@@ -209,7 +220,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
           </button>
 
-          {menuStyle === 'drawer' ? (
+          {usesDrawerMenu ? (
             <>
           <button
             type="button"
