@@ -203,7 +203,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
           {/* Mobile slide-out drawer (menuBody) */}
           <div
-            className={`fixed top-0 left-0 h-full w-[425px] max-w-full bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[42px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:w-full max-[767px]:p-[32px_20px] ${
+            className={`fixed top-0 left-0 h-full w-fit max-w-[calc(100vw-32px)] bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[42px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:p-[32px_20px] ${
               isMenuOpen ? 'translate-x-0 opacity-100 visible' : '-translate-x-full opacity-0 invisible'
             }`}
           >
@@ -217,7 +217,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
               </button>
             </div>
             <div className="flex mt-[36px] gap-[72px] justify-between max-[767px]:mt-[28px] max-[767px]:justify-center max-[767px]:flex-wrap">
-              <nav className="flex-[25%]">
+              <nav className="w-max max-w-full">
                 <h2 className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-4">
                   {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
                 </h2>
