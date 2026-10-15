@@ -203,7 +203,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
           {/* Mobile slide-out drawer (menuBody) */}
           <div
-            className={`fixed top-0 left-0 h-full w-fit max-w-[calc(100vw-32px)] bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[42px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:p-[32px_20px] ${
+            className={`fixed top-0 left-0 h-auto max-h-[calc(100vh-32px)] w-fit max-w-[calc(100vw-32px)] bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out p-[42px] flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:p-[32px_20px] ${
               isMenuOpen ? 'translate-x-0 opacity-100 visible' : '-translate-x-full opacity-0 invisible'
             }`}
           >
@@ -240,8 +240,8 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
               </nav>
             </div>
 
-            {/* Mobile language switcher inside drawer */}
-            <div className="mt-auto pt-6 border-t border-[#22282b]/10 flex gap-5 max-[767px]:block">
+            {/* Language switcher inside drawer */}
+            <div className="mt-5 flex gap-5 max-[767px]:block">
               <ul className="site-menu-list flex flex-row gap-5 list-none p-0 m-0">
                 {locales.map((loc) => (
                   <li key={loc} className="flex items-center">
