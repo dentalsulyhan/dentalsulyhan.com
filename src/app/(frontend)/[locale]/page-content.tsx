@@ -945,6 +945,19 @@ export async function PageContent({
               const isPageH1 = idx === customH1BlockIndex
               const HeadingTag = isPageH1 ? 'h1' : 'h2'
               const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
+              const contentAlignment = block.contentAlignment === 'left' || block.contentAlignment === 'right'
+                ? block.contentAlignment
+                : 'center'
+              const textAlignmentClass = contentAlignment === 'left'
+                ? 'text-left'
+                : contentAlignment === 'right'
+                  ? 'text-right'
+                  : 'text-center'
+              const richTextAlignmentClass = contentAlignment === 'left'
+                ? 'text-left [&_p]:text-left [&_li]:text-left'
+                : contentAlignment === 'right'
+                  ? 'text-right [&_p]:text-right [&_li]:text-right'
+                  : 'text-center [&_p]:text-center [&_li]:text-center'
               const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
               const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
                 ? (block as { overlayColor?: string }).overlayColor
@@ -974,7 +987,7 @@ export async function PageContent({
                   <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                     {block.title && (
                       <HeadingTag
-                        className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center ${
+                        className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] ${textAlignmentClass} ${
                           block.content || block.bottomText ? 'mb-6' : 'mb-0'
                         }`}
                       >
@@ -982,17 +995,17 @@ export async function PageContent({
                       </HeadingTag>
                     )}
                     {block.content && (
-                      <div className="prose prose-lg max-w-none text-[#22282b] max-[767px]:text-left">
+                      <div className={`prose prose-lg max-w-none text-[#22282b] ${richTextAlignmentClass}`}>
                         <RichText data={block.content} />
                       </div>
                     )}
                     {block.bottomText && (
-                      <div className="prose prose-lg max-w-none text-[#22282b] mt-8 max-[767px]:text-left">
+                      <div className={`prose prose-lg max-w-none text-[#22282b] mt-8 ${richTextAlignmentClass}`}>
                         <RichText data={block.bottomText} />
                       </div>
                     )}
                     {block.buttonText && (
-                      <div className="mt-6 text-center">
+                      <div className={`mt-6 ${textAlignmentClass}`}>
                         <a href={resolveHref(block.buttonLink)} className={buttonClass}>
                           {block.buttonText}
                         </a>

@@ -610,6 +610,7 @@ export interface Page {
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            contentAlignment?: ('left' | 'center' | 'right') | null;
             title?: string | null;
             /**
              * Marks this block title as the main page H1. If several blocks are marked, only the first one will be rendered as H1.
@@ -1890,6 +1891,7 @@ export interface PagesSelect<T extends boolean = true> {
               theme?: T;
               buttonStyle?: T;
               compactSpacing?: T;
+              contentAlignment?: T;
               title?: T;
               useAsPageTitle?: T;
               content?: T;

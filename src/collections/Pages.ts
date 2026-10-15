@@ -1578,7 +1578,35 @@ export const Pages: CollectionConfig = {
           fields: [
             collapsibleField(
               { en: 'Appearance', uk: 'Зовнішній вигляд', es: 'Apariencia' },
-              [blockThemeField, buttonStyleField, sectionSpacingField],
+              [
+                blockThemeField,
+                buttonStyleField,
+                sectionSpacingField,
+                {
+                  name: 'contentAlignment',
+                  type: 'select',
+                  defaultValue: 'center',
+                  options: [
+                    {
+                      label: { en: 'Left', uk: 'Ліворуч', es: 'Izquierda' },
+                      value: 'left',
+                    },
+                    {
+                      label: { en: 'Center', uk: 'По центру', es: 'Centro' },
+                      value: 'center',
+                    },
+                    {
+                      label: { en: 'Right', uk: 'Праворуч', es: 'Derecha' },
+                      value: 'right',
+                    },
+                  ],
+                  label: {
+                    en: 'Content Alignment',
+                    uk: 'Вирівнювання контенту',
+                    es: 'Alineación del contenido',
+                  },
+                },
+              ],
               false,
             ),
             collapsibleField(

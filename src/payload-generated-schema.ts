@@ -197,6 +197,10 @@ export const enum_pages_blocks_content_button_style = pgEnum(
   'enum_pages_blocks_content_button_style',
   ['primary', 'outline', 'light', 'text'],
 )
+export const enum_pages_blocks_content_content_alignment = pgEnum(
+  'enum_pages_blocks_content_content_alignment',
+  ['left', 'center', 'right'],
+)
 export const enum_pages_blocks_global_contact_section_theme = pgEnum(
   'enum_pages_blocks_global_contact_section_theme',
   ['white', 'soft', 'sand', 'sage'],
@@ -928,6 +932,8 @@ export const pages_blocks_content = pgTable(
     theme: enum_pages_blocks_content_theme('theme').default('white'),
     buttonStyle: enum_pages_blocks_content_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
+    contentAlignment:
+      enum_pages_blocks_content_content_alignment('content_alignment').default('center'),
     title: varchar('title'),
     content: jsonb('content'),
     fullWidthContent: boolean('full_width_content').default(false),
@@ -4027,6 +4033,7 @@ type DatabaseSchema = {
   enum_pages_blocks_pricing_group_showcase_position: typeof enum_pages_blocks_pricing_group_showcase_position
   enum_pages_blocks_content_theme: typeof enum_pages_blocks_content_theme
   enum_pages_blocks_content_button_style: typeof enum_pages_blocks_content_button_style
+  enum_pages_blocks_content_content_alignment: typeof enum_pages_blocks_content_content_alignment
   enum_pages_blocks_global_contact_section_theme: typeof enum_pages_blocks_global_contact_section_theme
   enum_pages_blocks_contact_section_contact_rows_order_row: typeof enum_pages_blocks_contact_section_contact_rows_order_row
   enum_pages_blocks_contact_section_theme: typeof enum_pages_blocks_contact_section_theme

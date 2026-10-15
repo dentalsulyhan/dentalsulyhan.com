@@ -203,7 +203,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
           {/* Mobile slide-out drawer (menuBody) */}
           <div
-            className={`fixed top-0 left-0 h-auto max-h-[calc(100vh-32px)] w-fit max-w-[calc(100vw-32px)] bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out px-[42px] py-6 flex flex-col z-[1010] overflow-y-auto shadow-2xl max-[767px]:px-5 max-[767px]:py-5 ${
+            className={`fixed top-0 left-0 h-auto max-h-[calc(100vh-32px)] w-fit max-w-[calc(100vw-32px)] bg-white/90 backdrop-blur-md transition-all duration-300 ease-in-out pl-4 pr-5 py-5 min-[768px]:pl-[18px] min-[768px]:pr-[42px] min-[768px]:py-6 min-[1101px]:pl-6 min-[1231px]:pl-[calc((100vw-1200px)/2)] flex flex-col z-[1010] overflow-y-auto shadow-2xl ${
               isMenuOpen ? 'translate-x-0 opacity-100 visible' : '-translate-x-full opacity-0 invisible'
             }`}
           >
