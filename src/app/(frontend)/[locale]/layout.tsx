@@ -69,6 +69,7 @@ export default async function FrontendLayout({
     ...(headerFooter?.header || {}),
     ...(siteSettings?.header || {}),
     menuItems: sharedMenuItems,
+    menuStyle: siteSettings?.menuStyle || 'drawer',
   }
   const footerData = {
     ...(headerFooter?.footer || {}),

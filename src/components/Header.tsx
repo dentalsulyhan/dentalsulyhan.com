@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import type { HeaderFooter, SiteContact } from '@/payload-types'
+import type { HeaderFooter, SiteContact, SiteSetting } from '@/payload-types'
 import { buildLocalizedPath, stripLocalePrefix } from '@/lib/localizedRouting'
 
 type ContactData = Partial<SiteContact> & {
@@ -20,6 +20,7 @@ type BrandingData = {
 interface HeaderProps {
   data: NonNullable<HeaderFooter['header']> & {
     menuItems?: HeaderFooter['menuItems']
+    menuStyle?: SiteSetting['menuStyle']
   }
   contacts: ContactData
   currentLocale: string
@@ -36,6 +37,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
   const locales = ['es', 'en', 'uk']
   const langNames: Record<string, string> = { es: 'ESP', en: 'ENG', uk: 'УКР' }
   const localizedServicesPath = buildLocalizedPath(currentLocale, servicesPath)
+  const menuStyle = data?.menuStyle || 'drawer'
 
   const resolveMenuLink = (link?: string | null) => {
     if (!link) return '#'
@@ -69,7 +71,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
-    if (isMenuOpen) {
+    if (isMenuOpen && menuStyle === 'drawer') {
       document.body.classList.add('_lock')
     } else {
       document.body.classList.remove('_lock')
@@ -77,7 +79,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
     return () => {
       document.body.classList.remove('_lock')
     }
-  }, [isMenuOpen])
+  }, [isMenuOpen, menuStyle])
 
   useEffect(() => {
     let cancelled = false
@@ -183,15 +185,18 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
       <div className="max-w-[1200px] mx-auto grid grid-cols-[1fr_auto_1fr] items-center py-3 max-[1230px]:mx-[24px] max-[1230px]:w-auto max-[1100px]:mx-[18px] max-[767px]:py-[10px] max-[767px]:mx-[16px]">
         
         {/* LEFT: Hamburger Menu trigger and Sidebar Drawer */}
-        <div className="flex">
+        <div className="relative flex">
           <button
             className="uppercase font-normal cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
-            onClick={() => setIsMenuOpen(true)}
+            onClick={() => setIsMenuOpen((open) => !open)}
             aria-label={data?.menuButtonLabel || (currentLocale === 'uk' ? 'Відкрити меню' : currentLocale === 'es' ? 'Abrir menu' : 'Open menu')}
+            aria-expanded={isMenuOpen}
           >
             {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
           </button>
 
+          {menuStyle === 'drawer' ? (
+            <>
           <button
             type="button"
             aria-label={currentLocale === 'uk' ? 'Закрити меню' : currentLocale === 'es' ? 'Cerrar menu' : 'Close menu'}
@@ -258,6 +263,46 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
               </ul>
             </div>
           </div>
+            </>
+          ) : (
+            <div
+              className={`absolute top-full left-0 mt-3 z-[1010] w-max max-w-[calc(100vw-32px)] bg-white/95 backdrop-blur-md shadow-2xl transition-all duration-200 overflow-hidden ${
+                isMenuOpen ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 -translate-y-2'
+              }`}
+            >
+              <nav className="p-5">
+                <ul className="site-menu-list list-none p-0 m-0 flex flex-col items-start gap-[8px]">
+                  {menuItems.map((item, i) => (
+                    <li key={i} className="my-[2px] mx-0">
+                      <Link
+                        href={resolveMenuLink(item.link)}
+                        className="block whitespace-nowrap text-[17px] no-underline text-[#22282b] opacity-70 hover:opacity-100 hover:text-[18px] transition-all duration-200"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="site-menu-list mt-5 pt-4 border-t border-[#22282b]/10 flex flex-row gap-5 list-none p-0">
+                  {locales.map((loc) => (
+                    <li key={loc} className="flex items-center">
+                      <Link
+                        href={switchLanguage(loc)}
+                        style={{ fontFamily: 'var(--second-font)' }}
+                        className={`inline-flex items-center h-[20px] leading-none text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
+                          currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {langNames[loc]}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          )}
         </div>
 
         {/* CENTER: Logo */}

@@ -2600,6 +2600,10 @@ export interface SeoSetting {
  */
 export interface SiteSetting {
   id: number;
+  /**
+   * Both styles use the same menu items below.
+   */
+  menuStyle?: ('drawer' | 'dropdown') | null;
   menuItems?:
     | {
         label: string;
@@ -3131,6 +3135,7 @@ export interface SeoSettingsSelect<T extends boolean = true> {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  menuStyle?: T;
   menuItems?:
     | T
     | {

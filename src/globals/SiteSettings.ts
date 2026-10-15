@@ -90,6 +90,33 @@ export const SiteSettings: GlobalConfig = {
       },
       [
         {
+          name: 'menuStyle',
+          type: 'select',
+          defaultValue: 'drawer',
+          options: [
+            {
+              label: { en: 'Side Menu', uk: 'Бокове меню', es: 'Menú lateral' },
+              value: 'drawer',
+            },
+            {
+              label: { en: 'Dropdown List', uk: 'Випадаючий список', es: 'Lista desplegable' },
+              value: 'dropdown',
+            },
+          ],
+          label: {
+            en: 'Menu Style',
+            uk: 'Стиль меню',
+            es: 'Estilo del menú',
+          },
+          admin: {
+            description: {
+              en: 'Both styles use the same menu items below.',
+              uk: 'Обидва стилі використовують однакові пункти меню нижче.',
+              es: 'Ambos estilos usan los mismos elementos de menú a continuación.',
+            },
+          },
+        },
+        {
           name: 'menuItems',
           type: 'array',
           admin: {

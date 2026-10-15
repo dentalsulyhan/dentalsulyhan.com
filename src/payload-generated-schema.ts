@@ -375,6 +375,10 @@ export const enum_site_settings_social_links_platform = pgEnum(
   'enum_site_settings_social_links_platform',
   ['instagram', 'facebook', 'twitter', 'youtube', 'tiktok'],
 )
+export const enum_site_settings_menu_style = pgEnum('enum_site_settings_menu_style', [
+  'drawer',
+  'dropdown',
+])
 export const enum_home_page_section_order_section = pgEnum('enum_home_page_section_order_section', [
   'hero',
   'advantages',
@@ -2460,6 +2464,7 @@ export const site_settings = pgTable(
   'site_settings',
   {
     id: serial('id').primaryKey(),
+    menuStyle: enum_site_settings_menu_style('menu_style').default('drawer'),
     branding_favicon: integer('branding_favicon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
@@ -4074,6 +4079,7 @@ type DatabaseSchema = {
   enum_design_settings_typography_second_font_family: typeof enum_design_settings_typography_second_font_family
   enum_seo_settings_default_twitter_card: typeof enum_seo_settings_default_twitter_card
   enum_site_settings_social_links_platform: typeof enum_site_settings_social_links_platform
+  enum_site_settings_menu_style: typeof enum_site_settings_menu_style
   enum_home_page_section_order_section: typeof enum_home_page_section_order_section
   enum_site_contacts_social_links_platform: typeof enum_site_contacts_social_links_platform
   users_sessions: typeof users_sessions
