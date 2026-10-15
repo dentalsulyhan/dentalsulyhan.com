@@ -270,10 +270,10 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
                 isMenuOpen ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 -translate-y-2'
               }`}
             >
-              <nav className="p-5">
-                <ul className="site-menu-list list-none p-0 m-0 flex flex-col items-start gap-[8px]">
+              <nav className="p-6 max-[767px]:p-5">
+                <ul className="site-menu-list list-none p-0 m-0 flex flex-col items-start gap-3">
                   {menuItems.map((item, i) => (
-                    <li key={i} className="my-[2px] mx-0">
+                    <li key={i} className="my-[3px] mx-0">
                       <Link
                         href={resolveMenuLink(item.link)}
                         className="block whitespace-nowrap text-[17px] no-underline text-[#22282b] opacity-70 hover:opacity-100 hover:text-[18px] transition-all duration-200"
@@ -284,7 +284,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
                     </li>
                   ))}
                 </ul>
-                <ul className="site-menu-list mt-5 pt-4 border-t border-[#22282b]/10 flex flex-row gap-5 list-none p-0">
+                <ul className="site-menu-list mt-6 pt-5 border-t border-[#22282b]/10 flex flex-row gap-5 list-none p-0">
                   {locales.map((loc) => (
                     <li key={loc} className="flex items-center">
                       <Link
