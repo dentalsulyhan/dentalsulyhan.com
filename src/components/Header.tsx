@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -32,6 +32,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [localeLinks, setLocaleLinks] = useState<Record<string, string> | null>(null)
+  const menuContainerRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 
   const locales = ['es', 'en', 'uk']
@@ -79,6 +80,19 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
     return () => {
       document.body.classList.remove('_lock')
     }
+  }, [isMenuOpen, menuStyle])
+
+  useEffect(() => {
+    if (!isMenuOpen || menuStyle !== 'dropdown') return
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!menuContainerRef.current?.contains(event.target as Node)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    return () => document.removeEventListener('pointerdown', closeOnOutsideClick)
   }, [isMenuOpen, menuStyle])
 
   useEffect(() => {
@@ -185,7 +199,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
       <div className="max-w-[1200px] mx-auto grid grid-cols-[1fr_auto_1fr] items-center py-3 max-[1230px]:mx-[24px] max-[1230px]:w-auto max-[1100px]:mx-[18px] max-[767px]:py-[10px] max-[767px]:mx-[16px]">
         
         {/* LEFT: Hamburger Menu trigger and Sidebar Drawer */}
-        <div className="relative flex">
+        <div ref={menuContainerRef} className="relative flex">
           <button
             className="uppercase font-normal cursor-pointer bg-transparent border-none text-[#22282b] hover:opacity-80 transition-opacity"
             onClick={() => setIsMenuOpen((open) => !open)}
@@ -266,7 +280,7 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
             </>
           ) : (
             <div
-              className={`absolute top-full left-0 mt-3 z-[1010] w-max max-w-[calc(100vw-32px)] bg-white/95 backdrop-blur-md shadow-2xl transition-all duration-200 overflow-hidden ${
+              className={`absolute top-full left-0 mt-1 z-[1010] w-max max-w-[calc(100vw-32px)] bg-white/95 backdrop-blur-md shadow-2xl transition-all duration-200 overflow-hidden ${
                 isMenuOpen ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 -translate-y-2'
               }`}
             >
@@ -284,22 +298,24 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
                     </li>
                   ))}
                 </ul>
-                <ul className="site-menu-list mt-6 pt-5 border-t border-[#22282b]/10 flex flex-row gap-5 list-none p-0">
-                  {locales.map((loc) => (
-                    <li key={loc} className="flex items-center">
-                      <Link
-                        href={switchLanguage(loc)}
-                        style={{ fontFamily: 'var(--second-font)' }}
-                        className={`inline-flex items-center h-[20px] leading-none text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
-                          currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
-                        }`}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {langNames[loc]}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-8 pt-5 border-t border-[#22282b]/10">
+                  <ul className="site-menu-list flex flex-row gap-5 list-none p-0 m-0">
+                    {locales.map((loc) => (
+                      <li key={loc} className="flex items-center">
+                        <Link
+                          href={switchLanguage(loc)}
+                          style={{ fontFamily: 'var(--second-font)' }}
+                          className={`inline-flex items-center h-[20px] leading-none text-[14px] font-medium uppercase tracking-[0.08em] transition-all duration-200 ${
+                            currentLocale === loc ? 'text-[#22282b] opacity-100' : 'text-[#909da2] opacity-70 hover:opacity-100'
+                          }`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {langNames[loc]}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </nav>
             </div>
           )}
