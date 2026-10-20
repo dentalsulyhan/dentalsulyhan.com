@@ -163,6 +163,41 @@ export const HomePage: GlobalConfig = {
 
     // ─── 2. Advantages ───
     {
+      name: 'advantagesLayout',
+      type: 'select',
+      defaultValue: 'icons',
+      options: [
+        {
+          label: {
+            en: 'Advantages with icons',
+            uk: 'Переваги з іконками',
+            es: 'Ventajas con iconos',
+          },
+          value: 'icons',
+        },
+        {
+          label: {
+            en: 'Process stages with arrows',
+            uk: 'Етапи процесу зі стрілками',
+            es: 'Etapas del proceso con flechas',
+          },
+          value: 'steps',
+        },
+      ],
+      label: {
+        en: 'Advantages layout',
+        uk: 'Варіант відображення переваг',
+        es: 'Diseño de las ventajas',
+      },
+      admin: {
+        description: {
+          en: 'In the stages layout, write the number directly in the title (for example, “01 — Diagnostic precision”). Icons are not displayed.',
+          uk: 'Для варіанта «Етапи» вкажіть номер безпосередньо у заголовку (наприклад, «01 — Діагностична точність»). Іконки не відображаються.',
+          es: 'Para el diseño «Etapas», escriba el número directamente en el título (por ejemplo, «01 — Precisión diagnóstica»). Los iconos no se muestran.',
+        },
+      },
+    },
+    {
       name: 'advantages',
       type: 'array',
       admin: {
@@ -197,7 +232,44 @@ export const HomePage: GlobalConfig = {
             es: 'Descripción',
           },
         },
-        ...buildIconChoiceFields({ localized: false }),
+        {
+          name: 'iconSource',
+          type: 'select',
+          hidden: true,
+          defaultValue: 'upload',
+          options: [
+            { value: 'upload', label: 'Upload icon' },
+            { value: 'fontAwesome', label: 'Font Awesome' },
+          ],
+        },
+        {
+          name: 'icon',
+          type: 'upload',
+          relationTo: 'media',
+          label: {
+            en: 'Icon',
+            uk: 'Іконка',
+            es: 'Icono',
+          },
+          admin: {
+            condition: (data) => data.advantagesLayout !== 'steps',
+          },
+        },
+        {
+          name: 'fontAwesomeIcon',
+          type: 'text',
+          label: {
+            en: 'Font Awesome Icon',
+            uk: 'Іконка Font Awesome',
+            es: 'Icono de Font Awesome',
+          },
+          admin: {
+            components: {
+              Field: '/components/admin/FontAwesomeIconPicker#FontAwesomeIconPicker',
+            },
+            condition: (data) => data.advantagesLayout !== 'steps',
+          },
+        },
       ],
     },
 

@@ -2822,6 +2822,10 @@ export interface HomePage {
     buttonLink?: string | null;
     image?: (number | null) | Media;
   };
+  /**
+   * In the stages layout, write the number directly in the title (for example, “01 — Diagnostic precision”). Icons are not displayed.
+   */
+  advantagesLayout?: ('icons' | 'steps') | null;
   advantages?:
     | {
         title: string;
@@ -3257,6 +3261,7 @@ export interface HomePageSelect<T extends boolean = true> {
         buttonLink?: T;
         image?: T;
       };
+  advantagesLayout?: T;
   advantages?:
     | T
     | {

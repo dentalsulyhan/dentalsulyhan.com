@@ -391,6 +391,10 @@ export const enum_home_page_section_order_section = pgEnum('enum_home_page_secti
   'whyUs',
   'contacts',
 ])
+export const enum_home_page_advantages_layout = pgEnum('enum_home_page_advantages_layout', [
+  'icons',
+  'steps',
+])
 export const enum_site_contacts_social_links_platform = pgEnum(
   'enum_site_contacts_social_links_platform',
   ['instagram', 'facebook', 'twitter', 'youtube', 'tiktok'],
@@ -2705,6 +2709,7 @@ export const home_page = pgTable(
     hero_image: integer('hero_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    advantagesLayout: enum_home_page_advantages_layout('advantages_layout').default('icons'),
     reviews_embedCode: varchar('reviews_embed_code'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
     createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
@@ -4081,6 +4086,7 @@ type DatabaseSchema = {
   enum_site_settings_social_links_platform: typeof enum_site_settings_social_links_platform
   enum_site_settings_menu_style: typeof enum_site_settings_menu_style
   enum_home_page_section_order_section: typeof enum_home_page_section_order_section
+  enum_home_page_advantages_layout: typeof enum_home_page_advantages_layout
   enum_site_contacts_social_links_platform: typeof enum_site_contacts_social_links_platform
   users_sessions: typeof users_sessions
   users: typeof users

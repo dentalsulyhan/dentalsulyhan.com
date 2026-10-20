@@ -277,6 +277,7 @@ export async function PageContent({
   const heroImageUrl = mediaUrl(homeData.hero?.image)
 
   const advantages = homeData.advantages || []
+  const advantagesLayout = homeData.advantagesLayout || 'icons'
   const aboutBlocks = homeData.aboutUs?.blocks || []
 
   const philTitle = homeData.philosophy?.sectionTitle || loc.philosophyTitle
@@ -1468,6 +1469,53 @@ export async function PageContent({
             )
 
           case 'advantages':
+            if (advantagesLayout === 'steps') {
+              return (
+                <section key={`sec-${idx}`} id="advantages" className={`${legacyPrimaryTheme.section} py-[100px] max-[767px]:py-[64px]`}>
+                  <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                    {advantages.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-x-[112px] gap-y-[72px] max-[1100px]:gap-x-[72px] max-[767px]:grid-cols-1 max-[767px]:gap-y-0">
+                        {advantages.map((adv, i) => {
+                          const isLast = i === advantages.length - 1
+                          const isLeftColumn = i % 2 === 0
+
+                          return (
+                            <React.Fragment key={adv.id || i}>
+                              <article className="relative min-w-0">
+                                <h3 className="text-[28px] leading-tight font-semibold tracking-[-0.02em] text-[#22282b] max-[767px]:text-[24px]">
+                                  {adv.title}
+                                </h3>
+                                <div className="mt-4 text-[17px] text-[#505a5e] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:mt-3 max-[767px]:text-[16px]">
+                                  {typeof adv.description === 'string' ? <p>{adv.description}</p> : <RichText data={adv.description} />}
+                                </div>
+                                {isLeftColumn && i + 1 < advantages.length && (
+                                  <svg
+                                    aria-hidden="true"
+                                    viewBox="0 0 88 32"
+                                    className="absolute left-[calc(100%+12px)] top-[6px] h-8 w-[88px] text-[#3c5557] max-[1100px]:left-[calc(100%+8px)] max-[1100px]:w-[56px] max-[767px]:hidden"
+                                    fill="none"
+                                  >
+                                    <path d="M2 16h70M60 5l12 11-12 11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                )}
+                              </article>
+                              {!isLast && (
+                                <div className="col-span-1 flex h-12 items-center max-[767px]:h-14 max-[767px]:justify-start max-[767px]:pl-1 min-[768px]:hidden" aria-hidden="true">
+                                  <svg viewBox="0 0 32 48" className="h-11 w-8 text-[#3c5557]" fill="none">
+                                    <path d="M16 2v34M5 26l11 11 11-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                </div>
+                              )}
+                            </React.Fragment>
+                          )
+                        })}
+                      </div>
+                    ) : null}
+                  </div>
+                </section>
+              )
+            }
+
             return (
               <section key={`sec-${idx}`} id="advantages" className={`${legacyPrimaryTheme.section} py-[100px]`}>
                 <div className={`px-[max(30px,calc((100vw-1200px)/2))] flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.advantages)} max-[767px]:flex-col max-[767px]:items-center`}>
