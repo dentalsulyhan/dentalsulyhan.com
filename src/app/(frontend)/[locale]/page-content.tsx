@@ -456,18 +456,18 @@ export async function PageContent({
                                 {isLeftColumn && itemIndex + 1 < block.items.length && (
                                   <svg
                                     aria-hidden="true"
-                                    viewBox="0 0 88 32"
-                                    className="absolute left-[calc(100%+12px)] top-[6px] h-8 w-[88px] text-[#3c5557] max-[1100px]:left-[calc(100%+8px)] max-[1100px]:w-[56px] max-[767px]:hidden"
+                                    viewBox="0 0 64 24"
+                                    className="absolute left-[calc(100%+12px)] top-[8px] h-6 w-16 text-[#3c5557] max-[1100px]:left-[calc(100%+8px)] max-[1100px]:w-12 max-[767px]:hidden"
                                     fill="none"
                                   >
-                                    <path d="M2 16h70M60 5l12 11-12 11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M2 12h50M43 4l9 8-9 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
                                 )}
                               </article>
                               {!isLast && (
-                                <div className="col-span-1 flex h-12 items-center max-[767px]:h-14 max-[767px]:justify-start max-[767px]:pl-1 min-[768px]:hidden" aria-hidden="true">
-                                  <svg viewBox="0 0 32 48" className="h-11 w-8 text-[#3c5557]" fill="none">
-                                    <path d="M16 2v34M5 26l11 11 11-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="col-span-1 flex h-10 items-center max-[767px]:h-11 max-[767px]:justify-start max-[767px]:pl-1 min-[768px]:hidden" aria-hidden="true">
+                                  <svg viewBox="0 0 24 36" className="h-8 w-6 text-[#3c5557]" fill="none">
+                                    <path d="M12 2v25M5 20l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
                                 </div>
                               )}
@@ -1548,18 +1548,18 @@ export async function PageContent({
                                 {isLeftColumn && i + 1 < advantages.length && (
                                   <svg
                                     aria-hidden="true"
-                                    viewBox="0 0 88 32"
-                                    className="absolute left-[calc(100%+12px)] top-[6px] h-8 w-[88px] text-[#3c5557] max-[1100px]:left-[calc(100%+8px)] max-[1100px]:w-[56px] max-[767px]:hidden"
+                                    viewBox="0 0 64 24"
+                                    className="absolute left-[calc(100%+12px)] top-[8px] h-6 w-16 text-[#3c5557] max-[1100px]:left-[calc(100%+8px)] max-[1100px]:w-12 max-[767px]:hidden"
                                     fill="none"
                                   >
-                                    <path d="M2 16h70M60 5l12 11-12 11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M2 12h50M43 4l9 8-9 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
                                 )}
                               </article>
                               {!isLast && (
-                                <div className="col-span-1 flex h-12 items-center max-[767px]:h-14 max-[767px]:justify-start max-[767px]:pl-1 min-[768px]:hidden" aria-hidden="true">
-                                  <svg viewBox="0 0 32 48" className="h-11 w-8 text-[#3c5557]" fill="none">
-                                    <path d="M16 2v34M5 26l11 11 11-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="col-span-1 flex h-10 items-center max-[767px]:h-11 max-[767px]:justify-start max-[767px]:pl-1 min-[768px]:hidden" aria-hidden="true">
+                                  <svg viewBox="0 0 24 36" className="h-8 w-6 text-[#3c5557]" fill="none">
+                                    <path d="M12 2v25M5 20l7 7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
                                 </div>
                               )}
