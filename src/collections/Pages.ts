@@ -330,6 +330,41 @@ export const Pages: CollectionConfig = {
                   },
                 },
                 {
+                  name: 'displayVariant',
+                  type: 'select',
+                  defaultValue: 'icons',
+                  options: [
+                    {
+                      label: {
+                        en: 'Advantages with icons',
+                        uk: 'Переваги з іконками',
+                        es: 'Ventajas con iconos',
+                      },
+                      value: 'icons',
+                    },
+                    {
+                      label: {
+                        en: 'Process stages with arrows',
+                        uk: 'Етапи процесу зі стрілками',
+                        es: 'Etapas del proceso con flechas',
+                      },
+                      value: 'steps',
+                    },
+                  ],
+                  label: {
+                    en: 'Display Variant',
+                    uk: 'Варіант відображення',
+                    es: 'Variante de visualización',
+                  },
+                  admin: {
+                    description: {
+                      en: 'For process stages, write the number directly in the title (for example, “01 — Diagnostic precision”). Icons are not displayed.',
+                      uk: 'Для етапів процесу вкажіть номер безпосередньо у заголовку (наприклад, «01 — Діагностична точність»). Іконки не відображаються.',
+                      es: 'Para las etapas del proceso, escriba el número directamente en el título (por ejemplo, «01 — Precisión diagnóstica»). Los iconos no se muestran.',
+                    },
+                  },
+                },
+                {
                   name: 'itemLayout',
                   type: 'select',
                   defaultValue: 'column',

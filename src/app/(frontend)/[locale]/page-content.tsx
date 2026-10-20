@@ -394,6 +394,7 @@ export async function PageContent({
             }
 
             case 'advantages': {
+              const isStepsLayout = block.displayVariant === 'steps'
               const isRowLayout = (block.itemLayout || 'column') === 'row'
               const itemsPerRow = block.itemsPerRow || '3'
               const advantageCardWidthClass = itemsPerRow === '2'
@@ -423,6 +424,62 @@ export async function PageContent({
                 : isRowLayout
                   ? 'text-center'
                   : 'mobile-richtext-left max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
+
+              if (isStepsLayout) {
+                return (
+                  <section
+                    key={block.id || idx}
+                    id="advantages"
+                    className={compactSpacing ? `${theme.section} py-[56px] max-[767px]:py-[40px]` : `${theme.section} py-[100px] max-[767px]:py-[64px]`}
+                    style={getThemeBackgroundStyle(theme, 'section')}
+                  >
+                    <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
+                      {block.sectionTitle && (
+                        <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold mb-[60px] max-[767px]:mb-8 text-[#3c5557] ${isLeftAligned ? 'text-left' : 'text-center'}`}>
+                          {block.sectionTitle}
+                        </h2>
+                      )}
+                      <div className="grid grid-cols-2 gap-x-[112px] gap-y-[72px] max-[1100px]:gap-x-[72px] max-[767px]:grid-cols-1 max-[767px]:gap-y-0">
+                        {block.items.map((item, itemIndex) => {
+                          const isLast = itemIndex === block.items.length - 1
+                          const isLeftColumn = itemIndex % 2 === 0
+
+                          return (
+                            <React.Fragment key={item.id || itemIndex}>
+                              <article className="relative min-w-0">
+                                <h3 className="text-[28px] leading-tight font-semibold tracking-[-0.02em] text-[#22282b] max-[767px]:text-[24px]">
+                                  {item.title}
+                                </h3>
+                                <div className="mt-4 text-[17px] text-[#505a5e] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:mt-3 max-[767px]:text-[16px]">
+                                  <RichText data={item.text} />
+                                </div>
+                                {isLeftColumn && itemIndex + 1 < block.items.length && (
+                                  <svg
+                                    aria-hidden="true"
+                                    viewBox="0 0 88 32"
+                                    className="absolute left-[calc(100%+12px)] top-[6px] h-8 w-[88px] text-[#3c5557] max-[1100px]:left-[calc(100%+8px)] max-[1100px]:w-[56px] max-[767px]:hidden"
+                                    fill="none"
+                                  >
+                                    <path d="M2 16h70M60 5l12 11-12 11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                )}
+                              </article>
+                              {!isLast && (
+                                <div className="col-span-1 flex h-12 items-center max-[767px]:h-14 max-[767px]:justify-start max-[767px]:pl-1 min-[768px]:hidden" aria-hidden="true">
+                                  <svg viewBox="0 0 32 48" className="h-11 w-8 text-[#3c5557]" fill="none">
+                                    <path d="M16 2v34M5 26l11 11 11-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                </div>
+                              )}
+                            </React.Fragment>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </section>
+                )
+              }
+
               return (
                 <section
                   key={block.id || idx}

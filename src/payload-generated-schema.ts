@@ -59,6 +59,10 @@ export const enum_pages_blocks_advantages_item_layout = pgEnum(
   'enum_pages_blocks_advantages_item_layout',
   ['column', 'row'],
 )
+export const enum_pages_blocks_advantages_display_variant = pgEnum(
+  'enum_pages_blocks_advantages_display_variant',
+  ['icons', 'steps'],
+)
 export const enum_pages_blocks_advantages_content_alignment = pgEnum(
   'enum_pages_blocks_advantages_content_alignment',
   ['left', 'center'],
@@ -555,6 +559,7 @@ export const pages_blocks_advantages = pgTable(
     buttonStyle: enum_pages_blocks_advantages_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
+    displayVariant: enum_pages_blocks_advantages_display_variant('display_variant').default('icons'),
     itemLayout: enum_pages_blocks_advantages_item_layout('item_layout').default('column'),
     contentAlignment: enum_pages_blocks_advantages_content_alignment('content_alignment').default('left'),
     incompleteRowAlignment: enum_pages_blocks_advantages_incomplete_row_alignment(
@@ -4012,6 +4017,7 @@ type DatabaseSchema = {
   enum_pages_blocks_advantages_theme: typeof enum_pages_blocks_advantages_theme
   enum_pages_blocks_advantages_button_style: typeof enum_pages_blocks_advantages_button_style
   enum_pages_blocks_advantages_item_layout: typeof enum_pages_blocks_advantages_item_layout
+  enum_pages_blocks_advantages_display_variant: typeof enum_pages_blocks_advantages_display_variant
   enum_pages_blocks_advantages_content_alignment: typeof enum_pages_blocks_advantages_content_alignment
   enum_pages_blocks_advantages_incomplete_row_alignment: typeof enum_pages_blocks_advantages_incomplete_row_alignment
   enum_pages_blocks_about_us_grid_theme: typeof enum_pages_blocks_about_us_grid_theme

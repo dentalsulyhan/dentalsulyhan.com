@@ -271,6 +271,10 @@ export interface Page {
              */
             compactSpacing?: boolean | null;
             sectionTitle?: string | null;
+            /**
+             * For process stages, write the number directly in the title (for example, “01 — Diagnostic precision”). Icons are not displayed.
+             */
+            displayVariant?: ('icons' | 'steps') | null;
             itemLayout?: ('column' | 'row') | null;
             itemsPerRow?: ('2' | '3' | '4') | null;
             /**
@@ -1726,6 +1730,7 @@ export interface PagesSelect<T extends boolean = true> {
               buttonStyle?: T;
               compactSpacing?: T;
               sectionTitle?: T;
+              displayVariant?: T;
               itemLayout?: T;
               itemsPerRow?: T;
               contentAlignment?: T;
