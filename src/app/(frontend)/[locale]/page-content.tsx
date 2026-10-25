@@ -1012,12 +1012,13 @@ export async function PageContent({
               const textAlignmentClass = contentAlignment === 'left'
                 ? 'text-left'
                 : contentAlignment === 'right'
-                  ? 'text-right'
+                  ? 'text-right max-[767px]:text-left'
                   : 'text-center max-[767px]:text-left'
+              const headingAlignmentClass = 'text-center max-[767px]:text-left'
               const richTextAlignmentClass = contentAlignment === 'left'
-                ? 'text-left [&_p]:text-left [&_li]:text-left'
+                ? 'mobile-richtext-left text-left [&_p]:text-left [&_li]:text-left'
                 : contentAlignment === 'right'
-                  ? 'text-right [&_p]:text-right [&_li]:text-right'
+                  ? 'mobile-richtext-left text-right [&_p]:text-right [&_li]:text-right max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
                   : 'mobile-richtext-left text-center [&_p]:text-center [&_li]:text-center max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
               const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
               const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
@@ -1048,7 +1049,7 @@ export async function PageContent({
                   <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                     {block.title && (
                       <HeadingTag
-                        className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] ${textAlignmentClass} ${
+                        className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] ${headingAlignmentClass} ${
                           block.content || block.bottomText ? 'mb-6' : 'mb-0'
                         }`}
                       >

@@ -335,7 +335,7 @@ export async function ServiceDetailPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const isPageH1 = idx === customH1BlockIndex
             const HeadingTag = isPageH1 ? 'h1' : 'h2'
-            const headingAlignmentClass = isPageH1 ? 'text-center' : 'text-center max-[767px]:text-left'
+            const headingAlignmentClass = 'text-center max-[767px]:text-left'
             const contentAlignment = (block as { contentAlignment?: 'left' | 'center' }).contentAlignment || 'center'
             const contentAlignmentClass = contentAlignment === 'left'
               ? 'text-left'
