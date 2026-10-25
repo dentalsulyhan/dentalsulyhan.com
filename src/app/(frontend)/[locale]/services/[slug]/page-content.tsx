@@ -498,7 +498,7 @@ export async function ServiceDetailPageContent({
                             {item.title && <h3 className={`text-[20px] leading-6 font-semibold text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
                           </div>
                           {item.text && (
-                            <div className={`${isRowLayout ? 'text-center' : 'mobile-richtext-left max-[767px]:text-center max-[767px]:[&_p]:text-center max-[767px]:[&_li]:text-center'} text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]`}>
+                            <div className="text-center [&_p]:text-center [&_li]:text-center text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]">
                               <RichText data={item.text} />
                             </div>
                           )}
