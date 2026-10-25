@@ -265,6 +265,7 @@ export async function ServicesListingPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const isPageH1 = idx === customH1BlockIndex
             const HeadingTag = isPageH1 ? 'h1' : 'h2'
+            const headingAlignmentClass = isPageH1 ? 'text-center' : 'text-center max-[767px]:text-left'
             const contentAlignment = (block as { contentAlignment?: 'left' | 'center' }).contentAlignment || 'center'
             const contentAlignmentClass = contentAlignment === 'left'
               ? 'text-left'
@@ -302,7 +303,7 @@ export async function ServicesListingPageContent({
                 <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                   {block.title && (
                     <HeadingTag
-                      className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center ${
+                      className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] ${headingAlignmentClass} ${
                         block.content || block.bottomText ? 'mb-6' : 'mb-0'
                       }`}
                     >

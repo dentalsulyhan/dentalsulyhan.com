@@ -4,7 +4,9 @@ type SocialIconProps = {
 }
 
 export default function SocialIcon({ platform, size = 'default' }: SocialIconProps) {
-  const sizeClass = size === 'large' ? 'w-[24px] h-[24px]' : 'w-[20px] h-[20px]'
+  const sizeClass = size === 'large'
+    ? 'w-[24px] h-[24px] max-[767px]:w-[26px] max-[767px]:h-[26px]'
+    : 'w-[20px] h-[20px]'
   const iconMap: Record<string, string> = {
     instagram: '/icons/instagram.svg',
     facebook: '/icons/facebook.svg',
