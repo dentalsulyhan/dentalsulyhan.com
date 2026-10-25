@@ -270,8 +270,8 @@ export async function ServicesListingPageContent({
               ? 'text-left'
               : 'text-center max-[767px]:text-left'
             const richTextAlignmentClass = contentAlignment === 'left'
-              ? 'text-left [&_p]:text-left [&_li]:text-left'
-              : 'text-center [&_p]:text-center [&_li]:text-center max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
+              ? 'mobile-richtext-left text-left [&_p]:text-left [&_li]:text-left'
+              : 'mobile-richtext-left text-center [&_p]:text-center [&_li]:text-center max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
             const contentWidthClass = 'w-2/3 max-w-[1200px] max-[767px]:w-full'
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
@@ -513,7 +513,7 @@ export async function ServicesListingPageContent({
                           <div className="flex items-center gap-3 flex-wrap">
                             {contacts.socialLinks.map((link, linkIndex) => (
                               <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title={link.platform}>
-                                <SocialIcon platform={link.platform} />
+                                <SocialIcon platform={link.platform} size="large" />
                               </a>
                             ))}
                           </div>

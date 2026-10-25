@@ -1018,7 +1018,7 @@ export async function PageContent({
                 ? 'text-left [&_p]:text-left [&_li]:text-left'
                 : contentAlignment === 'right'
                   ? 'text-right [&_p]:text-right [&_li]:text-right'
-                  : 'text-center [&_p]:text-center [&_li]:text-center max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
+                  : 'mobile-richtext-left text-center [&_p]:text-center [&_li]:text-center max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
               const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
               const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
                 ? (block as { overlayColor?: string }).overlayColor
@@ -1161,7 +1161,7 @@ export async function PageContent({
                             <div className="flex items-center gap-3 flex-wrap">
                               {contacts.socialLinks.map((link, linkIndex) => (
                                 <a key={linkIndex} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center hover:scale-105 transition-transform" title={link.platform}>
-                                  <SocialIcon platform={link.platform} />
+                                  <SocialIcon platform={link.platform} size="large" />
                                 </a>
                               ))}
                             </div>
@@ -1381,7 +1381,7 @@ export async function PageContent({
                                       className="flex items-center justify-center hover:scale-105 transition-transform"
                                       title={link.platform}
                                     >
-                                      <SocialIcon platform={link.platform} />
+                                      <SocialIcon platform={link.platform} size="large" />
                                     </a>
                                   ))}
                                 </div>
@@ -2027,7 +2027,7 @@ export async function PageContent({
                                 className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
                                 title={link.platform}
                               >
-                                <SocialIcon platform={link.platform} />
+                                <SocialIcon platform={link.platform} size="large" />
                               </a>
                             ))}
                           </div>
