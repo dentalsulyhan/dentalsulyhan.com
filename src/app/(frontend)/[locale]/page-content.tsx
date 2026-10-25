@@ -633,6 +633,7 @@ export async function PageContent({
               const theme = getBlockTheme(block.theme)
               const buttonClass = getButtonStyle(block.buttonStyle)
               const incompleteRowJustifyClass = getIncompleteRowJustifyClass(block)
+              const philosophyRowJustifyClass = block.items.length === 2 ? 'justify-between' : incompleteRowJustifyClass
               const isLeftAligned = (block as { contentAlignment?: 'left' | 'center' }).contentAlignment !== 'center'
               const cardAlignmentClass = isLeftAligned ? 'items-start text-left' : 'items-center text-center'
               const mobileCardAlignmentClass = isLeftAligned || !isRowLayout
@@ -663,7 +664,7 @@ export async function PageContent({
                         {block.sectionTitle}
                       </h2>
                     )}
-                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
+                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${philosophyRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
                       {block.items.map((item, itemIndex) => {
                         const iconSource = (item as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
@@ -1731,7 +1732,7 @@ export async function PageContent({
                   {philTitle && (
                     <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] text-[#3c5557]">{philTitle}</h2>
                   )}
-                  <div className={`flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.philosophy)} max-[767px]:flex-col max-[767px]:items-center`}>
+                  <div className={`flex flex-wrap gap-[50px] ${homeData.philosophy?.cards?.length === 2 ? 'justify-between' : getIncompleteRowJustifyClass(homeData.philosophy)} max-[767px]:flex-col max-[767px]:items-center`}>
                     {homeData.philosophy?.cards && homeData.philosophy.cards.length > 0 ? (
                       homeData.philosophy.cards.map((card, i) => {
                         const iconSource = (card as { iconSource?: string | null }).iconSource
