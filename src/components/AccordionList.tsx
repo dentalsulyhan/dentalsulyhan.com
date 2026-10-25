@@ -40,21 +40,23 @@ export default function AccordionList({
 
         return (
           <div key={item.id || itemIndex} className={itemClassName}>
-            <button
-              type="button"
-              aria-expanded={isOpen}
-              aria-controls={panelId}
-              aria-label={item.heading || `Accordion item ${itemIndex + 1}`}
-              onClick={() => setOpenIndex(isOpen ? null : itemIndex)}
-              className={`w-full flex items-center justify-between gap-4 text-left ${headingClassName}`}
-            >
-              <span>{item.heading}</span>
-              <span
-                className={`shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-45' : ''} ${iconClassName}`}
+            <h3 className="m-0">
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                aria-label={item.heading || `Accordion item ${itemIndex + 1}`}
+                onClick={() => setOpenIndex(isOpen ? null : itemIndex)}
+                className={`w-full flex items-center justify-between gap-4 text-left ${headingClassName}`}
               >
-                +
-              </span>
-            </button>
+                <span>{item.heading}</span>
+                <span
+                  className={`shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-45' : ''} ${iconClassName}`}
+                >
+                  +
+                </span>
+              </button>
+            </h3>
             <div
               id={panelId}
               className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin] duration-300 ease-out ${

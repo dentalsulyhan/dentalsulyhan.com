@@ -421,7 +421,7 @@ export async function ServiceDetailPageContent({
                   </div>
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
-                  {block.title && <HeadingTag className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>}
+                  {block.title && <HeadingTag className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>}
                   <div className="prose max-w-none text-[#22282b]">
                     <RichText data={block.text} />
                   </div>
@@ -495,7 +495,7 @@ export async function ServiceDetailPageContent({
                                 </svg>
                               </div>
                             )}
-                            {item.title && <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
+                            {item.title && <h3 className={`text-[20px] leading-6 font-semibold text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
                           </div>
                           {item.text && (
                             <div className={`${isRowLayout ? 'text-center' : 'mobile-richtext-left max-[767px]:text-center max-[767px]:[&_p]:text-center max-[767px]:[&_li]:text-center'} text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]`}>
@@ -567,7 +567,7 @@ export async function ServiceDetailPageContent({
                                   />
                                 </div>
                               )}
-                              {item.title && <h3 className="text-[16px] max-[767px]:text-[14px] font-semibold text-[#2d4447] mb-0 leading-snug tracking-[-0.01em]">{item.title}</h3>}
+                              {item.title && <h3 className="text-[20px] leading-6 font-semibold text-[#2d4447] mb-0 tracking-[-0.01em]">{item.title}</h3>}
                             </div>
                           )}
                           {item.text && (
@@ -614,7 +614,7 @@ export async function ServiceDetailPageContent({
                             {itemIndex + 1}
                           </div>
                           <div className="min-w-0">
-                            <h3 className="text-[22px] max-[767px]:text-[19px] font-semibold text-[#3c5557] mb-3">{item.title}</h3>
+                            <h3 className="text-[20px] leading-6 font-semibold text-[#3c5557] mb-3">{item.title}</h3>
                             <div className="prose max-w-none text-[#505a5e]">
                               <RichText data={item.text} />
                             </div>
@@ -650,7 +650,7 @@ export async function ServiceDetailPageContent({
                       items={block.items}
                       columns={faqColumns ? 2 : 1}
                       itemClassName={`rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
-                      headingClassName="text-[18px] max-[767px]:text-[16px] font-semibold text-[#22282b]"
+                      headingClassName="text-[20px] leading-6 font-semibold text-[#22282b]"
                       iconClassName="text-[24px] text-[#3c5557]"
                       contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
                     />
@@ -697,7 +697,7 @@ export async function ServiceDetailPageContent({
                   )}
                   <div className="relative z-10 max-w-[1120px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
-                      <h2 className={`text-[34px] max-[767px]:text-[24px] font-semibold text-center mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>
+                      <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>
                         {block.sectionTitle}
                       </h2>
                     )}
@@ -708,7 +708,7 @@ export async function ServiceDetailPageContent({
                     )}
                     <div className="grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-x-10 items-start max-[767px]:grid-cols-1 max-[767px]:gap-y-8">
                       <div className={backgroundImageUrl && isLightText ? 'text-white' : ''}>
-                        <h3 className={`text-[24px] max-[767px]:text-[20px] font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.leftColumnTitle}</h3>
+                        <h3 className={`text-[20px] leading-6 font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.leftColumnTitle}</h3>
                         {Boolean(leftContent) && (
                           <div className={`prose max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                             <RichText data={leftContent as never} />
@@ -717,7 +717,7 @@ export async function ServiceDetailPageContent({
                       </div>
                       <div className={`w-px self-stretch ${backgroundImageUrl ? (isLightText ? 'bg-white/30 max-[767px]:hidden' : 'bg-[#22282b]/20 max-[767px]:hidden') : 'bg-[#3c5557]/15 max-[767px]:hidden'}`} />
                       <div className={backgroundImageUrl && isLightText ? 'text-white' : ''}>
-                        <h3 className={`text-[24px] max-[767px]:text-[20px] font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.rightColumnTitle}</h3>
+                        <h3 className={`text-[20px] leading-6 font-semibold mb-5 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#3c5557]'}`}>{block.rightColumnTitle}</h3>
                         {Boolean(rightContent) && (
                           <div className={`prose max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                             <RichText data={rightContent as never} />
@@ -746,7 +746,7 @@ export async function ServiceDetailPageContent({
                   )}
                   <div className="grid grid-cols-2 gap-6 max-[767px]:grid-cols-1">
                     <div className={`rounded-[24px] ${theme.cardAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`} style={getThemeBackgroundStyle(theme, 'cardAlt')}>
-                      <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-5">{block.leftColumnTitle}</h3>
+                      <h3 className="text-[20px] leading-6 font-semibold text-[#3c5557] mb-5">{block.leftColumnTitle}</h3>
                       {Boolean(leftContent) && (
                         <div className="prose max-w-none text-[#505a5e]">
                           <RichText data={leftContent as never} />
@@ -754,7 +754,7 @@ export async function ServiceDetailPageContent({
                       )}
                     </div>
                     <div className={`rounded-[24px] ${theme.panelAlt} p-7 max-[767px]:p-5 border border-[#22282b]/[0.06]`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
-                      <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-5">{block.rightColumnTitle}</h3>
+                      <h3 className="text-[20px] leading-6 font-semibold text-[#3c5557] mb-5">{block.rightColumnTitle}</h3>
                       {Boolean(rightContent) && (
                         <div className="prose max-w-none text-[#505a5e]">
                           <RichText data={rightContent as never} />
@@ -788,7 +788,7 @@ export async function ServiceDetailPageContent({
                   ) : <div className="w-full h-full bg-[#e8e0d8]" />}
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
-                  {block.title && <h2 className="text-[28px] max-[767px]:text-[22px] font-semibold text-[#3c5557]">{block.title}</h2>}
+                  {block.title && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557]">{block.title}</h2>}
                   {block.intro && (
                     <div className="prose max-w-none text-[#505a5e]">
                       <RichText data={block.intro} />
@@ -797,7 +797,7 @@ export async function ServiceDetailPageContent({
                   <AccordionList
                     items={block.items}
                     itemClassName={`w-full rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
-                    headingClassName="text-[18px] max-[767px]:text-[16px] font-semibold text-[#22282b]"
+                    headingClassName="text-[20px] leading-6 font-semibold text-[#22282b]"
                     iconClassName="text-[24px] text-[#3c5557]"
                     contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
                   />
@@ -834,7 +834,7 @@ export async function ServiceDetailPageContent({
                   </>
                 )}
                 <div className="relative z-10 w-2/3 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:w-full max-[767px]:px-[20px] text-center">
-                  {block.title && <h2 className={`text-[34px] max-[767px]:text-[24px] font-semibold mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>{block.title}</h2>}
+                  {block.title && <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>{block.title}</h2>}
                   {block.content && (
                     <div className={`prose prose-lg max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                       <RichText data={block.content} />
@@ -867,7 +867,7 @@ export async function ServiceDetailPageContent({
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, idx % 2 === 0 ? 'panel' : 'panelAlt')}>
                   <div className="flex flex-col gap-3">
-                    <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] tracking-[-0.02em]">
                       {pricingGroup.title}
                     </h2>
                     {pricingGroup.description && (
@@ -888,17 +888,19 @@ export async function ServiceDetailPageContent({
                           >
                             <div className="min-w-0 pr-2">
                               {linkedService ? (
-                                <a
-                                  href={buildLocalizedPath(
-                                    locale,
-                                    `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
-                                  )}
-                                  className="block mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug hover:text-[#3c5557] transition-colors no-underline"
-                                >
-                                  {item.serviceName}
-                                </a>
+                                <h3 className="mb-0 text-[20px] leading-6 font-semibold text-[#22282b]">
+                                  <a
+                                    href={buildLocalizedPath(
+                                      locale,
+                                      `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
+                                    )}
+                                    className="hover:text-[#3c5557] transition-colors no-underline"
+                                  >
+                                    {item.serviceName}
+                                  </a>
+                                </h3>
                               ) : (
-                                <h3 className="mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug">
+                                <h3 className="mb-0 text-[20px] leading-6 font-semibold text-[#22282b]">
                                   {item.serviceName}
                                 </h3>
                               )}
@@ -1040,7 +1042,7 @@ export async function ServiceDetailPageContent({
                   <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                     {(globalContact?.formTitle || globalContact?.formDescription) && (
                       <div className="mb-6">
-                        {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
+                        {globalContact?.formTitle && <h3 className="text-[20px] leading-6 font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
                         {globalContact?.formDescription && (
                           <div className="text-[#909da2] prose max-w-none">
                             <RichText data={globalContact.formDescription} />

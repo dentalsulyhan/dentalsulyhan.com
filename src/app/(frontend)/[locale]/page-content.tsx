@@ -447,7 +447,7 @@ export async function PageContent({
                           return (
                             <React.Fragment key={item.id || itemIndex}>
                               <article className="relative min-w-0">
-                                <h3 className="text-[28px] leading-tight font-semibold tracking-[-0.02em] text-[#22282b] max-[767px]:text-[24px]">
+                                <h3 className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-[#22282b]">
                                   {item.title}
                                 </h3>
                                 <div className="mt-4 text-[17px] text-[#505a5e] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:mt-3 max-[767px]:text-[16px]">
@@ -521,7 +521,7 @@ export async function PageContent({
                                   </svg>
                                 </div>
                               )}
-                              <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
+                              <h3 className={`text-[20px] leading-6 font-semibold text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
                             </div>
                             <div className={`${cardTextAlignmentClass} text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0`}>
                               <RichText data={item.text} />
@@ -597,7 +597,7 @@ export async function PageContent({
                           style={getThemeBackgroundStyle(theme, itemIndex % 2 === 0 ? 'panel' : 'panelAlt')}
                         >
                           {item.title && (
-                            <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557] mb-2">{item.title}</h3>
+                            <h3 className="text-[20px] leading-6 font-semibold text-[#3c5557] mb-2">{item.title}</h3>
                           )}
                           <div className="text-[16px] leading-relaxed text-[#22282b] prose max-w-none">
                             <RichText data={item.text} />
@@ -691,7 +691,7 @@ export async function PageContent({
                                   </svg>
                                 </div>
                               )}
-                              <h3 className={`text-[20px] font-medium text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
+                              <h3 className={`text-[20px] leading-6 font-semibold text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
                             </div>
                             <div className={`${cardTextAlignmentClass} text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0`}>
                               <RichText data={item.text} />
@@ -736,7 +736,7 @@ export async function PageContent({
                     )}
                   </div>
                   <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center max-[991px]:justify-start gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
-                    <h2 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{promotion.title}</h2>
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557]">{promotion.title}</h2>
                     {promotion.content ? (
                       <div className="prose max-w-none text-[#22282b]">
                         <RichText data={promotion.content} />
@@ -1172,7 +1172,7 @@ export async function PageContent({
                     <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                       {(globalContact?.formTitle || globalContact?.formDescription) && (
                         <div className="mb-6">
-                          {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
+                          {globalContact?.formTitle && <h3 className="text-[20px] leading-6 font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
                           {globalContact?.formDescription && (
                             <div className="text-[#909da2] prose max-w-none">
                               <RichText data={globalContact.formDescription} />
@@ -1242,7 +1242,7 @@ export async function PageContent({
                   </div>
                   <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center max-[991px]:justify-start gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
                     {block.title && (
-                      <HeadingTag className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>
+                      <HeadingTag className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>
                     )}
                     <div className="prose max-w-none text-[#22282b]">
                       <RichText data={block.text} />
@@ -1397,7 +1397,7 @@ export async function PageContent({
                       {(block.formTitle || block.formDescription) && (
                         <div className="mb-6">
                           {block.formTitle && (
-                            <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{block.formTitle}</h3>
+                            <h3 className="text-[20px] leading-6 font-semibold text-[#22282b] mb-3">{block.formTitle}</h3>
                           )}
                           {block.formDescription && (
                             <div className="text-[#909da2] prose max-w-none">
@@ -1541,7 +1541,7 @@ export async function PageContent({
                           return (
                             <React.Fragment key={adv.id || i}>
                               <article className="relative min-w-0">
-                                <h3 className="text-[28px] leading-tight font-semibold tracking-[-0.02em] text-[#22282b] max-[767px]:text-[24px]">
+                                <h3 className="text-[20px] leading-6 font-semibold tracking-[-0.02em] text-[#22282b]">
                                   {adv.title}
                                 </h3>
                                 <div className="mt-4 text-[17px] text-[#505a5e] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:mt-3 max-[767px]:text-[16px]">
@@ -1605,7 +1605,7 @@ export async function PageContent({
                               </svg>
                             </div>
                           )}
-                          <h3 className="text-[20px] font-medium text-[#22282b]">{adv.title}</h3>
+                          <h3 className="text-[20px] leading-6 font-semibold text-[#22282b]">{adv.title}</h3>
                           <div className="text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0">
                             {typeof adv.description === 'string' ? <p>{adv.description}</p> : <RichText data={adv.description} />}
                           </div>
@@ -1623,7 +1623,7 @@ export async function PageContent({
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="currentColor"/>
                           </svg>
                         </div>
-                        <h3 className="text-[20px] font-medium text-[#22282b]">
+                        <h3 className="text-[20px] leading-6 font-semibold text-[#22282b]">
                           {['Diagnóstico honesto', 'Tecnología avanzada', 'Atención personalizada'][i]}
                         </h3>
                         <p className="text-[15px] text-[#909da2] leading-relaxed">
@@ -1673,7 +1673,7 @@ export async function PageContent({
                           } py-12`}
                         >
                           {block.title && (
-                            <h3 className="text-[24px] font-semibold text-[#3c5557] mb-2">{block.title}</h3>
+                            <h3 className="text-[20px] leading-6 font-semibold text-[#3c5557] mb-2">{block.title}</h3>
                           )}
                           <div className="text-[16px] leading-relaxed text-[#22282b] prose max-w-none">
                             {block.text && <p>{block.text}</p>}
@@ -1729,7 +1729,7 @@ export async function PageContent({
               <section key={`sec-${idx}`} id="filosofia" className={`py-[100px] ${legacySecondaryTheme.sectionAlt}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px]">
                   {philTitle && (
-                    <h2 className="text-[32px] font-semibold text-center mb-[60px] text-[#3c5557]">{philTitle}</h2>
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[60px] text-[#3c5557]">{philTitle}</h2>
                   )}
                   <div className={`flex flex-wrap gap-[50px] ${getIncompleteRowJustifyClass(homeData.philosophy)} max-[767px]:flex-col max-[767px]:items-center`}>
                     {homeData.philosophy?.cards && homeData.philosophy.cards.length > 0 ? (
@@ -1759,7 +1759,7 @@ export async function PageContent({
                                 </svg>
                               </div>
                             )}
-                            <h3 className="text-[20px] font-medium text-[#22282b]">{card.title}</h3>
+                            <h3 className="text-[20px] leading-6 font-semibold text-[#22282b]">{card.title}</h3>
                             <div className="mobile-richtext-left text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left">
                               {typeof card.description === 'string' ? <p>{card.description}</p> : <RichText data={card.description} />}
                             </div>
@@ -1786,7 +1786,7 @@ export async function PageContent({
             return (
               <section key={`sec-${idx}`} id="offers" className={`py-[100px] ${legacyPrimaryTheme.panel}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px]">
-                  <h2 className="text-[32px] font-semibold text-center mb-[50px] text-[#22282b]">
+                  <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[50px] text-[#22282b]">
                     {locale === 'uk' ? 'Акції та спеціальні пропозиції' : locale === 'es' ? 'Promociones especiales' : 'Special Promotions'}
                   </h2>
                   {activePromos.length > 0 ? (
@@ -1794,7 +1794,7 @@ export async function PageContent({
                       {activePromos.map((promo, idx) => (
                         <div key={promo.id || idx} className={`${legacyPrimaryTheme.card} rounded-[20px] p-8 shadow-sm flex flex-col justify-between border border-[#22282b]/[0.03] min-h-[220px]`}>
                           <div>
-                            <h3 className="text-[20px] font-semibold text-[#3c5557] mb-3">{promo.title}</h3>
+                            <h3 className="text-[20px] leading-6 font-semibold text-[#3c5557] mb-3">{promo.title}</h3>
                             <div className="text-[15px] text-[#505a5e] leading-relaxed mb-6 prose max-w-none prose-p:my-0">
                               {typeof promo.description === 'string' ? (
                                 <p>{promo.description}</p>
@@ -1837,7 +1837,7 @@ export async function PageContent({
           case 'team':
             return (
               <section key={`sec-${idx}`} id="team" className={`${legacyPrimaryTheme.section} py-[100px]`}>
-                <h2 className="text-[32px] font-semibold text-center mb-[50px]">{teamTitle}</h2>
+                <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[50px]">{teamTitle}</h2>
                 <div className="max-w-[1200px] mx-auto relative px-[30px] max-[1230px]:px-[30px]">
                   {team.length > 0 ? (
                     <LazyTeamSlider members={team} />
@@ -1862,7 +1862,7 @@ export async function PageContent({
             return (
               <section key={`sec-${idx}`} id="reviews" className={`py-[120px] relative ${legacyPrimaryTheme.section}`}>
                 <div className="max-w-[1200px] mx-auto px-[30px] flex flex-col gap-5">
-                  <h2 className="text-[32px] font-semibold text-center mb-6">{reviewsTitle}</h2>
+                  <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-6">{reviewsTitle}</h2>
                   {homeData.reviews?.subtitle && (
                     <p className="text-[16px] text-[#909da2] text-center mb-8 max-w-[600px] mx-auto leading-relaxed">
                       {homeData.reviews.subtitle}
@@ -1913,7 +1913,7 @@ export async function PageContent({
             return (
               <section key={`sec-${idx}`} id="whyus" className={`py-[100px] flex flex-col items-center text-center px-[30px] ${legacyPrimaryTheme.section}`}>
                 <div className="max-w-[800px]">
-                  <h2 className="text-[32px] font-semibold text-[#3c5557] mb-8">{whyUsTitle}</h2>
+                  <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] mb-8">{whyUsTitle}</h2>
                   <p className="text-[18px] text-[#22282b] leading-relaxed">{whyUsText}</p>
                 </div>
               </section>
@@ -1925,7 +1925,7 @@ export async function PageContent({
                 <div className="max-w-[1200px] mx-auto px-[30px] flex gap-[80px] max-[991px]:flex-col max-[991px]:gap-[50px] items-start">
                   {/* Left: Info */}
                   <div className="w-1/2 max-[991px]:w-full flex flex-col contact_us-info">
-                    <h2 className="text-[32px] font-semibold text-left mb-6 text-[#22282b]">
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-left mb-6 text-[#22282b]">
                       {contactTitle || (locale === 'uk' ? 'Контакти' : locale === 'es' ? 'Contacto' : 'Contact')}
                     </h2>
                     {contactDesc && (

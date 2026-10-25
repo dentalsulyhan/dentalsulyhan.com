@@ -228,9 +228,9 @@ export default function Header({ data, contacts, currentLocale, servicesPath = '
           >
             <div className="flex items-start gap-5">
               <nav className="w-max max-w-full">
-                <h2 className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-4">
+                <p className="text-[14px] text-left text-[#909da2] uppercase font-medium mb-4">
                   {data?.menuButtonLabel || (currentLocale === 'uk' ? 'Меню' : currentLocale === 'es' ? 'Menú' : 'Menu')}
-                </h2>
+                </p>
                 <ul className="site-menu-list list-none p-0 m-0 flex flex-col items-start gap-[8px]">
                   {menuItems.map((item, i) => {
                     const linkHref = resolveMenuLink(item.link)

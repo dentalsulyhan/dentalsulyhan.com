@@ -326,9 +326,9 @@ export default function GoogleReviews({
                       )}
 
                       <div className="min-w-0">
-                        <h3 className="truncate text-[15px] font-semibold leading-tight text-[#22282b]">
+                        <p className="truncate text-[15px] font-semibold leading-tight text-[#22282b]">
                           {authorName}
-                        </h3>
+                        </p>
                         <div className="mt-1 flex items-center gap-2">
                           <StarRating rating={rating} />
                           {publishedAt && (

@@ -243,7 +243,7 @@ export async function ServicesListingPageContent({
                   </div>
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-5 py-12 max-[1100px]:py-10 ${theme.panel} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, 'panel')}>
-                  {block.title && <HeadingTag className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>}
+                  {block.title && <HeadingTag className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557]">{block.title}</HeadingTag>}
                   <div className="prose max-w-none text-[#22282b]">
                     <RichText data={block.text} />
                   </div>
@@ -343,7 +343,7 @@ export async function ServicesListingPageContent({
                 </div>
                 <div className={`w-1/2 max-[991px]:w-full flex flex-col justify-center gap-6 py-12 max-[1100px]:py-10 ${idx % 2 === 0 ? theme.panel : theme.panelAlt} ${isImageLeft ? 'order-2 pr-[max(30px,calc((100vw-1200px)/2))] pl-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]' : 'order-1 max-[991px]:order-2 pl-[max(30px,calc((100vw-1200px)/2))] pr-[100px] max-[1200px]:px-[40px] max-[1100px]:px-[28px] max-[991px]:px-[30px] max-[767px]:px-[20px]'}`} style={getThemeBackgroundStyle(theme, idx % 2 === 0 ? 'panel' : 'panelAlt')}>
                   <div className="flex flex-col gap-3">
-                    <h2 className="text-[28px] max-[767px]:text-[23px] font-semibold text-[#3c5557] tracking-[-0.02em]">
+                    <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] tracking-[-0.02em]">
                       {pricingGroup.title}
                     </h2>
                     {pricingGroup.description && (
@@ -364,17 +364,19 @@ export async function ServicesListingPageContent({
                             >
                               <div className="min-w-0 pr-2">
                                 {linkedService ? (
-                                  <a
-                                    href={buildLocalizedPath(
-                                      locale,
-                                      `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
-                                    )}
-                                    className="block mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug hover:text-[#3c5557] transition-colors no-underline"
-                                  >
-                                    {item.serviceName}
-                                  </a>
+                                  <h3 className="mb-0 text-[20px] leading-6 font-semibold text-[#22282b]">
+                                    <a
+                                      href={buildLocalizedPath(
+                                        locale,
+                                        `${servicesBasePath}/${linkedService.path || linkedService.slug}`,
+                                      )}
+                                      className="hover:text-[#3c5557] transition-colors no-underline"
+                                    >
+                                      {item.serviceName}
+                                    </a>
+                                  </h3>
                                 ) : (
-                                  <h3 className="mb-0 text-[17px] max-[767px]:text-[16px] font-medium text-[#22282b] leading-snug">
+                                  <h3 className="mb-0 text-[20px] leading-6 font-semibold text-[#22282b]">
                                     {item.serviceName}
                                   </h3>
                                 )}
@@ -516,7 +518,7 @@ export async function ServicesListingPageContent({
                   <div className={`w-1/2 max-[991px]:w-full ${theme.panelAlt} rounded-[20px] p-8 max-[1100px]:p-6 shadow-md`} style={getThemeBackgroundStyle(theme, 'panelAlt')}>
                     {(globalContact?.formTitle || globalContact?.formDescription) && (
                       <div className="mb-6">
-                        {globalContact?.formTitle && <h3 className="text-[24px] max-[767px]:text-[20px] font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
+                        {globalContact?.formTitle && <h3 className="text-[20px] leading-6 font-semibold text-[#22282b] mb-3">{globalContact.formTitle}</h3>}
                         {globalContact?.formDescription && (
                           <div className="text-[#909da2] prose max-w-none">
                             <RichText data={globalContact.formDescription} />
