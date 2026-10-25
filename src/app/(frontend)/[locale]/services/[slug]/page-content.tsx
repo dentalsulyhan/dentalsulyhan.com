@@ -335,9 +335,9 @@ export async function ServiceDetailPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const isPageH1 = idx === customH1BlockIndex
             const HeadingTag = isPageH1 ? 'h1' : 'h2'
-            const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const hasBackgroundImage = Boolean(backgroundImageUrl)
+            const contentWidthClass = 'w-2/3 max-w-[1200px] max-[767px]:w-full'
             const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
               ? (block as { overlayColor?: string }).overlayColor
               : '#000000'
@@ -442,7 +442,9 @@ export async function ServiceDetailPageContent({
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
-            const textWidthClass = block.fullWidthText ? 'max-w-[1200px]' : 'max-w-[760px]'
+            const textWidthClass = block.fullWidthText
+              ? 'w-2/3 max-w-[1200px] max-[767px]:w-full'
+              : 'w-2/3 max-w-[760px] max-[767px]:w-full'
             const desktopColumns = (block as { columns?: '2' | '3' | '4' }).columns || '3'
             const incompleteRowAlignment =
               (block as { incompleteRowAlignment?: 'center' | 'start' }).incompleteRowAlignment || 'center'
@@ -536,7 +538,7 @@ export async function ServiceDetailPageContent({
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                   {block.sectionTitle && <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-[#22282b] text-center mb-8 max-[767px]:mb-6">{block.sectionTitle}</h2>}
                   {block.intro && (
-                    <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] text-center mb-10 max-[767px]:mb-8 max-[767px]:text-left">
+                    <div className="mobile-richtext-left prose prose-lg w-2/3 max-w-[900px] mx-auto text-[#505a5e] text-center mb-10 max-[767px]:w-full max-[767px]:mb-8 max-[767px]:text-left">
                       <RichText data={block.intro} />
                     </div>
                   )}
@@ -585,7 +587,7 @@ export async function ServiceDetailPageContent({
                     </div>
                   )}
                   {Boolean(cardsBottomText) && (
-                    <div className="mobile-richtext-left prose prose-lg max-w-[900px] mx-auto text-[#505a5e] text-center mt-10 max-[767px]:mt-8 max-[767px]:text-left">
+                    <div className="mobile-richtext-left prose prose-lg w-2/3 max-w-[900px] mx-auto text-[#505a5e] text-center mt-10 max-[767px]:w-full max-[767px]:mt-8 max-[767px]:text-left">
                       <RichText data={cardsBottomText as never} />
                     </div>
                   )}
@@ -631,7 +633,9 @@ export async function ServiceDetailPageContent({
             const theme = getBlockTheme(block.theme)
             const faqColumns = block.columns === 'two'
             const faqBottomText = (block as { bottomText?: unknown }).bottomText
-            const textWidthClass = (block as { fullWidthText?: boolean }).fullWidthText ? 'max-w-[1200px]' : 'max-w-[760px]'
+            const textWidthClass = (block as { fullWidthText?: boolean }).fullWidthText
+              ? 'w-2/3 max-w-[1200px] max-[767px]:w-full'
+              : 'w-2/3 max-w-[760px] max-[767px]:w-full'
             return (
               <section key={block.id || idx} className={compactSpacing ? `py-[50px] max-[767px]:py-[32px] ${theme.section}` : `py-[100px] max-[767px]:py-[64px] ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
@@ -698,7 +702,7 @@ export async function ServiceDetailPageContent({
                       </h2>
                     )}
                     {block.intro && (
-                      <div className={`mobile-richtext-left prose prose-lg max-w-[820px] mx-auto text-center mb-12 max-[767px]:text-left ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                      <div className={`mobile-richtext-left prose prose-lg w-2/3 max-w-[820px] mx-auto text-center mb-12 max-[767px]:w-full max-[767px]:text-left ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                         <RichText data={block.intro} />
                       </div>
                     )}
@@ -722,7 +726,7 @@ export async function ServiceDetailPageContent({
                       </div>
                     </div>
                     {block.conclusion && (
-                      <div className={`mobile-richtext-left prose prose-lg max-w-[820px] mx-auto text-center mt-12 max-[767px]:text-left ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
+                      <div className={`mobile-richtext-left prose prose-lg w-2/3 max-w-[820px] mx-auto text-center mt-12 max-[767px]:w-full max-[767px]:text-left ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>
                         <RichText data={block.conclusion} />
                       </div>
                     )}
@@ -829,7 +833,7 @@ export async function ServiceDetailPageContent({
                     <div className="absolute inset-0" style={{ backgroundColor: overlayColor, opacity: overlayOpacity }} />
                   </>
                 )}
-                <div className="relative z-10 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] text-center">
+                <div className="relative z-10 w-2/3 max-w-[900px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:w-full max-[767px]:px-[20px] text-center">
                   {block.title && <h2 className={`text-[34px] max-[767px]:text-[24px] font-semibold mb-6 ${backgroundImageUrl ? (isLightText ? 'text-force-white' : 'text-force-dark') : 'text-[#22282b]'}`}>{block.title}</h2>}
                   {block.content && (
                     <div className={`prose prose-lg max-w-none ${backgroundImageUrl ? (isLightText ? 'prose-light' : 'prose-dark') : 'text-[#505a5e]'}`}>

@@ -493,7 +493,7 @@ export async function PageContent({
                         {block.sectionTitle}
                       </h2>
                     )}
-                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${isLeftAligned ? 'justify-start' : incompleteRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
+                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
                       {block.items.map((item, itemIndex) => {
                         const iconSource = (item as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
@@ -538,7 +538,7 @@ export async function PageContent({
                       </div>
                     )}
                     {Boolean(advantagesBottomText) && (
-                      <div className={`mobile-richtext-left prose prose-lg max-w-[900px] text-[#505a5e] mt-10 max-[767px]:text-left ${isLeftAligned ? 'mx-0 text-left [&_p]:text-left [&_li]:text-left' : 'mx-auto text-center'}`}>
+                      <div className={`mobile-richtext-left prose prose-lg ${isLeftAligned ? 'max-w-[900px] mx-0 text-left [&_p]:text-left [&_li]:text-left' : 'w-2/3 max-w-[900px] mx-auto text-center max-[767px]:w-full'} text-[#505a5e] mt-10 max-[767px]:text-left`}>
                         <RichText data={advantagesBottomText as never} />
                       </div>
                     )}
@@ -663,7 +663,7 @@ export async function PageContent({
                         {block.sectionTitle}
                       </h2>
                     )}
-                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${isLeftAligned ? 'justify-start' : incompleteRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
+                    <div className={`flex flex-wrap gap-[50px] max-[1100px]:gap-[32px] ${incompleteRowJustifyClass} max-[767px]:flex-col ${isLeftAligned ? 'max-[767px]:items-start' : 'max-[767px]:items-center'}`}>
                       {block.items.map((item, itemIndex) => {
                         const iconSource = (item as { iconSource?: string | null }).iconSource
                         const fontAwesomeIcon = (item as { fontAwesomeIcon?: string | null }).fontAwesomeIcon
@@ -919,7 +919,7 @@ export async function PageContent({
                   ? 'text-right [&_p]:text-right [&_li]:text-right'
                   : 'text-left [&_p]:text-left [&_li]:text-left'
               const galleryContentContainerAlignmentClass = galleryContentAlignment === 'center'
-                ? 'mx-auto'
+                ? 'w-2/3 mx-auto max-[767px]:w-full'
                 : galleryContentAlignment === 'right'
                   ? 'ml-auto'
                   : ''
@@ -1002,10 +1002,12 @@ export async function PageContent({
               const buttonClass = getButtonStyle(block.buttonStyle)
               const isPageH1 = idx === customH1BlockIndex
               const HeadingTag = isPageH1 ? 'h1' : 'h2'
-              const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
               const contentAlignment = block.contentAlignment === 'left' || block.contentAlignment === 'right'
                 ? block.contentAlignment
                 : 'center'
+              const contentWidthClass = contentAlignment === 'center'
+                ? 'w-2/3 max-w-[1200px] max-[767px]:w-full'
+                : block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
               const textAlignmentClass = contentAlignment === 'left'
                 ? 'text-left'
                 : contentAlignment === 'right'

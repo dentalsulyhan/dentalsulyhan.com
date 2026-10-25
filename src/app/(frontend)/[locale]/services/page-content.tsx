@@ -265,7 +265,7 @@ export async function ServicesListingPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const isPageH1 = idx === customH1BlockIndex
             const HeadingTag = isPageH1 ? 'h1' : 'h2'
-            const contentWidthClass = block.fullWidthContent ? 'max-w-[1200px]' : 'max-w-[900px]'
+            const contentWidthClass = 'w-2/3 max-w-[1200px] max-[767px]:w-full'
             const backgroundImageUrl = mediaUrl((block as { backgroundImage?: unknown }).backgroundImage)
             const overlayColor = typeof (block as { overlayColor?: unknown }).overlayColor === 'string'
               ? (block as { overlayColor?: string }).overlayColor
