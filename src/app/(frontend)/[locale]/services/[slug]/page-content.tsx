@@ -658,7 +658,7 @@ export async function ServiceDetailPageContent({
                       items={block.items}
                       columns={faqColumns ? 2 : 1}
                       itemClassName={`rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
-                      headingClassName="text-[20px] leading-6 font-semibold text-[#22282b]"
+                      headingClassName="text-[20px] leading-6 max-[767px]:text-[18px] max-[767px]:leading-[22px] font-semibold text-[#22282b]"
                       iconClassName="text-[24px] text-[#3c5557]"
                       contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
                     />
@@ -790,7 +790,7 @@ export async function ServiceDetailPageContent({
               <section key={block.id || idx} className={`flex items-stretch min-h-[420px] max-[991px]:min-h-0 max-[991px]:flex-col ${theme.section}`} style={getThemeBackgroundStyle(theme, 'section')}>
                 <div className={`w-1/2 max-[991px]:w-full min-h-[420px] max-[991px]:min-h-0 max-[991px]:aspect-[4/3] ${isImageLeft ? 'order-1' : 'order-2 max-[991px]:order-1'}`}>
                   {imageUrl ? (
-                    <div className="relative w-full h-full min-h-[420px] max-[991px]:h-auto max-[991px]:min-h-0">
+                    <div className="relative w-full h-full min-h-[420px] max-[991px]:min-h-0">
                       <Image src={imageUrl} alt={block.title || service.title} fill sizes="(max-width: 991px) 100vw, 50vw" className="object-cover" />
                     </div>
                   ) : <div className="w-full h-full bg-[#e8e0d8]" />}
@@ -805,7 +805,7 @@ export async function ServiceDetailPageContent({
                   <AccordionList
                     items={block.items}
                     itemClassName={`w-full rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
-                    headingClassName="text-[20px] leading-6 font-semibold text-[#22282b]"
+                    headingClassName="text-[20px] leading-6 max-[767px]:text-[18px] max-[767px]:leading-[22px] font-semibold text-[#22282b]"
                     iconClassName="text-[24px] text-[#3c5557]"
                     contentClassName="prose max-w-none text-[14px] leading-relaxed text-[#505a5e] prose-p:my-0 prose-li:text-[14px]"
                   />
