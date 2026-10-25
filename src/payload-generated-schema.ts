@@ -45,6 +45,14 @@ export const enum_pages_blocks_hero_button_style = pgEnum('enum_pages_blocks_her
   'light',
   'text',
 ])
+export const enum_pages_blocks_hero_image_layout = pgEnum('enum_pages_blocks_hero_image_layout', [
+  'split',
+  'overlap',
+])
+export const enum_pages_blocks_advantages_items_icon_source = pgEnum(
+  'enum_pages_blocks_advantages_items_icon_source',
+  ['upload', 'fontAwesome'],
+)
 export const enum_pages_blocks_advantages_theme = pgEnum('enum_pages_blocks_advantages_theme', [
   'white',
   'soft',
@@ -55,13 +63,17 @@ export const enum_pages_blocks_advantages_button_style = pgEnum(
   'enum_pages_blocks_advantages_button_style',
   ['primary', 'outline', 'light', 'text'],
 )
+export const enum_pages_blocks_advantages_display_variant = pgEnum(
+  'enum_pages_blocks_advantages_display_variant',
+  ['icons', 'steps'],
+)
 export const enum_pages_blocks_advantages_item_layout = pgEnum(
   'enum_pages_blocks_advantages_item_layout',
   ['column', 'row'],
 )
-export const enum_pages_blocks_advantages_display_variant = pgEnum(
-  'enum_pages_blocks_advantages_display_variant',
-  ['icons', 'steps'],
+export const enum_pages_blocks_advantages_items_per_row = pgEnum(
+  'enum_pages_blocks_advantages_items_per_row',
+  ['2', '3', '4'],
 )
 export const enum_pages_blocks_advantages_content_alignment = pgEnum(
   'enum_pages_blocks_advantages_content_alignment',
@@ -78,6 +90,10 @@ export const enum_pages_blocks_about_us_grid_theme = pgEnum(
 export const enum_pages_blocks_about_us_grid_button_style = pgEnum(
   'enum_pages_blocks_about_us_grid_button_style',
   ['primary', 'outline', 'light', 'text'],
+)
+export const enum_pages_blocks_philosophy_items_icon_source = pgEnum(
+  'enum_pages_blocks_philosophy_items_icon_source',
+  ['upload', 'fontAwesome'],
 )
 export const enum_pages_blocks_philosophy_theme = pgEnum('enum_pages_blocks_philosophy_theme', [
   'white',
@@ -125,10 +141,6 @@ export const enum_pages_blocks_gallery_button_style = pgEnum(
   'enum_pages_blocks_gallery_button_style',
   ['primary', 'outline', 'light', 'text'],
 )
-export const enum_pages_blocks_gallery_position = pgEnum('enum_pages_blocks_gallery_position', [
-  'left',
-  'right',
-])
 export const enum_pages_blocks_gallery_layout = pgEnum('enum_pages_blocks_gallery_layout', [
   'split',
   'stacked',
@@ -137,6 +149,10 @@ export const enum_pages_blocks_gallery_content_alignment = pgEnum(
   'enum_pages_blocks_gallery_content_alignment',
   ['left', 'center', 'right'],
 )
+export const enum_pages_blocks_gallery_position = pgEnum('enum_pages_blocks_gallery_position', [
+  'left',
+  'right',
+])
 export const enum_pages_blocks_team_theme = pgEnum('enum_pages_blocks_team_theme', [
   'white',
   'soft',
@@ -241,6 +257,10 @@ export const enum_services_blocks_content_button_style = pgEnum(
   'enum_services_blocks_content_button_style',
   ['primary', 'outline', 'light', 'text'],
 )
+export const enum_services_blocks_content_content_alignment = pgEnum(
+  'enum_services_blocks_content_content_alignment',
+  ['left', 'center'],
+)
 export const enum_services_blocks_content_image_theme = pgEnum(
   'enum_services_blocks_content_image_theme',
   ['white', 'soft', 'sand', 'sage'],
@@ -256,6 +276,10 @@ export const enum_services_blocks_content_image_position = pgEnum(
 export const enum_services_blocks_content_image_image_width = pgEnum(
   'enum_services_blocks_content_image_image_width',
   ['full', 'contained'],
+)
+export const enum_services_blocks_advantages_items_icon_source = pgEnum(
+  'enum_services_blocks_advantages_items_icon_source',
+  ['upload', 'fontAwesome'],
 )
 export const enum_services_blocks_advantages_theme = pgEnum(
   'enum_services_blocks_advantages_theme',
@@ -276,6 +300,10 @@ export const enum_services_blocks_advantages_columns = pgEnum(
 export const enum_services_blocks_advantages_incomplete_row_alignment = pgEnum(
   'enum_services_blocks_advantages_incomplete_row_alignment',
   ['center', 'start'],
+)
+export const enum_services_blocks_cards_items_icon_source = pgEnum(
+  'enum_services_blocks_cards_items_icon_source',
+  ['upload', 'fontAwesome'],
 )
 export const enum_services_blocks_cards_theme = pgEnum('enum_services_blocks_cards_theme', [
   'white',
@@ -395,6 +423,14 @@ export const enum_home_page_section_order_section = pgEnum('enum_home_page_secti
   'whyUs',
   'contacts',
 ])
+export const enum_home_page_advantages_icon_source = pgEnum(
+  'enum_home_page_advantages_icon_source',
+  ['upload', 'fontAwesome'],
+)
+export const enum_home_page_philosophy_cards_icon_source = pgEnum(
+  'enum_home_page_philosophy_cards_icon_source',
+  ['upload', 'fontAwesome'],
+)
 export const enum_home_page_advantages_layout = pgEnum('enum_home_page_advantages_layout', [
   'icons',
   'steps',
@@ -497,6 +533,7 @@ export const pages_blocks_hero = pgTable(
     id: varchar('id').primaryKey(),
     theme: enum_pages_blocks_hero_theme('theme').default('white'),
     buttonStyle: enum_pages_blocks_hero_button_style('button_style').default('primary'),
+    imageLayout: enum_pages_blocks_hero_image_layout('image_layout').default('split'),
     title: varchar('title').notNull(),
     subtitle: varchar('subtitle'),
     bottomText: jsonb('bottom_text'),
@@ -528,9 +565,11 @@ export const pages_blocks_advantages_items = pgTable(
     _parentID: varchar('_parent_id').notNull(),
     _locale: enum__locales('_locale').notNull(),
     id: varchar('id').primaryKey(),
+    iconSource: enum_pages_blocks_advantages_items_icon_source('icon_source').default('upload'),
     icon: integer('icon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    fontAwesomeIcon: varchar('font_awesome_icon'),
     title: varchar('title').notNull(),
     text: jsonb('text').notNull(),
   },
@@ -559,9 +598,12 @@ export const pages_blocks_advantages = pgTable(
     buttonStyle: enum_pages_blocks_advantages_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
-    displayVariant: enum_pages_blocks_advantages_display_variant('display_variant').default('icons'),
+    displayVariant:
+      enum_pages_blocks_advantages_display_variant('display_variant').default('icons'),
     itemLayout: enum_pages_blocks_advantages_item_layout('item_layout').default('column'),
-    contentAlignment: enum_pages_blocks_advantages_content_alignment('content_alignment').default('left'),
+    itemsPerRow: enum_pages_blocks_advantages_items_per_row('items_per_row').default('3'),
+    contentAlignment:
+      enum_pages_blocks_advantages_content_alignment('content_alignment').default('left'),
     incompleteRowAlignment: enum_pages_blocks_advantages_incomplete_row_alignment(
       'incomplete_row_alignment',
     ).default('center'),
@@ -647,9 +689,11 @@ export const pages_blocks_philosophy_items = pgTable(
     _parentID: varchar('_parent_id').notNull(),
     _locale: enum__locales('_locale').notNull(),
     id: varchar('id').primaryKey(),
+    iconSource: enum_pages_blocks_philosophy_items_icon_source('icon_source').default('upload'),
     icon: integer('icon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    fontAwesomeIcon: varchar('font_awesome_icon'),
     title: varchar('title').notNull(),
     text: jsonb('text').notNull(),
   },
@@ -679,7 +723,8 @@ export const pages_blocks_philosophy = pgTable(
     compactSpacing: boolean('compact_spacing').default(false),
     sectionTitle: varchar('section_title'),
     itemLayout: enum_pages_blocks_philosophy_item_layout('item_layout').default('column'),
-    contentAlignment: enum_pages_blocks_philosophy_content_alignment('content_alignment').default('left'),
+    contentAlignment:
+      enum_pages_blocks_philosophy_content_alignment('content_alignment').default('left'),
     incompleteRowAlignment: enum_pages_blocks_philosophy_incomplete_row_alignment(
       'incomplete_row_alignment',
     ).default('center'),
@@ -772,7 +817,8 @@ export const pages_blocks_gallery = pgTable(
     buttonStyle: enum_pages_blocks_gallery_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
     layout: enum_pages_blocks_gallery_layout('layout').default('split'),
-    contentAlignment: enum_pages_blocks_gallery_content_alignment('content_alignment').default('left'),
+    contentAlignment:
+      enum_pages_blocks_gallery_content_alignment('content_alignment').default('left'),
     position: enum_pages_blocks_gallery_position('position').default('right'),
     title: varchar('title'),
     description: jsonb('description'),
@@ -873,6 +919,7 @@ export const pages_blocks_content_image = pgTable(
     position: enum_pages_blocks_content_image_position('position').default('left'),
     imageWidth: enum_pages_blocks_content_image_image_width('image_width').default('full'),
     title: varchar('title'),
+    useAsPageTitle: boolean('use_as_page_title').default(false),
     text: jsonb('text').notNull(),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
@@ -948,6 +995,7 @@ export const pages_blocks_content = pgTable(
     contentAlignment:
       enum_pages_blocks_content_content_alignment('content_alignment').default('center'),
     title: varchar('title'),
+    useAsPageTitle: boolean('use_as_page_title').default(false),
     content: jsonb('content'),
     fullWidthContent: boolean('full_width_content').default(false),
     bottomText: jsonb('bottom_text'),
@@ -1107,6 +1155,7 @@ export const pages = pgTable(
   {
     id: serial('id').primaryKey(),
     slug: varchar('slug').notNull(),
+    underConstruction: boolean('under_construction').default(false),
     metaImage: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
@@ -1314,11 +1363,7 @@ export const promotions = pgTable(
     image: integer('image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    validUntil: timestamp('valid_until', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }).notNull(),
+    validUntil: timestamp('valid_until', { mode: 'string', withTimezone: true, precision: 3 }),
     isActive: boolean('is_active').default(true),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
@@ -1402,8 +1447,11 @@ export const services_blocks_content = pgTable(
     buttonStyle: enum_services_blocks_content_button_style('button_style').default('primary'),
     compactSpacing: boolean('compact_spacing').default(false),
     title: varchar('title'),
+    useAsPageTitle: boolean('use_as_page_title').default(false),
     content: jsonb('content'),
     fullWidthContent: boolean('full_width_content').default(false),
+    contentAlignment:
+      enum_services_blocks_content_content_alignment('content_alignment').default('center'),
     bottomText: jsonb('bottom_text'),
     backgroundImage: integer('background_image_id').references(() => media.id, {
       onDelete: 'set null',
@@ -1441,6 +1489,7 @@ export const services_blocks_content_image = pgTable(
     position: enum_services_blocks_content_image_position('position').default('left'),
     imageWidth: enum_services_blocks_content_image_image_width('image_width').default('full'),
     title: varchar('title'),
+    useAsPageTitle: boolean('use_as_page_title').default(false),
     text: jsonb('text').notNull(),
     buttonText: varchar('button_text'),
     buttonLink: varchar('button_link'),
@@ -1472,9 +1521,11 @@ export const services_blocks_advantages_items = pgTable(
     _parentID: varchar('_parent_id').notNull(),
     _locale: enum__locales('_locale').notNull(),
     id: varchar('id').primaryKey(),
+    iconSource: enum_services_blocks_advantages_items_icon_source('icon_source').default('upload'),
     icon: integer('icon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    fontAwesomeIcon: varchar('font_awesome_icon'),
     title: varchar('title'),
     text: jsonb('text'),
   },
@@ -1535,9 +1586,11 @@ export const services_blocks_cards_items = pgTable(
     _parentID: varchar('_parent_id').notNull(),
     _locale: enum__locales('_locale').notNull(),
     id: varchar('id').primaryKey(),
+    iconSource: enum_services_blocks_cards_items_icon_source('icon_source').default('upload'),
     icon: integer('icon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    fontAwesomeIcon: varchar('font_awesome_icon'),
     title: varchar('title'),
     text: jsonb('text'),
   },
@@ -2492,7 +2545,6 @@ export const site_settings = pgTable(
     contacts_email: varchar('contacts_email').default('clinica@dentalsulyhan.com'),
     contacts_phone: varchar('contacts_phone').default('+34 665-399-280'),
     contacts_whatsapp: varchar('contacts_whatsapp').default('https://wa.me/+34665399280'),
-    contacts_telegram: varchar('contacts_telegram').default('https://t.me/+34665399280'),
     contacts_addressUrl: varchar('contacts_address_url'),
     contacts_googleMapsUrl: varchar('contacts_google_maps_url'),
     formNotifications_recipientEmail: varchar('form_notifications_recipient_email'),
@@ -2593,9 +2645,11 @@ export const home_page_advantages = pgTable(
     id: varchar('id').primaryKey(),
     title: varchar('title').notNull(),
     description: jsonb('description').notNull(),
+    iconSource: enum_home_page_advantages_icon_source('icon_source').default('upload'),
     icon: integer('icon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    fontAwesomeIcon: varchar('font_awesome_icon'),
   },
   (columns) => [
     index('home_page_advantages_order_idx').on(columns._order),
@@ -2665,9 +2719,11 @@ export const home_page_philosophy_cards = pgTable(
     id: varchar('id').primaryKey(),
     title: varchar('title').notNull(),
     description: jsonb('description').notNull(),
+    iconSource: enum_home_page_philosophy_cards_icon_source('icon_source').default('upload'),
     icon: integer('icon_id').references(() => media.id, {
       onDelete: 'set null',
     }),
+    fontAwesomeIcon: varchar('font_awesome_icon'),
   },
   (columns) => [
     index('home_page_philosophy_cards_order_idx').on(columns._order),
@@ -2858,7 +2914,6 @@ export const site_contacts = pgTable('site_contacts', {
   email: varchar('email').default('clinica@dentalsulyhan.com'),
   phone: varchar('phone').default('+34 665-399-280'),
   whatsapp: varchar('whatsapp').default('https://wa.me/+34665399280'),
-  telegram: varchar('telegram').default('https://t.me/+34665399280'),
   addressUrl: varchar('address_url'),
   googleMapsUrl: varchar('google_maps_url'),
   updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
@@ -4014,14 +4069,18 @@ type DatabaseSchema = {
   enum_media_media_category: typeof enum_media_media_category
   enum_pages_blocks_hero_theme: typeof enum_pages_blocks_hero_theme
   enum_pages_blocks_hero_button_style: typeof enum_pages_blocks_hero_button_style
+  enum_pages_blocks_hero_image_layout: typeof enum_pages_blocks_hero_image_layout
+  enum_pages_blocks_advantages_items_icon_source: typeof enum_pages_blocks_advantages_items_icon_source
   enum_pages_blocks_advantages_theme: typeof enum_pages_blocks_advantages_theme
   enum_pages_blocks_advantages_button_style: typeof enum_pages_blocks_advantages_button_style
-  enum_pages_blocks_advantages_item_layout: typeof enum_pages_blocks_advantages_item_layout
   enum_pages_blocks_advantages_display_variant: typeof enum_pages_blocks_advantages_display_variant
+  enum_pages_blocks_advantages_item_layout: typeof enum_pages_blocks_advantages_item_layout
+  enum_pages_blocks_advantages_items_per_row: typeof enum_pages_blocks_advantages_items_per_row
   enum_pages_blocks_advantages_content_alignment: typeof enum_pages_blocks_advantages_content_alignment
   enum_pages_blocks_advantages_incomplete_row_alignment: typeof enum_pages_blocks_advantages_incomplete_row_alignment
   enum_pages_blocks_about_us_grid_theme: typeof enum_pages_blocks_about_us_grid_theme
   enum_pages_blocks_about_us_grid_button_style: typeof enum_pages_blocks_about_us_grid_button_style
+  enum_pages_blocks_philosophy_items_icon_source: typeof enum_pages_blocks_philosophy_items_icon_source
   enum_pages_blocks_philosophy_theme: typeof enum_pages_blocks_philosophy_theme
   enum_pages_blocks_philosophy_button_style: typeof enum_pages_blocks_philosophy_button_style
   enum_pages_blocks_philosophy_item_layout: typeof enum_pages_blocks_philosophy_item_layout
@@ -4032,9 +4091,9 @@ type DatabaseSchema = {
   enum_pages_blocks_promotions_position: typeof enum_pages_blocks_promotions_position
   enum_pages_blocks_gallery_theme: typeof enum_pages_blocks_gallery_theme
   enum_pages_blocks_gallery_button_style: typeof enum_pages_blocks_gallery_button_style
-  enum_pages_blocks_gallery_position: typeof enum_pages_blocks_gallery_position
   enum_pages_blocks_gallery_layout: typeof enum_pages_blocks_gallery_layout
   enum_pages_blocks_gallery_content_alignment: typeof enum_pages_blocks_gallery_content_alignment
+  enum_pages_blocks_gallery_position: typeof enum_pages_blocks_gallery_position
   enum_pages_blocks_team_theme: typeof enum_pages_blocks_team_theme
   enum_pages_blocks_team_button_style: typeof enum_pages_blocks_team_button_style
   enum_pages_blocks_team_source: typeof enum_pages_blocks_team_source
@@ -4058,15 +4117,18 @@ type DatabaseSchema = {
   enum_services_blocks_hero_button_style: typeof enum_services_blocks_hero_button_style
   enum_services_blocks_content_theme: typeof enum_services_blocks_content_theme
   enum_services_blocks_content_button_style: typeof enum_services_blocks_content_button_style
+  enum_services_blocks_content_content_alignment: typeof enum_services_blocks_content_content_alignment
   enum_services_blocks_content_image_theme: typeof enum_services_blocks_content_image_theme
   enum_services_blocks_content_image_button_style: typeof enum_services_blocks_content_image_button_style
   enum_services_blocks_content_image_position: typeof enum_services_blocks_content_image_position
   enum_services_blocks_content_image_image_width: typeof enum_services_blocks_content_image_image_width
+  enum_services_blocks_advantages_items_icon_source: typeof enum_services_blocks_advantages_items_icon_source
   enum_services_blocks_advantages_theme: typeof enum_services_blocks_advantages_theme
   enum_services_blocks_advantages_button_style: typeof enum_services_blocks_advantages_button_style
   enum_services_blocks_advantages_item_layout: typeof enum_services_blocks_advantages_item_layout
   enum_services_blocks_advantages_columns: typeof enum_services_blocks_advantages_columns
   enum_services_blocks_advantages_incomplete_row_alignment: typeof enum_services_blocks_advantages_incomplete_row_alignment
+  enum_services_blocks_cards_items_icon_source: typeof enum_services_blocks_cards_items_icon_source
   enum_services_blocks_cards_theme: typeof enum_services_blocks_cards_theme
   enum_services_blocks_cards_button_style: typeof enum_services_blocks_cards_button_style
   enum_services_blocks_cards_item_layout: typeof enum_services_blocks_cards_item_layout
@@ -4092,6 +4154,8 @@ type DatabaseSchema = {
   enum_site_settings_social_links_platform: typeof enum_site_settings_social_links_platform
   enum_site_settings_menu_style: typeof enum_site_settings_menu_style
   enum_home_page_section_order_section: typeof enum_home_page_section_order_section
+  enum_home_page_advantages_icon_source: typeof enum_home_page_advantages_icon_source
+  enum_home_page_philosophy_cards_icon_source: typeof enum_home_page_philosophy_cards_icon_source
   enum_home_page_advantages_layout: typeof enum_home_page_advantages_layout
   enum_site_contacts_social_links_platform: typeof enum_site_contacts_social_links_platform
   users_sessions: typeof users_sessions

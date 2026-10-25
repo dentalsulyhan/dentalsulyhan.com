@@ -265,10 +265,11 @@ export async function ServicesListingPageContent({
             const buttonClass = getButtonStyle(block.buttonStyle)
             const isPageH1 = idx === customH1BlockIndex
             const HeadingTag = isPageH1 ? 'h1' : 'h2'
-            const contentAlignmentClass = isPageH1
+            const contentAlignment = (block as { contentAlignment?: 'left' | 'center' }).contentAlignment || 'center'
+            const contentAlignmentClass = contentAlignment === 'left'
               ? 'text-left'
               : 'text-center max-[767px]:text-left'
-            const richTextAlignmentClass = isPageH1
+            const richTextAlignmentClass = contentAlignment === 'left'
               ? 'text-left [&_p]:text-left [&_li]:text-left'
               : 'text-center [&_p]:text-center [&_li]:text-center max-[767px]:text-left max-[767px]:[&_p]:text-left max-[767px]:[&_li]:text-left'
             const contentWidthClass = 'w-2/3 max-w-[1200px] max-[767px]:w-full'
@@ -301,7 +302,7 @@ export async function ServicesListingPageContent({
                 <div className={`relative z-10 ${contentWidthClass} mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px] ${backgroundImageUrl ? (compactSpacing ? 'py-[50px] max-[767px]:py-[32px]' : 'py-[100px] max-[767px]:py-[64px]') : ''}`}>
                   {block.title && (
                     <HeadingTag
-                      className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] ${contentAlignmentClass} ${
+                      className={`text-[32px] max-[767px]:text-[24px] font-semibold text-[#3c5557] text-center ${
                         block.content || block.bottomText ? 'mb-6' : 'mb-0'
                       }`}
                     >

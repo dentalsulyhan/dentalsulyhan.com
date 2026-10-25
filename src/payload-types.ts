@@ -1002,6 +1002,10 @@ export interface Service {
               [k: string]: unknown;
             } | null;
             fullWidthContent?: boolean | null;
+            /**
+             * Text is left-aligned on mobile for readability.
+             */
+            contentAlignment?: ('left' | 'center') | null;
             bottomText?: {
               root: {
                 type: string;
@@ -2052,6 +2056,7 @@ export interface ServicesSelect<T extends boolean = true> {
               useAsPageTitle?: T;
               content?: T;
               fullWidthContent?: T;
+              contentAlignment?: T;
               bottomText?: T;
               backgroundImage?: T;
               overlayColor?: T;

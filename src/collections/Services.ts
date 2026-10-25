@@ -307,6 +307,41 @@ export const Services: CollectionConfig = {
                     es: 'Extender el contenido al ancho del contenedor',
                   },
                 },
+                {
+                  name: 'contentAlignment',
+                  type: 'select',
+                  defaultValue: 'center',
+                  options: [
+                    {
+                      label: {
+                        en: 'Left',
+                        uk: 'Ліворуч',
+                        es: 'Izquierda',
+                      },
+                      value: 'left',
+                    },
+                    {
+                      label: {
+                        en: 'Center',
+                        uk: 'По центру',
+                        es: 'Centrado',
+                      },
+                      value: 'center',
+                    },
+                  ],
+                  label: {
+                    en: 'Desktop Text Alignment',
+                    uk: 'Вирівнювання тексту на ПК',
+                    es: 'Alineacion del texto en escritorio',
+                  },
+                  admin: {
+                    description: {
+                      en: 'Text is left-aligned on mobile for readability.',
+                      uk: 'На мобільному текст завжди вирівнюється ліворуч для читабельності.',
+                      es: 'En movil, el texto siempre se alinea a la izquierda para facilitar la lectura.',
+                    },
+                  },
+                },
               ],
               false,
             ),
