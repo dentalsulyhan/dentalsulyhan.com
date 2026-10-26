@@ -278,6 +278,28 @@
     color: var(--main-text-color) !important;
   }
 
+  /* Rich Text links must remain identifiable without relying on hover. */
+  .prose a {
+    color: var(--accent-color) !important;
+    font-weight: 600;
+    text-decoration-line: underline !important;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease, text-decoration-thickness 0.2s ease;
+  }
+
+  .prose a:hover,
+  .prose a:focus-visible {
+    color: var(--accent-hover-color) !important;
+    text-decoration-thickness: 2px;
+  }
+
+  .prose-light a,
+  .prose-light a:hover,
+  .prose-light a:focus-visible {
+    color: #fff !important;
+  }
+
   .text-force-white {
     color: #fff !important;
   }
