@@ -1,10 +1,12 @@
 import React from 'react'
 import Image from 'next/image'
 import type { HomePage as HomePageType, Page, TeamMember, Media, SiteContact, SiteSetting, Promotion, SeoSetting } from '@/payload-types'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
+import type { ComponentProps } from 'react'
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { createRichTextLinkConverters } from '@/lib/richTextLinks'
 import { buildWebPageStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
 import {
@@ -202,6 +204,10 @@ export async function PageContent({
       servicePaths,
       servicesPagePath,
     })
+  const richTextConverters = createRichTextLinkConverters({ locale, servicesPagePath })
+  const RichText = (props: ComponentProps<typeof PayloadRichText>) => (
+    <PayloadRichText {...props} converters={richTextConverters} />
+  )
 
   const contacts: SiteContact = {
     ...siteContacts,
@@ -799,7 +805,7 @@ export async function PageContent({
                     )}
                     <div className="relative">
                       {membersToShow.length > 4 ? (
-                        <LazyTeamSlider members={membersToShow} />
+                        <LazyTeamSlider members={membersToShow} locale={locale} servicesPagePath={servicesPagePath} />
                       ) : membersToShow.length > 0 ? (
                         <div className="grid grid-cols-4 max-[991px]:grid-cols-3 max-[767px]:grid-cols-2 max-[567px]:grid-cols-1 gap-[30px] max-[1100px]:gap-[20px]">
                           {membersToShow.map((member, memberIndex) => {
@@ -1842,7 +1848,7 @@ export async function PageContent({
                 <h2 className="text-[32px] max-[767px]:text-[24px] font-semibold text-center mb-[50px]">{teamTitle}</h2>
                 <div className="max-w-[1200px] mx-auto relative px-[30px] max-[1230px]:px-[30px]">
                   {team.length > 0 ? (
-                    <LazyTeamSlider members={team} />
+                    <LazyTeamSlider members={team} locale={locale} servicesPagePath={servicesPagePath} />
                   ) : (
                     <div className="grid grid-cols-4 max-[991px]:grid-cols-3 max-[767px]:grid-cols-2 max-[567px]:grid-cols-1 gap-[30px]">
                       {Array.from({ length: 4 }).map((_, i) => (

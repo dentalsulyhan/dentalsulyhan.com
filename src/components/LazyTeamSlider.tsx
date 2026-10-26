@@ -8,6 +8,14 @@ const TeamSlider = dynamic(() => import('./TeamSlider'), {
   loading: () => <div className="min-h-[280px] w-full rounded-[20px] bg-[#e8e0d8]" aria-hidden="true" />,
 })
 
-export default function LazyTeamSlider({ members }: { members: TeamMember[] }) {
-  return <TeamSlider members={members} />
+export default function LazyTeamSlider({
+  members,
+  locale,
+  servicesPagePath,
+}: {
+  members: TeamMember[]
+  locale: string
+  servicesPagePath: string
+}) {
+  return <TeamSlider members={members} locale={locale} servicesPagePath={servicesPagePath} />
 }

@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import type { TeamMember, Media } from '@/payload-types'
+import { createRichTextLinkConverters } from '@/lib/richTextLinks'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -20,10 +21,13 @@ function mediaUrl(field: unknown): string | null {
 
 interface TeamSliderProps {
   members: TeamMember[]
+  locale: string
+  servicesPagePath: string
 }
 
-export default function TeamSlider({ members }: TeamSliderProps) {
+export default function TeamSlider({ members, locale, servicesPagePath }: TeamSliderProps) {
   const [isMounted, setIsMounted] = useState(false)
+  const richTextConverters = createRichTextLinkConverters({ locale, servicesPagePath })
 
   useEffect(() => {
     setIsMounted(true)
@@ -55,7 +59,7 @@ export default function TeamSlider({ members }: TeamSliderProps) {
                 <span className="font-semibold text-[16px] text-[#22282b]">{member.name}</span>
                 {member.description && (
                   <div className="text-[14px] text-[#22282b] mt-1 prose max-w-none prose-p:my-0">
-                    {typeof member.description === 'string' ? <p>{member.description}</p> : <RichText data={member.description} />}
+                    {typeof member.description === 'string' ? <p>{member.description}</p> : <PayloadRichText data={member.description} converters={richTextConverters} />}
                   </div>
                 )}
               </div>
@@ -125,7 +129,7 @@ export default function TeamSlider({ members }: TeamSliderProps) {
                 <span className="font-semibold text-[16px] text-[#22282b]">{member.name}</span>
                 {member.description && (
                   <div className="text-[14px] text-[#22282b] mt-1 prose max-w-none prose-p:my-0">
-                    {typeof member.description === 'string' ? <p>{member.description}</p> : <RichText data={member.description} />}
+                    {typeof member.description === 'string' ? <p>{member.description}</p> : <PayloadRichText data={member.description} converters={richTextConverters} />}
                   </div>
                 )}
               </div>

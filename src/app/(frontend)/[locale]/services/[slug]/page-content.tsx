@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
+import type { ComponentProps } from 'react'
 import type { Media, Pricing, SeoSetting, Service, SiteContact, SiteSetting } from '@/payload-types'
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { createRichTextLinkConverters } from '@/lib/richTextLinks'
 import { buildBreadcrumbStructuredData, buildFaqStructuredData, buildServiceStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
 import {
@@ -217,6 +219,10 @@ export async function ServiceDetailPageContent({
       servicePaths,
       servicesPagePath: servicesBasePath,
     })
+  const richTextConverters = createRichTextLinkConverters({ locale, servicesPagePath: servicesBasePath })
+  const RichText = (props: ComponentProps<typeof PayloadRichText>) => (
+    <PayloadRichText {...props} converters={richTextConverters} />
+  )
 
   const contacts: ContactData = {
     ...siteContacts,
@@ -657,6 +663,8 @@ export async function ServiceDetailPageContent({
                     <AccordionList
                       items={block.items}
                       columns={faqColumns ? 2 : 1}
+                      locale={locale}
+                      servicesPagePath={servicesBasePath}
                       itemClassName={`rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
                       headingClassName="text-[20px] leading-6 max-[767px]:text-[18px] max-[767px]:leading-[22px] font-semibold text-[#22282b]"
                       iconClassName="text-[24px] text-[#3c5557]"
@@ -804,6 +812,8 @@ export async function ServiceDetailPageContent({
                   )}
                   <AccordionList
                     items={block.items}
+                    locale={locale}
+                    servicesPagePath={servicesBasePath}
                     itemClassName={`w-full rounded-[18px] ${theme.card} border border-[#3c5557]/10 px-5 py-4 max-[767px]:px-4 max-[767px]:py-3`}
                     headingClassName="text-[20px] leading-6 max-[767px]:text-[18px] max-[767px]:leading-[22px] font-semibold text-[#22282b]"
                     iconClassName="text-[24px] text-[#3c5557]"

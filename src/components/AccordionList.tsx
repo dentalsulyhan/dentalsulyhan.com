@@ -1,8 +1,9 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState, SerializedLexicalNode } from '@payloadcms/richtext-lexical/lexical'
+import { createRichTextLinkConverters } from '@/lib/richTextLinks'
 
 type AccordionItem = {
   id?: string | null
@@ -17,6 +18,8 @@ type AccordionListProps = {
   headingClassName?: string
   iconClassName?: string
   itemClassName?: string
+  locale?: string
+  servicesPagePath?: string
 }
 
 export default function AccordionList({
@@ -26,9 +29,12 @@ export default function AccordionList({
   headingClassName = '',
   iconClassName = '',
   itemClassName = '',
+  locale = 'es',
+  servicesPagePath,
 }: AccordionListProps) {
   const listId = useId()
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const richTextConverters = createRichTextLinkConverters({ locale, servicesPagePath })
 
   if (!items?.length) return null
 
@@ -65,7 +71,7 @@ export default function AccordionList({
             >
               <div className="min-h-0 overflow-hidden">
                 <div className={contentClassName}>
-                  {item.content ? <RichText data={item.content} /> : null}
+                  {item.content ? <PayloadRichText data={item.content} converters={richTextConverters} /> : null}
                 </div>
               </div>
             </div>

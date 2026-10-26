@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import { RichText as PayloadRichText } from '@payloadcms/richtext-lexical/react'
+import type { ComponentProps } from 'react'
 import type { Media, Page, Pricing, Service, SiteContact, SiteSetting } from '@/payload-types'
 import { getBlockTheme, getButtonStyle, getThemeBackgroundStyle } from '@/lib/blockThemes'
 import { buildLocalizedPath } from '@/lib/localizedRouting'
 import { resolveInternalHref } from '@/lib/internalLinkResolver'
+import { createRichTextLinkConverters } from '@/lib/richTextLinks'
 import { buildBreadcrumbStructuredData, buildItemListStructuredData } from '@/lib/structuredData'
 import { getConfiguredSiteUrl } from '@/lib/seo'
 import {
@@ -130,6 +132,10 @@ export async function ServicesListingPageContent({
       servicePaths,
       servicesPagePath: servicesBasePath,
     })
+  const richTextConverters = createRichTextLinkConverters({ locale, servicesPagePath: servicesBasePath })
+  const RichText = (props: ComponentProps<typeof PayloadRichText>) => (
+    <PayloadRichText {...props} converters={richTextConverters} />
+  )
 
   const contacts: ContactData = {
     ...siteContacts,
