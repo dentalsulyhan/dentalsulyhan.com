@@ -666,7 +666,7 @@ export async function PageContent({
                 >
                   <div className="max-w-[1200px] mx-auto px-[30px] max-[1100px]:px-[24px] max-[767px]:px-[20px]">
                     {block.sectionTitle && (
-                      <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold mb-[60px] text-[#3c5557] ${isLeftAligned ? 'text-right max-[767px]:text-left' : 'text-center'}`}>
+                      <h2 className={`text-[32px] max-[767px]:text-[24px] font-semibold mb-[60px] text-[#3c5557] ${isLeftAligned ? 'text-center max-[767px]:text-left' : 'text-center'}`}>
                         {block.sectionTitle}
                       </h2>
                     )}
