@@ -276,6 +276,10 @@ export interface Page {
              */
             displayVariant?: ('icons' | 'steps') | null;
             itemLayout?: ('column' | 'row') | null;
+            /**
+             * "Icon in a circle" shows a larger icon on a soft round background and slightly larger item text.
+             */
+            iconStyle?: ('plain' | 'circle') | null;
             itemsPerRow?: ('2' | '3' | '4') | null;
             /**
              * Controls the alignment of the heading, cards, text, and button in this block.
@@ -671,6 +675,77 @@ export interface Page {
             id?: string | null;
             blockName?: string | null;
             blockType: 'content';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
+            /**
+             * Stages are shown in one row connected by a line (up to 6). On mobile they stack vertically.
+             */
+            items: {
+              iconSource?: ('upload' | 'fontAwesome') | null;
+              icon?: (number | null) | Media;
+              fontAwesomeIcon?: string | null;
+              title: string;
+              text?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            iconSource?: ('upload' | 'fontAwesome') | null;
+            icon?: (number | null) | Media;
+            fontAwesomeIcon?: string | null;
+            title?: string | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'iconHighlight';
           }
         | {
             /**
@@ -1099,6 +1174,10 @@ export interface Service {
             } | null;
             fullWidthText?: boolean | null;
             itemLayout?: ('column' | 'row') | null;
+            /**
+             * "Icon in a circle" shows a larger icon on a soft round background and slightly larger item text.
+             */
+            iconStyle?: ('plain' | 'circle') | null;
             columns?: ('2' | '3' | '4') | null;
             incompleteRowAlignment?: ('center' | 'start') | null;
             items: {
@@ -1528,6 +1607,77 @@ export interface Service {
              * Use smaller vertical padding when the block has only a title or a short intro.
              */
             compactSpacing?: boolean | null;
+            sectionTitle?: string | null;
+            /**
+             * Stages are shown in one row connected by a line (up to 6). On mobile they stack vertically.
+             */
+            items: {
+              iconSource?: ('upload' | 'fontAwesome') | null;
+              icon?: (number | null) | Media;
+              fontAwesomeIcon?: string | null;
+              title: string;
+              text?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
+            iconSource?: ('upload' | 'fontAwesome') | null;
+            icon?: (number | null) | Media;
+            fontAwesomeIcon?: string | null;
+            title?: string | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'iconHighlight';
+          }
+        | {
+            /**
+             * Choose one of the base background color presets for this block.
+             */
+            theme?: ('white' | 'soft' | 'sand' | 'sage') | null;
+            /**
+             * Use smaller vertical padding when the block has only a title or a short intro.
+             */
+            compactSpacing?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'globalContactSection';
@@ -1736,6 +1886,7 @@ export interface PagesSelect<T extends boolean = true> {
               sectionTitle?: T;
               displayVariant?: T;
               itemLayout?: T;
+              iconStyle?: T;
               itemsPerRow?: T;
               contentAlignment?: T;
               incompleteRowAlignment?: T;
@@ -1911,6 +2062,38 @@ export interface PagesSelect<T extends boolean = true> {
               overlayOpacity?: T;
               buttonText?: T;
               buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              theme?: T;
+              compactSpacing?: T;
+              sectionTitle?: T;
+              items?:
+                | T
+                | {
+                    iconSource?: T;
+                    icon?: T;
+                    fontAwesomeIcon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        iconHighlight?:
+          | T
+          | {
+              theme?: T;
+              compactSpacing?: T;
+              iconSource?: T;
+              icon?: T;
+              fontAwesomeIcon?: T;
+              title?: T;
+              content?: T;
               id?: T;
               blockName?: T;
             };
@@ -2092,6 +2275,7 @@ export interface ServicesSelect<T extends boolean = true> {
               subtitle?: T;
               fullWidthText?: T;
               itemLayout?: T;
+              iconStyle?: T;
               columns?: T;
               incompleteRowAlignment?: T;
               items?:
@@ -2234,6 +2418,38 @@ export interface ServicesSelect<T extends boolean = true> {
               position?: T;
               pricingGroup?: T;
               image?: T;
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              theme?: T;
+              compactSpacing?: T;
+              sectionTitle?: T;
+              items?:
+                | T
+                | {
+                    iconSource?: T;
+                    icon?: T;
+                    fontAwesomeIcon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        iconHighlight?:
+          | T
+          | {
+              theme?: T;
+              compactSpacing?: T;
+              iconSource?: T;
+              icon?: T;
+              fontAwesomeIcon?: T;
+              title?: T;
+              content?: T;
               id?: T;
               blockName?: T;
             };

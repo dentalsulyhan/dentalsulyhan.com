@@ -23,6 +23,8 @@ import {
 } from '@/lib/publicData'
 import ContactForm from '../../../components/ContactForm'
 import ContentIcon from '../../../components/ContentIcon'
+import TimelineSection from '../../../components/blocks/TimelineSection'
+import IconHighlightSection from '../../../components/blocks/IconHighlightSection'
 import EqualizeElementHeights from '../../../components/EqualizeElementHeights'
 import LazyGallerySlider from '../../../components/LazyGallerySlider'
 import LazyGoogleReviews from '../../../components/LazyGoogleReviews'
@@ -402,6 +404,7 @@ export async function PageContent({
             case 'advantages': {
               const isStepsLayout = block.displayVariant === 'steps'
               const isRowLayout = (block.itemLayout || 'column') === 'row'
+              const isCircleIcon = (block as { iconStyle?: string | null }).iconStyle === 'circle'
               const itemsPerRow = block.itemsPerRow || '3'
               const advantageCardWidthClass = itemsPerRow === '2'
                 ? 'w-[calc((100%-50px)/2)] max-[1100px]:w-[calc((100%-32px)/2)] max-[767px]:w-full'
@@ -510,7 +513,19 @@ export async function PageContent({
                             className={`flex flex-col gap-5 min-w-0 ${advantageCardWidthClass} ${cardAlignmentClass} ${mobileCardAlignmentClass}`}
                           >
                             <div className={`flex max-[767px]:w-full ${cardHeaderClass}`}>
-                              {hasCustomIcon ? (
+                              {hasCustomIcon && isCircleIcon ? (
+                                <div className="w-[70px] h-[70px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
+                                  <ContentIcon
+                                    icon={item.icon}
+                                    iconSource={iconSource}
+                                    fontAwesomeIcon={fontAwesomeIcon}
+                                    alt={item.title}
+                                    size={48}
+                                    imageClassName="w-[48px] h-[48px] object-contain shrink-0"
+                                    iconClassName="text-[#22282b] shrink-0"
+                                  />
+                                </div>
+                              ) : hasCustomIcon ? (
                                 <ContentIcon
                                   icon={item.icon}
                                   iconSource={iconSource}
@@ -529,7 +544,7 @@ export async function PageContent({
                               )}
                               <h3 className={`text-[20px] leading-6 font-semibold text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>
                             </div>
-                            <div className={`${cardTextAlignmentClass} text-[15px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0`}>
+                            <div className={`${cardTextAlignmentClass} ${isCircleIcon ? 'text-[16px] text-[#22282b] prose-p:text-[16px]' : 'text-[15px] text-[#909da2]'} leading-relaxed prose max-w-none prose-p:my-0`}>
                               <RichText data={item.text} />
                             </div>
                           </div>
@@ -1083,6 +1098,12 @@ export async function PageContent({
                 </section>
               )
             }
+
+            case 'timeline':
+              return <TimelineSection key={block.id || idx} block={block} RichText={RichText} />
+
+            case 'iconHighlight':
+              return <IconHighlightSection key={block.id || idx} block={block} RichText={RichText} />
 
             case 'globalContactSection': {
               const compactSpacing = isCompactSpacing(block)

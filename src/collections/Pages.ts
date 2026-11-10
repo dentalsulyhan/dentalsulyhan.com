@@ -3,6 +3,7 @@ import { blockThemeField, buttonStyleField } from '@/lib/blockThemes'
 import { createPageRevalidationHooks } from '@/lib/cacheRevalidation'
 import { buildIconChoiceFields } from '@/lib/fontAwesomeIcons'
 import { seoFields } from '@/lib/seoFields'
+import { advantagesIconStyleField, iconHighlightBlock, timelineBlock } from '@/lib/sharedLayoutBlocks'
 
 const sectionSpacingField = {
   name: 'compactSpacing',
@@ -392,6 +393,7 @@ export const Pages: CollectionConfig = {
                     es: 'Disposicion de icono y titulo',
                   },
                 },
+                advantagesIconStyleField,
                 {
                   name: 'itemsPerRow',
                   type: 'select',
@@ -1799,6 +1801,8 @@ export const Pages: CollectionConfig = {
             ),
           ],
         },
+        timelineBlock,
+        iconHighlightBlock,
         {
           slug: 'globalContactSection',
           labels: {

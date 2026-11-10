@@ -22,6 +22,8 @@ import ContactForm from '../../../../../components/ContactForm'
 import ContentIcon from '../../../../../components/ContentIcon'
 import AccordionList from '../../../../../components/AccordionList'
 import SocialIcon from '../../../../../components/SocialIcon'
+import TimelineSection from '../../../../../components/blocks/TimelineSection'
+import IconHighlightSection from '../../../../../components/blocks/IconHighlightSection'
 
 function mediaUrl(field: unknown): string | null {
   if (!field) return null
@@ -453,6 +455,7 @@ export async function ServiceDetailPageContent({
 
           case 'advantages': {
             const isRowLayout = (block.itemLayout || 'column') === 'row'
+            const isCircleIcon = (block as { iconStyle?: string | null }).iconStyle === 'circle'
             const compactSpacing = isCompactSpacing(block)
             const theme = getBlockTheme(block.theme)
             const buttonClass = getButtonStyle(block.buttonStyle)
@@ -492,7 +495,19 @@ export async function ServiceDetailPageContent({
                           className={`flex flex-col items-center text-center gap-4 w-full ${getGridItemClass(desktopColumns, itemIndex, items.length, incompleteRowAlignment)} max-[1200px]:col-span-1 max-[1200px]:col-start-auto max-[767px]:col-span-1 max-[767px]:items-center max-[767px]:text-center`}
                         >
                           <div className={`flex w-full ${isRowLayout ? 'flex-row items-center gap-4 text-left max-[767px]:flex-col max-[767px]:justify-center max-[767px]:gap-3 max-[767px]:text-center' : `flex-col items-center text-center ${item.title ? 'gap-5' : 'gap-2'} max-[767px]:flex-col max-[767px]:justify-center max-[767px]:text-center`}`}>
-                            {hasCustomIcon ? (
+                            {hasCustomIcon && isCircleIcon ? (
+                              <div className="w-[70px] h-[70px] rounded-full bg-[#3c5557]/10 flex items-center justify-center shrink-0">
+                                <ContentIcon
+                                  icon={item.icon}
+                                  iconSource={iconSource}
+                                  fontAwesomeIcon={fontAwesomeIcon}
+                                  alt={item.title || 'Advantage icon'}
+                                  size={48}
+                                  imageClassName="w-[48px] h-[48px] object-contain shrink-0"
+                                  iconClassName="text-[#22282b] shrink-0"
+                                />
+                              </div>
+                            ) : hasCustomIcon ? (
                               <ContentIcon
                                 icon={item.icon}
                                 iconSource={iconSource}
@@ -512,7 +527,7 @@ export async function ServiceDetailPageContent({
                             {item.title && <h3 className={`text-[20px] leading-6 font-semibold text-[#22282b] ${isRowLayout ? 'mb-0' : ''}`}>{item.title}</h3>}
                           </div>
                           {item.text && (
-                            <div className="text-center [&_p]:text-center [&_li]:text-center text-[14px] text-[#909da2] leading-relaxed prose max-w-none prose-p:my-0 prose-p:text-[14px] prose-li:text-[14px]">
+                            <div className={`text-center [&_p]:text-center [&_li]:text-center leading-relaxed prose max-w-none prose-p:my-0 ${isCircleIcon ? 'text-[16px] text-[#22282b] prose-p:text-[16px] prose-li:text-[16px]' : 'text-[14px] text-[#909da2] prose-p:text-[14px] prose-li:text-[14px]'}`}>
                               <RichText data={item.text} />
                             </div>
                           )}
@@ -957,6 +972,12 @@ export async function ServiceDetailPageContent({
               </section>
             )
           }
+
+          case 'timeline':
+            return <TimelineSection key={block.id || idx} block={block} RichText={RichText} />
+
+          case 'iconHighlight':
+            return <IconHighlightSection key={block.id || idx} block={block} RichText={RichText} />
 
           case 'globalContactSection': {
             const compactSpacing = isCompactSpacing(block)
