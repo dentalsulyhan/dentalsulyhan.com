@@ -191,8 +191,12 @@ export async function POST(request: Request) {
         return Response.json({ error: messages.captcha }, { status: 400 })
       }
 
+      // Behind Cloudflare the visitor IP is in cf-connecting-ip; x-forwarded-for is the fallback
+      // (Vercel, local). The value is only a hint for Turnstile, it is not used for access control.
       const forwardedFor = request.headers.get('x-forwarded-for')
-      const remoteIp = forwardedFor ? forwardedFor.split(',')[0]?.trim() : null
+      const remoteIp =
+        request.headers.get('cf-connecting-ip')?.trim() ||
+        (forwardedFor ? forwardedFor.split(',')[0]?.trim() : null)
       const isValidTurnstile = await verifyTurnstileToken(turnstileToken, remoteIp)
 
       if (!isValidTurnstile) {

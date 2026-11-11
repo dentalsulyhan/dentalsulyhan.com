@@ -5,7 +5,9 @@ import { getCachedPagePathEntries, getCachedServicePathEntries } from '@/lib/pub
 
 type SitemapEntry = MetadataRoute.Sitemap[number]
 
-export const revalidate = 300
+// Rendered per request, never baked at build time: a build without database access (docker build / CI)
+// would otherwise freeze an EMPTY sitemap. The data itself is cached via unstable_cache (see publicData).
+export const dynamic = 'force-dynamic'
 
 function toDate(value?: string | null) {
   return value ? new Date(value) : undefined

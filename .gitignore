@@ -54,3 +54,9 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# VPS deployment secrets and database dumps
+/deploy/.env
+*.dump
+*.dump.enc
+/db-dump/

@@ -1,0 +1,160 @@
+# Production stack for the Dental Clinic Sulyhan site on a VPS.
+#
+#   cd deploy
+#   cp .env.example .env          # fill in the values
+#   docker compose build
+#   docker compose up -d postgres
+#   # first time only: copy the database, see deploy/README.md -> scripts/db-copy.sh
+#   docker compose --profile tools run --rm migrate    # apply pending migrations
+#   docker compose up -d
+#
+# Only Caddy publishes ports (80/443). PostgreSQL and the app are reachable only
+# inside the Docker network.
+
+name: sulyhan
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
+services:
+  postgres:
+    image: postgres:17-alpine # must be >= the version the dump is taken from (Supabase: 17.x)
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    networks: [internal]
+    logging: *default-logging
+
+  app:
+    build:
+      context: ..
+      target: runner
+      args:
+        SITE_URL: ${SITE_URL:?set SITE_URL}
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+        NEXT_PUBLIC_PLERDY_SUID: ${NEXT_PUBLIC_PLERDY_SUID:-}
+        NEXT_PUBLIC_PLERDY_SITE_HASH: ${NEXT_PUBLIC_PLERDY_SITE_HASH:-}
+        NEXT_PUBLIC_PLERDY_SCRIPT_URL: ${NEXT_PUBLIC_PLERDY_SCRIPT_URL:-}
+        R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL:-}
+    image: ${APP_IMAGE:-sulyhan-app:latest}
+    restart: unless-stopped
+    # Explicit list on purpose: the app must not receive backup / S3-backup secrets.
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      NODE_OPTIONS: --max-old-space-size=1536
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?set PAYLOAD_SECRET}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      SITE_URL: ${SITE_URL}
+      NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_SECURE: ${SMTP_SECURE:-}
+      SMTP_SKIP_VERIFY: ${SMTP_SKIP_VERIFY:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-}
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      R2_BUCKET: ${R2_BUCKET:-}
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:-}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:-}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:-}
+      R2_ENDPOINT: ${R2_ENDPOINT:-}
+      R2_REGION: ${R2_REGION:-auto}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL:-}
+      PLERDY_SITE_HASH: ${PLERDY_SITE_HASH:-}
+      PLERDY_SUID: ${PLERDY_SUID:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - next-cache:/app/.next/cache
+    mem_limit: 2g
+    expose:
+      - '3000'
+    networks: [internal, web]
+    logging: *default-logging
+
+  # One-off job, not started by `up`. Run: docker compose --profile tools run --rm migrate
+  migrate:
+    profiles: [tools]
+    build:
+      context: ..
+      target: migrator
+    image: ${MIGRATE_IMAGE:-sulyhan-migrate:latest}
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?set PAYLOAD_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+    networks: [web]
+    logging: *default-logging
+
+  backup:
+    build:
+      context: ./backup
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      BACKUP_PASSPHRASE: ${BACKUP_PASSPHRASE:?set BACKUP_PASSPHRASE}
+      BACKUP_HOUR_UTC: ${BACKUP_HOUR_UTC:-3}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-sulyhan}
+      BACKUP_S3_ENDPOINT: ${BACKUP_S3_ENDPOINT:-}
+      AWS_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${BACKUP_S3_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: auto
+    volumes:
+      - backups:/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal, egress]
+    logging: *default-logging
+
+networks:
+  internal:
+    internal: true # no outbound internet for postgres / migrate
+  web: {}
+  egress: {} # backup needs outbound access to the S3/R2 endpoint
+
+volumes:
+  pgdata:
+  next-cache:
+  caddy-data:
+  caddy-config:
+  backups:
