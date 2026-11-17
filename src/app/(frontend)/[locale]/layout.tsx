@@ -1,4 +1,5 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import TrackingScripts from '@/components/TrackingScripts'
@@ -11,6 +12,7 @@ import { buildOrganizationStructuredData, buildWebsiteStructuredData } from '@/l
 import { getConfiguredSiteUrl } from '@/lib/seo'
 import {
   getCachedFrontendShellData,
+  getCachedSeoSettings,
 } from '@/lib/publicData'
 
 type BrandingData = {
@@ -27,6 +29,30 @@ type TrackingData = {
 }
 
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+
+  if (!isSupportedLocale(locale)) {
+    return {}
+  }
+
+  const seoSettings = await getCachedSeoSettings(locale as 'es' | 'en' | 'uk').catch((err) => {
+    console.error('Error fetching seo settings for frontend layout metadata:', err)
+    return null as SeoSetting | null
+  })
+
+  return {
+    robots: {
+      index: seoSettings?.indexSite ?? true,
+      follow: seoSettings?.followLinks ?? true,
+    },
+  }
+}
 
 export default async function FrontendLayout({
   children,
